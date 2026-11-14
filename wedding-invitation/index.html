@@ -124,6 +124,149 @@
   }
   @keyframes seal { from { opacity: 0; transform: scale(0.96); } }
 
+  /* Seal setting: a slowly turning mandala behind it and a gold glint across it */
+  .seal-wrap {
+    position: relative;
+    isolation: isolate;
+    width: clamp(150px, 26vw, 210px);
+    margin: 26px auto 0;
+  }
+  .seal-wrap .seal { width: 100%; margin: 0; }
+  .mandala {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 178%;
+    height: auto;
+    aspect-ratio: 1;
+    translate: -50% -50%;
+    z-index: -1;
+    color: var(--hero-gold);
+    opacity: .3;
+    pointer-events: none;
+    animation: fade 1400ms ease 300ms both, spin 140s linear infinite;
+  }
+  @keyframes spin { to { rotate: 360deg; } }
+  .glint {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    pointer-events: none;
+    background: linear-gradient(115deg, transparent 38%, rgb(255 246 220 / .75) 50%, transparent 62%) no-repeat;
+    background-size: 300% 100%;
+    background-position: 150% 0;
+    mix-blend-mode: screen;
+    animation: glint 9s ease-in-out 1500ms infinite;
+  }
+  /* The sweep takes the first ~1.3s, then rests for the remainder of each cycle */
+  @keyframes glint { 0% { background-position: 150% 0; } 15%, 100% { background-position: -50% 0; } }
+
+  /* ---------- Welcome gate: palace doors that open on tap (or by themselves) ---------- */
+  .gate { display: none; }
+  html.has-gate { overflow: hidden; }
+  html.has-gate .gate {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    perspective: 1800px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  html.gate-hold .hero .in,
+  html.gate-hold .hero .fade-in,
+  html.gate-hold .hero .seal,
+  html.gate-hold .mandala,
+  html.gate-hold .glint { animation-play-state: paused; }
+
+  .door {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 50%;
+    overflow: hidden;
+    background-color: var(--hero-bg);
+    background-image:
+      radial-gradient(circle, color-mix(in srgb, var(--hero-gold) 26%, transparent) 1.5px, transparent 2px),
+      radial-gradient(circle, color-mix(in srgb, var(--hero-gold) 12%, transparent) 1px, transparent 1.5px);
+    background-size: 26px 26px, 26px 26px;
+    background-position: 0 0, 13px 13px;
+    backface-visibility: hidden;
+    transition: transform 1150ms cubic-bezier(0.77, 0, 0.175, 1) 120ms;
+  }
+  .door.l { left: 0; transform-origin: left center; box-shadow: inset -18px 0 28px -18px rgb(0 0 0 / .55); }
+  .door.r { right: 0; transform-origin: right center; box-shadow: inset 18px 0 28px -18px rgb(0 0 0 / .55); }
+  .door::before, .door::after {
+    content: "";
+    position: absolute;
+    border: 1px solid var(--hero-gold);
+    border-radius: 999px 999px 3px 3px / 150px 150px 3px 3px;
+    pointer-events: none;
+  }
+  .door::before { inset: calc(64px + env(safe-area-inset-top, 0px)) 12% calc(7vh + env(safe-area-inset-bottom, 0px)); opacity: .7; }
+  .door::after { inset: calc(74px + env(safe-area-inset-top, 0px)) calc(12% + 10px) calc(7vh + 10px + env(safe-area-inset-bottom, 0px)); opacity: .35; }
+  .door .toran { position: absolute; top: env(safe-area-inset-top, 0px); left: 0; right: 0; }
+  .knob {
+    position: absolute;
+    top: 84%;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid var(--hero-gold);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--hero-gold) 18%, transparent);
+  }
+  .door.l .knob { right: 16px; }
+  .door.r .knob { left: 16px; }
+
+  .gate-center {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding-inline: 16px;
+    text-align: center;
+    color: var(--hero-fg);
+    pointer-events: none;
+    transition: opacity 220ms var(--ease-out), transform 220ms var(--ease-out);
+  }
+  .gate-center .seal { width: clamp(150px, 34vw, 190px); margin: 0 0 14px; animation-delay: 0ms; }
+  .gate-names { font-family: var(--font-script); font-size: clamp(40px, 9vw, 58px); line-height: 1.1; text-shadow: 0 2px 12px rgb(0 0 0 / .4); }
+  .gate-date { font-family: var(--font-display); font-size: 15px; letter-spacing: .3em; text-transform: uppercase; color: var(--hero-gold); }
+  .gate-hint {
+    margin-top: 22px;
+    padding: 10px 20px;
+    border: 1px solid color-mix(in srgb, var(--hero-gold) 70%, transparent);
+    background: color-mix(in srgb, var(--hero-bg) 80%, transparent);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: .24em;
+    text-transform: uppercase;
+  }
+  .gate:focus-visible .gate-hint { outline: 2px solid var(--marigold); outline-offset: 3px; }
+
+  .gate.opening .gate-center { opacity: 0; transform: scale(1.04); }
+  .gate.opening .door.l { transform: rotateY(105deg); }
+  .gate.opening .door.r { transform: rotateY(-105deg); }
+
+  /* Petal shower canvas */
+  .petals { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 110; pointer-events: none; }
+
+  /* Sections drift up as they scroll into view (where the browser supports scroll-driven animation) */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .reveal {
+        --y: 28px;
+        animation: rise ease-out both;
+        animation-timeline: view();
+        animation-range: entry 0% entry 55%;
+      }
+    }
+  }
+
   .names {
     font-family: var(--font-script);
     font-weight: 400;
@@ -399,10 +542,35 @@
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     .in, .fade-in, .seal { animation: fade 250ms ease both; animation-delay: 0ms; }
+    .mandala, .glint { animation: none; }
+    .glint { display: none; }
     .btn:active, .link-btn:active, .choice input:active + span { transform: none; }
     .result { @starting-style { opacity: 0; transform: none; } }
   }
 </style>
+
+<script>
+  // Show the welcome doors on a guest's first visit this session, unless they prefer
+  // reduced motion or arrived on a direct link to a section (e.g. #rsvp).
+  (function () {
+    try {
+      if (matchMedia("(prefers-reduced-motion: reduce)").matches || location.hash) return;
+      try { if (sessionStorage.getItem("ss-gate-opened")) return; } catch (e) {}
+      document.documentElement.classList.add("has-gate", "gate-hold");
+    } catch (e) {}
+  })();
+</script>
+
+<div class="gate" id="gate" role="button" tabindex="0" aria-label="Open the invitation">
+  <div class="door l"><div class="toran" aria-hidden="true"></div><span class="knob"></span></div>
+  <div class="door r"><div class="toran" aria-hidden="true"></div><span class="knob"></span></div>
+  <div class="gate-center">
+    <img class="seal" src="monogram.jpg" width="520" height="520" alt="">
+    <div class="gate-names in" style="--d:120ms;--y:12px">Shivanshi &amp; Shashwat</div>
+    <div class="gate-date in" style="--d:220ms;--y:6px">28 · 29 · 30 November 2026</div>
+    <div class="gate-hint fade-in" style="--d:700ms">Tap to open</div>
+  </div>
+</div>
 
 <div class="wrap">
   <header class="hero" id="top">
@@ -410,7 +578,11 @@
     <div class="hero-inner">
       <div class="ganesh deva fade-in" lang="hi">॥ श्री गणेशाय नमः ॥</div>
       <p class="shloka deva fade-in" style="--d:60ms" lang="sa">वक्रतुण्ड महाकाय सूर्यकोटि समप्रभः।<br>निर्विघ्नं कुरु मे देव सर्वकार्येषु सर्वदा॥</p>
-      <img class="seal" src="monogram.jpg" width="520" height="520" alt="Shivanshi and Shashwat monogram: the letters S and S entwined in gold with a lotus and flowering branches">
+      <div class="seal-wrap">
+        <svg class="mandala" id="mandala" viewBox="-100 -100 200 200" aria-hidden="true"></svg>
+        <img class="seal" src="monogram.jpg" width="520" height="520" alt="Shivanshi and Shashwat monogram: the letters S and S entwined in gold with a lotus and flowering branches">
+        <span class="glint" aria-hidden="true"></span>
+      </div>
 
 
       <h1 class="names">
@@ -448,8 +620,8 @@
   </nav>
 
   <section class="block" id="invitation">
-    <div class="sec-head"><span class="deva" lang="hi">निमंत्रण</span><h2>Invitation</h2></div>
-    <div class="invite">
+    <div class="sec-head reveal"><span class="deva" lang="hi">निमंत्रण</span><h2>Invitation</h2></div>
+    <div class="invite reveal">
       <p class="hosts">Mrs. Kusum Lata Tyagi &amp; Lt. Mr. Mahendra Singh Tyagi</p>
       <p class="invite-text">feel immense pleasure in requesting your presence and blessings on the auspicious occasion of the marriage ceremony of their beloved granddaughter</p>
 
@@ -469,9 +641,9 @@
   </section>
 
   <section class="block" id="functions">
-    <div class="sec-head"><span class="deva" lang="hi">कार्यक्रम</span><h2>Functions</h2></div>
+    <div class="sec-head reveal"><span class="deva" lang="hi">कार्यक्रम</span><h2>Functions</h2></div>
     <div class="days">
-      <div>
+      <div class="reveal">
         <div class="day-head">Saturday · 28 November 2026</div>
         <article class="event" data-start="20261128T190000" data-end="20261128T230000"
           data-title="Engagement · Shivanshi &amp; Shashwat"
@@ -485,7 +657,7 @@
         </article>
       </div>
 
-      <div>
+      <div class="reveal">
         <div class="day-head">Sunday · 29 November 2026</div>
         <article class="event" data-start="20261129T170000" data-end="20261129T230000"
           data-title="Mehendi &amp; Sangeet · Shivanshi &amp; Shashwat"
@@ -499,7 +671,7 @@
         </article>
       </div>
 
-      <div>
+      <div class="reveal">
         <div class="day-head">Monday · 30 November 2026</div>
         <article class="event main" data-start="20261130T190000" data-end="20261130T235900"
           data-title="Wedding · Shivanshi weds Shashwat"
@@ -519,8 +691,8 @@
   </section>
 
   <section class="block" id="rsvp">
-    <div class="sec-head"><span class="deva" lang="hi">कृपया उत्तर दें</span><h2>R.S.V.P.</h2></div>
-    <div class="rsvp-wrap">
+    <div class="sec-head reveal"><span class="deva" lang="hi">कृपया उत्तर दें</span><h2>R.S.V.P.</h2></div>
+    <div class="rsvp-wrap reveal">
       <div class="rsvp-contact">
         <div class="who">Amit Tyagi</div>
         <p class="phone"><a href="tel:+919811529201">+91 98115 29201</a></p>
@@ -580,7 +752,7 @@
     </div>
   </section>
 
-  <footer>
+  <footer class="reveal">
     <div class="pre">With best compliments from</div>
     <div class="sig">Tyagi Family</div>
     <div class="deva" lang="hi">त्यागी परिवार</div>
@@ -593,6 +765,128 @@
   var WEDDING = new Date("2026-11-30T19:00:00+05:30"); // Baraat Swagat, India time
   var RSVP_WHATSAPP = "919811529201";   // Amit Tyagi's number with country code, digits only. Empty = guest picks the contact.
   var COUPLE = "Shivanshi & Shashwat";
+
+  var root = document.documentElement;
+  var reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // ---- Mandala behind the seal: rings of petals, drawn once ----
+  (function drawMandala() {
+    var svg = document.getElementById("mandala");
+    var out = "";
+    var rings = [
+      { r: 60, n: 16, rx: 4.5, ry: 9 },
+      { r: 75, n: 24, rx: 3.5, ry: 8 },
+      { r: 90, n: 32, rx: 3, ry: 7 }
+    ];
+    rings.forEach(function (ring) {
+      for (var i = 0; i < ring.n; i++) {
+        out += '<ellipse cx="0" cy="' + -ring.r + '" rx="' + ring.rx + '" ry="' + ring.ry +
+          '" transform="rotate(' + (i * 360 / ring.n).toFixed(2) + ')"/>';
+      }
+    });
+    out = '<g fill="none" stroke="currentColor" stroke-width=".6">' + out +
+      '<circle r="52"/><circle r="67" stroke-dasharray="1.5 2.5"/><circle r="83"/><circle r="98" stroke-dasharray="1 3"/></g>';
+    svg.innerHTML = out;
+  })();
+
+  // ---- Petal shower: marigold and rose petals with a little gold dust ----
+  var COLORS = ["#E8890C", "#F29E2E", "#F6B23C", "#FFC94D", "#C8264B", "#D94468", "#B5173F"];
+  function showerPetals(count) {
+    if (reduceMotion) return;
+    var canvas = document.createElement("canvas");
+    canvas.className = "petals";
+    canvas.setAttribute("aria-hidden", "true");
+    document.body.appendChild(canvas);
+    var ctx = canvas.getContext("2d");
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var W = innerWidth, H = innerHeight;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    ctx.scale(dpr, dpr);
+
+    var total = count || Math.max(50, Math.min(120, Math.round(W / 10)));
+    var petals = [];
+    for (var i = 0; i < total; i++) {
+      var dust = Math.random() < 0.18;
+      petals.push({
+        x: Math.random() * W,
+        y: -20 - Math.random() * H * 0.35,
+        vy: 110 + Math.random() * 80,
+        vx: (Math.random() - 0.5) * 30,
+        sway: 15 + Math.random() * 30,
+        swaySpeed: 0.8 + Math.random() * 1.4,
+        phase: Math.random() * Math.PI * 2,
+        rot: Math.random() * Math.PI * 2,
+        vr: (Math.random() - 0.5) * 3,
+        flip: Math.random() * Math.PI * 2,
+        vf: 2 + Math.random() * 3,
+        w: dust ? 1.6 : 4 + Math.random() * 4,
+        h: dust ? 1.6 : 7 + Math.random() * 6,
+        color: dust ? "#F3D58A" : COLORS[(Math.random() * COLORS.length) | 0],
+        dust: dust
+      });
+    }
+    var last = performance.now(), t = 0;
+    function frame(now) {
+      var dt = Math.min(0.05, (now - last) / 1000);
+      last = now; t += dt;
+      ctx.clearRect(0, 0, W, H);
+      var alive = 0;
+      for (var i = 0; i < petals.length; i++) {
+        var p = petals[i];
+        p.y += p.vy * dt;
+        p.x += p.vx * dt;
+        p.rot += p.vr * dt;
+        p.flip += p.vf * dt;
+        if (p.y > H + 30) continue;
+        alive++;
+        var x = p.x + Math.sin(t * p.swaySpeed + p.phase) * p.sway;
+        ctx.save();
+        ctx.translate(x, p.y);
+        ctx.rotate(p.rot);
+        ctx.scale(1, p.dust ? 1 : Math.max(0.15, Math.abs(Math.cos(p.flip))));
+        ctx.globalAlpha = p.dust ? 0.5 + 0.5 * Math.abs(Math.sin(p.flip)) : 0.95;
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, p.w, p.h, 0, 0, Math.PI * 2);
+        ctx.fill();
+        if (!p.dust) {
+          ctx.globalAlpha = 0.25;
+          ctx.fillStyle = "#fff";
+          ctx.beginPath();
+          ctx.ellipse(-p.w * 0.3, -p.h * 0.2, p.w * 0.35, p.h * 0.55, 0, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+      if (alive) requestAnimationFrame(frame);
+      else canvas.remove();
+    }
+    requestAnimationFrame(frame);
+  }
+
+  // ---- Welcome gate ----
+  // Timeline: seal and names leave (0–220ms) → doors swing open (120–1270ms)
+  // → page entrance resumes (380ms) → petals fall (600ms) → gate removed (1350ms).
+  var gate = document.getElementById("gate");
+  var autoOpen;
+  function openGate() {
+    if (gate.classList.contains("opening")) return;
+    clearTimeout(autoOpen);
+    try { sessionStorage.setItem("ss-gate-opened", "1"); } catch (e) {}
+    gate.classList.add("opening");
+    setTimeout(function () { root.classList.remove("gate-hold"); }, 380);
+    setTimeout(function () { showerPetals(); }, 600);
+    setTimeout(function () { root.classList.remove("has-gate"); gate.remove(); }, 1350);
+  }
+  if (root.classList.contains("has-gate")) {
+    gate.addEventListener("click", openGate);
+    gate.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openGate(); }
+    });
+    autoOpen = setTimeout(openGate, 3200); // opens on its own if the guest doesn't tap
+  } else {
+    gate.remove();
+  }
 
   // ---- Countdown ----
   var cd = document.getElementById("countdown");
@@ -676,6 +970,7 @@
     document.getElementById("r-text").textContent = text;
     document.getElementById("r-wa").href = "https://wa.me/" + RSVP_WHATSAPP + "?text=" + encodeURIComponent(text);
     result.hidden = false;
+    if (yes) showerPetals(45);
     result.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "nearest" });
   });
 
