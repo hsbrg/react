@@ -1,0 +1,719 @@
+<title>Maya &amp; Arjun's Wedding</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Italiana&family=Jost:wght@300;400;500&family=Pinyon+Script&display=swap">
+<style>
+  /* Layout: a garden-paper invitation. Centered card-like hero, then left-aligned editorial sections on a 2-column grid that stacks on phones. */
+  :root {
+    --paper: #EDF0E7;
+    --card: #F8F9F3;
+    --ink: #1E3328;
+    --muted: #586B5F;
+    --gold: #94722F;
+    --blush: #E7CDC3;
+    --line: #C8D0C1;
+    --leaf: #7E9A84;
+    --font-script: "Pinyon Script", "Snell Roundhand", "Apple Chancery", cursive;
+    --font-display: "Italiana", "Didot", "Bodoni 72", Georgia, serif;
+    --font-body: "Jost", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #111B16; --card: #19251F; --ink: #ECEADF; --muted: #A5B2A8;
+      --gold: #D5B46C; --blush: #4D3934; --line: #2C3B33; --leaf: #6E8B75;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #111B16; --card: #19251F; --ink: #ECEADF; --muted: #A5B2A8;
+    --gold: #D5B46C; --blush: #4D3934; --line: #2C3B33; --leaf: #6E8B75;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-weight: 300;
+    font-size: 17px;
+    line-height: 1.65;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 2px; }
+
+  .wrap { max-width: 1040px; margin-inline: auto; }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    position: relative;
+    margin-block: 24px 0;
+    padding-block: 56px 48px;
+    padding-inline: 20px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    text-align: center;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    border: 1px solid var(--gold);
+    opacity: .55;
+    pointer-events: none;
+  }
+  .sprig { position: absolute; width: 170px; height: auto; color: var(--leaf); opacity: .7; z-index: -1; }
+  .sprig.tl { top: -6px; left: -10px; }
+  .sprig.br { bottom: -6px; right: -10px; transform: rotate(180deg); }
+
+  .eyebrow {
+    font-size: 13px;
+    letter-spacing: .28em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 400;
+  }
+  .names {
+    font-family: var(--font-script);
+    font-weight: 400;
+    font-size: clamp(64px, 14vw, 132px);
+    line-height: 1;
+    margin: 22px 0 8px;
+    color: var(--ink);
+    text-wrap: balance;
+  }
+  .names .amp {
+    display: block;
+    font-family: var(--font-display);
+    font-size: .32em;
+    color: var(--gold);
+    margin-block: 10px 6px;
+    letter-spacing: .1em;
+  }
+  .names span { display: inline-block; animation: rise .9s cubic-bezier(.2,.7,.2,1) both; }
+  .names .amp { animation-delay: .15s; }
+  .names span:last-child { animation-delay: .3s; }
+  @keyframes rise { from { transform: translateY(14px); opacity: .25; } to { transform: none; opacity: 1; } }
+
+  .invite-line {
+    max-width: 30ch;
+    margin: 18px auto 0;
+    font-size: 18px;
+    color: var(--muted);
+    text-wrap: balance;
+  }
+  .when {
+    margin-top: 28px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 18px;
+    max-width: 520px;
+    margin-inline: auto;
+    font-family: var(--font-display);
+    font-size: 20px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+  .when .side { border-block: 1px solid var(--line); padding-block: 8px; }
+  .when .day { font-size: 64px; line-height: 1; color: var(--gold); letter-spacing: 0; }
+  .when .month { font-size: 14px; display: block; letter-spacing: .3em; }
+  .where { margin-top: 18px; font-size: 16px; color: var(--muted); }
+
+  .countdown {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+  }
+  .countdown div {
+    min-width: 76px;
+    padding: 10px 8px 8px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+  }
+  .countdown b {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 34px;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+  .countdown small { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+  .countdown-done { margin-top: 28px; font-family: var(--font-script); font-size: 40px; color: var(--gold); }
+
+  .actions { display: flex; justify-content: center; gap: 12px; margin-top: 32px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 46px;
+    padding: 0 24px;
+    font: 500 13px/1 var(--font-body);
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid var(--ink);
+    background: var(--ink);
+    color: var(--card);
+    cursor: pointer;
+    transition: background .2s, color .2s;
+  }
+  .btn:hover { background: transparent; color: var(--ink); }
+  .btn.ghost { background: transparent; color: var(--ink); }
+  .btn.ghost:hover { background: var(--ink); color: var(--card); }
+
+  /* ---------- Nav ---------- */
+  nav.toc {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px 26px;
+    padding-block: 22px;
+    font-size: 13px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+  }
+  nav.toc a { text-decoration: none; color: var(--muted); padding: 4px 0; border-bottom: 1px solid transparent; }
+  nav.toc a:hover { color: var(--ink); border-color: var(--gold); }
+
+  /* ---------- Sections ---------- */
+  section.block {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: 24px 48px;
+    padding-block: 56px;
+    border-top: 1px solid var(--line);
+  }
+  .block > header h2 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 40px;
+    line-height: 1.1;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .block > header p { margin: 10px 0 0; color: var(--muted); font-size: 15px; }
+  .block .body { min-width: 0; }
+  .lede { font-size: 20px; max-width: 60ch; margin: 0 0 20px; }
+  .two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; }
+  .two h3, .travel h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 24px;
+    margin: 0 0 6px;
+    color: var(--gold);
+  }
+  .two p, .travel p { margin: 0; max-width: 60ch; }
+
+  /* Schedule */
+  .days { display: grid; gap: 36px; }
+  .day-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 14px;
+    font-size: 13px;
+    letter-spacing: .24em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .day-head::after { content: ""; flex: 1; border-top: 1px solid var(--line); transform: translateY(-4px); }
+  .event {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr) auto;
+    gap: 6px 24px;
+    padding: 18px 0;
+    align-items: start;
+  }
+  .event + .event { border-top: 1px dashed var(--line); }
+  .event .time {
+    font-family: var(--font-display);
+    font-size: 26px;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+  .event .time small { display: block; font-family: var(--font-body); font-size: 12px; letter-spacing: .2em; color: var(--muted); }
+  .event h3 { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 26px; line-height: 1.15; }
+  .event p { margin: 4px 0 0; color: var(--muted); font-size: 15px; }
+  .event .dress {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 3px 10px;
+    font-size: 12px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    background: var(--blush);
+    color: var(--ink);
+  }
+  .event .links { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; }
+  .event .links a { text-decoration: none; border-bottom: 1px solid var(--gold); padding-bottom: 1px; white-space: nowrap; }
+  .event.main h3 { color: var(--gold); }
+
+  /* Travel */
+  .travel { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
+  .travel .code {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 13px;
+    letter-spacing: .14em;
+    padding: 4px 10px;
+    border: 1px solid var(--gold);
+    color: var(--ink);
+  }
+
+  /* RSVP */
+  .rsvp-card { background: var(--card); border: 1px solid var(--line); padding: 32px; }
+  .rsvp-card .deadline { margin: 0 0 24px; color: var(--muted); }
+  .rsvp-card .deadline strong { color: var(--ink); font-weight: 500; }
+  form { display: grid; gap: 22px; }
+  .row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+  label, legend { display: block; font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; font-weight: 400; }
+  fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+  input[type="text"], select, textarea {
+    width: 100%;
+    font: 400 17px/1.4 var(--font-body);
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 0;
+    padding: 12px 14px;
+  }
+  textarea { min-height: 96px; resize: vertical; }
+  input[type="text"]:focus, select:focus, textarea:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold); }
+  .choices { display: flex; flex-wrap: wrap; gap: 10px; }
+  .choice { position: relative; }
+  .choice input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+  .choice span {
+    display: inline-block;
+    padding: 10px 16px;
+    border: 1px solid var(--line);
+    font-size: 15px;
+    background: var(--paper);
+    transition: background .15s, border-color .15s;
+  }
+  .choice input:checked + span { background: var(--ink); color: var(--card); border-color: var(--ink); }
+  .choice input:focus-visible + span { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .error { color: #A2412F; font-size: 14px; margin: 0; }
+  :root[data-theme="dark"] .error { color: #E59A86; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .error { color: #E59A86; } }
+
+  .result { border-top: 1px solid var(--line); margin-top: 28px; padding-top: 24px; }
+  .result h3 { font-family: var(--font-script); font-weight: 400; font-size: 44px; margin: 0; color: var(--gold); line-height: 1.1; }
+  .result pre {
+    white-space: pre-wrap;
+    font: 400 15px/1.6 var(--font-body);
+    background: var(--paper);
+    border: 1px solid var(--line);
+    padding: 16px;
+    margin: 16px 0;
+    user-select: all;
+  }
+  .result .actions { justify-content: flex-start; margin-top: 0; }
+  .result .note { color: var(--muted); font-size: 14px; margin: 14px 0 0; }
+
+  /* FAQ */
+  details { border-bottom: 1px solid var(--line); }
+  details:first-of-type { border-top: 1px solid var(--line); }
+  summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 18px 36px 18px 0;
+    font-family: var(--font-display);
+    font-size: 22px;
+    position: relative;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; position: absolute; right: 4px; top: 14px; font-size: 26px; color: var(--gold); transition: transform .2s; }
+  details[open] summary::after { transform: rotate(45deg); }
+  details p { margin: 0 0 20px; max-width: 62ch; color: var(--muted); }
+
+  footer {
+    text-align: center;
+    padding-block: 56px 72px;
+    border-top: 1px solid var(--line);
+  }
+  footer .sig { font-family: var(--font-script); font-size: 48px; line-height: 1.1; }
+  footer .tag { margin-top: 10px; letter-spacing: .2em; font-size: 13px; color: var(--gold); text-transform: uppercase; }
+
+  @media (max-width: 760px) {
+    body { font-size: 16px; }
+    .hero { padding-block: 44px 36px; }
+    .sprig { width: 120px; }
+    section.block { grid-template-columns: minmax(0, 1fr); padding-block: 44px; }
+    .block > header h2 { font-size: 34px; }
+    .two, .travel, .row { grid-template-columns: minmax(0, 1fr); }
+    .event { grid-template-columns: 78px minmax(0, 1fr); }
+    .event .links { grid-column: 2; flex-direction: row; align-items: center; gap: 18px; flex-wrap: wrap; }
+    .rsvp-card { padding: 22px 18px; }
+    .when { gap: 12px; font-size: 15px; }
+    .when .day { font-size: 52px; }
+    .countdown { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; max-width: 320px; margin-inline: auto; }
+    .countdown div { min-width: 0; padding-inline: 2px; }
+    .countdown b { font-size: 26px; }
+    .countdown small { font-size: 9px; letter-spacing: .14em; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .names span { animation: none; }
+  }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="sprig" viewBox="0 0 200 200">
+    <path d="M10 10 C 60 40, 110 70, 190 170" fill="none" stroke="currentColor" stroke-width="1.6"/>
+    <g fill="currentColor">
+      <ellipse cx="40" cy="30" rx="16" ry="6" transform="rotate(-20 40 30)"/>
+      <ellipse cx="52" cy="48" rx="16" ry="6" transform="rotate(60 52 48)"/>
+      <ellipse cx="78" cy="52" rx="18" ry="6.5" transform="rotate(-10 78 52)"/>
+      <ellipse cx="90" cy="74" rx="18" ry="6.5" transform="rotate(70 90 74)"/>
+      <ellipse cx="118" cy="82" rx="18" ry="6.5" transform="rotate(0 118 82)"/>
+      <ellipse cx="126" cy="106" rx="18" ry="6.5" transform="rotate(75 126 106)"/>
+      <ellipse cx="154" cy="118" rx="16" ry="6" transform="rotate(10 154 118)"/>
+      <ellipse cx="158" cy="142" rx="15" ry="5.5" transform="rotate(80 158 142)"/>
+    </g>
+  </symbol>
+</svg>
+
+<div class="wrap">
+  <header class="hero" id="top">
+    <svg class="sprig tl" viewBox="0 0 200 200" aria-hidden="true"><use href="#sprig"/></svg>
+    <svg class="sprig br" viewBox="0 0 200 200" aria-hidden="true"><use href="#sprig"/></svg>
+
+    <div class="eyebrow">Together with their families</div>
+    <h1 class="names"><span>Maya</span><span class="amp">&amp;</span><span>Arjun</span></h1>
+    <p class="invite-line">request the pleasure of your company as they celebrate their marriage</p>
+
+    <div class="when" aria-label="Saturday, 13 March 2027 at 4 pm">
+      <div class="side">Saturday</div>
+      <div><span class="day">13</span><span class="month">March</span></div>
+      <div class="side">2027</div>
+    </div>
+    <p class="where">Four o'clock in the afternoon · The Glasshouse, Willow Lake Estate · Sonoma, California</p>
+
+    <div class="countdown" id="countdown" aria-live="off">
+      <div><b id="cd-d">--</b><small>Days</small></div>
+      <div><b id="cd-h">--</b><small>Hours</small></div>
+      <div><b id="cd-m">--</b><small>Minutes</small></div>
+      <div><b id="cd-s">--</b><small>Seconds</small></div>
+    </div>
+    <p class="countdown-done" id="countdown-done" hidden>Just married</p>
+
+    <div class="actions">
+      <a class="btn" href="#rsvp">RSVP by 1 February</a>
+      <a class="btn ghost" id="cal-main" href="#schedule" target="_blank" rel="noopener">Add to calendar</a>
+    </div>
+  </header>
+
+  <nav class="toc" aria-label="Sections">
+    <a href="#story">Our story</a>
+    <a href="#schedule">Schedule</a>
+    <a href="#travel">Travel &amp; stay</a>
+    <a href="#rsvp">RSVP</a>
+    <a href="#faq">Questions</a>
+  </nav>
+
+  <section class="block" id="story">
+    <header><h2>Our story</h2><p>Seven years, two cities, one very patient dog.</p></header>
+    <div class="body">
+      <p class="lede">We met in the queue for the last train out of the city on a rainy Tuesday. The train was cancelled. We shared a taxi, then a coffee, and then most of the next seven years.</p>
+      <div class="two">
+        <div>
+          <h3>How we met</h3>
+          <p>Arjun lent Maya his umbrella and never got it back. She still says it was a fair trade for the directions she gave him to the wrong platform.</p>
+        </div>
+        <div>
+          <h3>The proposal</h3>
+          <p>On a cold morning at Willow Lake, during a walk that Arjun insisted had to start at 6 a.m. Maya said yes before he finished the question.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="schedule">
+    <header><h2>The weekend</h2><p>All events are at Willow Lake Estate unless noted. Times are local (Pacific).</p></header>
+    <div class="body days">
+      <div>
+        <div class="day-head">Friday · 12 March</div>
+        <article class="event" data-cal="20270312T183000/20270312T220000" data-title="Welcome evening · Maya &amp; Arjun" data-place="Lakeside Terrace, Willow Lake Estate, Sonoma CA">
+          <div class="time">6:30<small>PM</small></div>
+          <div>
+            <h3>Welcome evening</h3>
+            <p>Drinks and small plates on the Lakeside Terrace. Come say hello before the big day.</p>
+            <span class="dress">Smart casual</span>
+          </div>
+          <div class="links"><a class="cal" href="#">Calendar</a><a class="map" href="#">Map</a></div>
+        </article>
+      </div>
+
+      <div>
+        <div class="day-head">Saturday · 13 March</div>
+        <article class="event main" data-cal="20270313T160000/20270313T170000" data-title="Wedding ceremony · Maya &amp; Arjun" data-place="The Glasshouse, Willow Lake Estate, Sonoma CA">
+          <div class="time">4:00<small>PM</small></div>
+          <div>
+            <h3>Ceremony</h3>
+            <p>In The Glasshouse. Please be seated by 3:45 PM.</p>
+            <span class="dress">Formal · garden colours welcome</span>
+          </div>
+          <div class="links"><a class="cal" href="#">Calendar</a><a class="map" href="#">Map</a></div>
+        </article>
+        <article class="event" data-cal="20270313T180000/20270313T233000" data-title="Wedding reception · Maya &amp; Arjun" data-place="The Orchard Barn, Willow Lake Estate, Sonoma CA">
+          <div class="time">6:00<small>PM</small></div>
+          <div>
+            <h3>Dinner &amp; dancing</h3>
+            <p>Cocktail hour on the lawn, then dinner and dancing in The Orchard Barn until late.</p>
+            <span class="dress">Formal</span>
+          </div>
+          <div class="links"><a class="cal" href="#">Calendar</a><a class="map" href="#">Map</a></div>
+        </article>
+      </div>
+
+      <div>
+        <div class="day-head">Sunday · 14 March</div>
+        <article class="event" data-cal="20270314T110000/20270314T133000" data-title="Farewell brunch · Maya &amp; Arjun" data-place="Willow Lake Estate Main House, Sonoma CA">
+          <div class="time">11:00<small>AM</small></div>
+          <div>
+            <h3>Farewell brunch</h3>
+            <p>Coffee, pastries and one last goodbye at the Main House before everyone heads home.</p>
+            <span class="dress">Relaxed</span>
+          </div>
+          <div class="links"><a class="cal" href="#">Calendar</a><a class="map" href="#">Map</a></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="travel">
+    <header><h2>Travel &amp; stay</h2><p>Sonoma is about an hour's drive north of San Francisco.</p></header>
+    <div class="body travel">
+      <div>
+        <h3>Flying in</h3>
+        <p>San Francisco (SFO) and Oakland (OAK) are both about 75 minutes away. Sonoma County Airport (STS) is 30 minutes away with direct flights from several West Coast cities.</p>
+      </div>
+      <div>
+        <h3>Where to stay</h3>
+        <p>We've reserved a block of rooms at The Vineyard Inn, ten minutes from the estate. Book by 10 February for the group rate.</p>
+        <span class="code">Group code MAYAARJUN</span>
+      </div>
+      <div>
+        <h3>Getting around</h3>
+        <p>A shuttle runs between The Vineyard Inn and the estate before and after every event, so nobody needs to drive after the toasts.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="rsvp">
+    <header><h2>RSVP</h2><p>One reply per invitation, please.</p></header>
+    <div class="body">
+      <div class="rsvp-card">
+        <p class="deadline">Kindly reply by <strong>Monday, 1 February 2027</strong>.</p>
+        <form id="rsvp-form" novalidate>
+          <div class="row">
+            <div>
+              <label for="r-name">Your name(s)</label>
+              <input type="text" id="r-name" name="name" autocomplete="name" placeholder="e.g. Priya and Sam Okafor">
+            </div>
+            <div>
+              <label for="r-count">Number of guests</label>
+              <select id="r-count" name="count">
+                <option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option>
+              </select>
+            </div>
+          </div>
+
+          <fieldset>
+            <legend>Will you be joining us?</legend>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="attending" id="r-yes" value="yes"><span>Joyfully accepts</span></label>
+              <label class="choice"><input type="radio" name="attending" id="r-no" value="no"><span>Regretfully declines</span></label>
+            </div>
+          </fieldset>
+
+          <fieldset id="r-events-wrap">
+            <legend>Which events?</legend>
+            <div class="choices">
+              <label class="choice"><input type="checkbox" name="events" id="r-ev1" value="Welcome evening (Fri)"><span>Welcome evening</span></label>
+              <label class="choice"><input type="checkbox" name="events" id="r-ev2" value="Ceremony (Sat)" checked><span>Ceremony</span></label>
+              <label class="choice"><input type="checkbox" name="events" id="r-ev3" value="Dinner &amp; dancing (Sat)" checked><span>Dinner &amp; dancing</span></label>
+              <label class="choice"><input type="checkbox" name="events" id="r-ev4" value="Farewell brunch (Sun)"><span>Farewell brunch</span></label>
+            </div>
+          </fieldset>
+
+          <div>
+            <label for="r-diet">Dietary needs</label>
+            <input type="text" id="r-diet" name="diet" placeholder="Vegetarian, nut allergy, none…">
+          </div>
+          <div>
+            <label for="r-note">A note for the couple</label>
+            <textarea id="r-note" name="note" placeholder="Optional"></textarea>
+          </div>
+
+          <p class="error" id="r-error" hidden></p>
+          <div><button class="btn" type="submit">Prepare my RSVP</button></div>
+        </form>
+
+        <div class="result" id="r-result" hidden>
+          <h3 id="r-thanks">Thank you</h3>
+          <pre id="r-text"></pre>
+          <div class="actions">
+            <a class="btn" id="r-wa" href="#" target="_blank" rel="noopener">Send on WhatsApp</a>
+            <button class="btn ghost" type="button" id="r-copy">Copy RSVP</button>
+          </div>
+          <p class="note">Your reply is sent from your own phone. You can also text it to Maya on <span style="user-select:all">+1 312 555 0142</span>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="faq">
+    <header><h2>Questions</h2><p>Anything else, just ask us.</p></header>
+    <div class="body">
+      <details>
+        <summary>Can I bring a plus-one?</summary>
+        <p>Your invitation lists everyone we've saved a seat for. If you'd like to bring someone, please ask us first and we'll do our best.</p>
+      </details>
+      <details>
+        <summary>Are children welcome?</summary>
+        <p>We love your little ones. Children are welcome at the welcome evening and the brunch. The ceremony and reception are adults only.</p>
+      </details>
+      <details>
+        <summary>What will the weather be like?</summary>
+        <p>Sonoma in March is mild during the day, around 18°C (65°F), and cool in the evenings. The ceremony is indoors in The Glasshouse; bring a layer for the lawn.</p>
+      </details>
+      <details>
+        <summary>Do you have a gift registry?</summary>
+        <p>Your presence is the gift. If you'd like to give something, a contribution to our honeymoon fund will be at the welcome evening.</p>
+      </details>
+      <details>
+        <summary>Can I take photos during the ceremony?</summary>
+        <p>We're having an unplugged ceremony, so please keep phones away until we've walked back down the aisle. Snap away at the reception.</p>
+      </details>
+    </div>
+  </section>
+
+  <footer>
+    <div class="sig">With love, Maya &amp; Arjun</div>
+    <div class="tag">#MayaAndArjun2027</div>
+  </footer>
+</div>
+
+<script>
+(function () {
+  // ---- Details you can change ----
+  var WEDDING = new Date(2027, 2, 13, 16, 0, 0); // 13 March 2027, 4:00 PM (viewer's local clock)
+  var WHATSAPP_NUMBER = "13125550142";          // digits only, with country code
+  var COUPLE = "Maya & Arjun";
+
+  // ---- Countdown ----
+  var cd = document.getElementById("countdown");
+  var done = document.getElementById("countdown-done");
+  var els = ["d", "h", "m", "s"].map(function (k) { return document.getElementById("cd-" + k); });
+  function pad(n) { return n < 10 ? "0" + n : "" + n; }
+  function tick() {
+    var diff = WEDDING - new Date();
+    if (diff <= 0) { cd.hidden = true; done.hidden = false; return; }
+    var s = Math.floor(diff / 1000);
+    var vals = [Math.floor(s / 86400), Math.floor(s % 86400 / 3600), Math.floor(s % 3600 / 60), s % 60];
+    els[0].textContent = vals[0];
+    for (var i = 1; i < 4; i++) els[i].textContent = pad(vals[i]);
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  // ---- Calendar & map links ----
+  function calUrl(title, dates, place) {
+    return "https://calendar.google.com/calendar/render?action=TEMPLATE" +
+      "&text=" + encodeURIComponent(title) +
+      "&dates=" + encodeURIComponent(dates) +
+      "&ctz=America/Los_Angeles" +
+      "&location=" + encodeURIComponent(place) +
+      "&details=" + encodeURIComponent("Celebrating " + COUPLE + ". Details and RSVP on the wedding website.");
+  }
+  function mapUrl(place) {
+    return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(place);
+  }
+  document.querySelectorAll(".event").forEach(function (ev) {
+    var t = ev.dataset.title, d = ev.dataset.cal, p = ev.dataset.place;
+    var c = ev.querySelector("a.cal"), m = ev.querySelector("a.map");
+    c.href = calUrl(t, d, p); c.target = "_blank"; c.rel = "noopener";
+    m.href = mapUrl(p); m.target = "_blank"; m.rel = "noopener";
+    c.setAttribute("aria-label", "Add " + t + " to Google Calendar");
+    m.setAttribute("aria-label", "Open map for " + t);
+  });
+  var main = document.querySelector(".event.main");
+  document.getElementById("cal-main").href = calUrl(main.dataset.title, main.dataset.cal, main.dataset.place);
+
+  // ---- RSVP ----
+  var form = document.getElementById("rsvp-form");
+  var err = document.getElementById("r-error");
+  var result = document.getElementById("r-result");
+  var eventsWrap = document.getElementById("r-events-wrap");
+  var countSel = document.getElementById("r-count");
+
+  form.addEventListener("change", function (e) {
+    if (e.target.name === "attending") {
+      var no = e.target.value === "no";
+      eventsWrap.hidden = no;
+    }
+  });
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var name = document.getElementById("r-name").value.trim();
+    var att = form.querySelector('input[name="attending"]:checked');
+    var events = Array.prototype.map.call(form.querySelectorAll('input[name="events"]:checked'), function (x) { return x.value; });
+    var diet = document.getElementById("r-diet").value.trim();
+    var note = document.getElementById("r-note").value.trim();
+
+    var problem = !name ? "Please add your name so we know who's replying."
+      : !att ? "Please let us know whether you can come."
+      : (att.value === "yes" && !events.length) ? "Please pick at least one event you'll attend."
+      : "";
+    if (problem) { err.textContent = problem; err.hidden = false; result.hidden = true; return; }
+    err.hidden = true;
+
+    var yes = att.value === "yes";
+    var lines = ["RSVP for " + COUPLE + "'s wedding", "", "Name: " + name];
+    if (yes) {
+      lines.push("Attending: Yes, " + countSel.value + (countSel.value === "1" ? " guest" : " guests"));
+      lines.push("Events: " + events.join(", "));
+      if (diet) lines.push("Dietary needs: " + diet);
+    } else {
+      lines.push("Attending: Sadly, no");
+    }
+    if (note) lines.push("", "Note: " + note);
+    var text = lines.join("\n");
+
+    document.getElementById("r-thanks").textContent = yes ? "We can't wait to see you" : "You'll be missed";
+    document.getElementById("r-text").textContent = text;
+    document.getElementById("r-wa").href = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(text);
+    result.hidden = false;
+    result.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "nearest" });
+  });
+
+  var copyBtn = document.getElementById("r-copy");
+  copyBtn.addEventListener("click", function () {
+    var pre = document.getElementById("r-text");
+    function selectIt() {
+      var r = document.createRange(); r.selectNodeContents(pre);
+      var s = getSelection(); s.removeAllRanges(); s.addRange(r);
+      copyBtn.textContent = "Selected, press copy";
+    }
+    try {
+      navigator.clipboard.writeText(pre.textContent).then(function () {
+        copyBtn.textContent = "Copied";
+        setTimeout(function () { copyBtn.textContent = "Copy RSVP"; }, 2000);
+      }, selectIt);
+    } catch (x) { selectIt(); }
+  });
+})();
+</script>
