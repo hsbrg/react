@@ -254,6 +254,16 @@
   .date .num[lang="hi"] { font-family: var(--font-deva); font-size: clamp(30px, 4.6svh, 40px); }
   .date.wed .num[lang="hi"] { font-size: clamp(36px, 5.8svh, 50px); }
   @media (hover: hover) and (pointer: fine) { .date:hover { background: rgb(251 235 211 / .07); } }
+  /* On a function day, the welcome page leads with the way there */
+  .today-cta { display: grid; justify-items: center; gap: 10px; width: min(100%, 420px); padding: 14px 14px 16px; border: 1px solid rgb(227 185 94 / .55); border-radius: 18px; background: rgb(40 5 14 / .35); }
+  .today-cta[hidden] { display: none; }
+  .today-cta .t-cap { font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: var(--gold); }
+  .today-cta .t-cap[lang="hi"] { letter-spacing: 0; font-size: 15px; }
+  .today-cta .t-what { font-family: var(--font-display); font-size: 22px; line-height: 1.2; }
+  .today-cta .t-what[lang="hi"] { font-family: var(--font-deva); }
+  .today-cta .map-cta { --btn-bg: #F3D58A; --btn-fg: #3E0B18; width: 100%; min-width: 0; }
+  .today-cta .map-cta .pin::after { animation: pin-ping 2.2s var(--ease-out) 1.5s 4; }
+  .date.is-today { background: rgb(227 185 94 / .16); box-shadow: inset 0 -2px 0 var(--gold); }
   .month-line { margin: 0; font-family: var(--font-display); font-size: 14px; letter-spacing: .3em; text-transform: uppercase; color: var(--gold); }
   .month-line[lang="hi"] { font-family: var(--font-deva); font-size: 17px; }
 
@@ -356,6 +366,15 @@
   .gate-date { font-family: var(--font-display); font-size: 15px; letter-spacing: .24em; text-transform: uppercase; color: var(--hero-gold); }
   .gate-hint { margin-top: 22px; min-height: 48px; display: grid; place-items: center; padding: 0 22px; border: 1px solid rgb(227 185 94 / .7); background: rgb(74 13 29 / .85); font-size: 13px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; }
   .gate-hint .hi { font-size: 16px; }
+  /* The one thing to do on the doors: a gold button that gently glows */
+  .gate-hint { min-height: 52px; padding: 0 28px; border: 0; border-radius: 999px; color: #3E0B18; font-weight: 600; letter-spacing: .16em;
+    background: linear-gradient(180deg, #F8E2A6, #E3B95E); box-shadow: 0 10px 26px -10px rgb(0 0 0 / .6), inset 0 1px 0 rgb(255 255 255 / .5);
+    animation: hint-glow 2.6s ease-in-out 2.4s infinite; }
+  .gate-hint .hi { font-weight: 500; }
+  @keyframes hint-glow { 50% { box-shadow: 0 0 0 5px rgb(227 185 94 / .22), 0 0 30px rgb(255 214 140 / .45), 0 10px 26px -10px rgb(0 0 0 / .6), inset 0 1px 0 rgb(255 255 255 / .5); } }
+  .gate-sound { position: relative; display: inline-flex; align-items: center; gap: 8px; margin-top: 10px; padding: 6px 14px; border-radius: 999px; background: rgb(30 4 10 / .74); font-size: 13px; color: #FFF0D6; }
+  .gate-sound svg { width: 18px; height: 18px; flex: none; color: var(--hero-gold); }
+  .gate-sound .hi { font-size: 14px; }
   .gate:focus-visible .gate-hint { outline: 2px solid var(--hero-gold); outline-offset: 4px; }
   .gate.opening .gate-center > :not(.mono) { opacity: 0; transition: opacity 260ms ease; }
   .gate.opening .door.l { transform: rotateY(108deg); }
@@ -436,10 +455,10 @@
   #top .inst { top: 54%; height: min(48svh, 380px); width: auto; }
   #top .inst.sh-l { left: 6%; translate: 0 -50%; rotate: -14deg; }
   #top .inst.sh-r { right: 6%; translate: 0 -50%; rotate: 14deg; scale: -1 1; }
-  #invitation .inst { left: 2%; bottom: 3%; width: clamp(150px, 15vw, 220px); }
+  #invitation .inst { right: 2%; bottom: 2%; width: clamp(150px, 15vw, 220px); }
   #day-28 .inst { right: 2%; bottom: 7%; width: clamp(220px, 23vw, 340px); }
   #day-29 .inst { left: 4%; bottom: 6%; width: clamp(140px, 13vw, 200px); }
-  #day-30 .inst { right: 17%; top: 0; height: min(36svh, 280px); width: auto; }
+  #day-30 .inst { left: 50%; translate: -50% 0; top: 0; height: min(30svh, 250px); width: auto; }
   #rsvp .inst { left: 2%; bottom: 3%; height: min(44svh, 340px); width: auto; }
 
   /* Drawings you can play with: a tap makes each one do its thing */
@@ -489,6 +508,34 @@
   .split.flip > .art { order: 2; }
   .invite-art, .event-art { width: clamp(300px, calc((100svh - 24px) * .8), 720px); margin-block: -44px; justify-self: center; }
   .invite-art .ov.couple-ov { top: 15.5%; }
+  /* ---- Our song (easter egg): a sheet that rises from the bottom edge ---- */
+  .song-sheet {
+    position: fixed; z-index: 60; left: 50%; bottom: max(12px, env(safe-area-inset-bottom, 0px));
+    width: min(calc(100vw - 24px), 392px); display: grid; justify-items: center; gap: 4px; padding: 20px 18px 18px;
+    background: linear-gradient(180deg, #4A0D1D, #2E0611); color: #FFF6E6; text-align: center;
+    border: 1px solid rgb(227 185 94 / .7); border-radius: 18px;
+    box-shadow: inset 0 0 0 4px #3A0816, inset 0 0 0 5px rgb(227 185 94 / .28), 0 24px 60px -12px rgb(0 0 0 / .6);
+    transform: translate(-50%, calc(100% + 60px)); pointer-events: none;
+    transition: transform 520ms var(--ease-out);
+  }
+  .song-sheet.open { transform: translate(-50%, 0); pointer-events: auto; }
+  .song-scrim { position: fixed; inset: 0; z-index: 59; background: rgb(20 4 9 / .45); opacity: 0; pointer-events: none; transition: opacity 300ms ease; }
+  .song-scrim.open { opacity: 1; pointer-events: auto; }
+  .song-close { position: absolute; top: 6px; right: 6px; width: 44px; height: 44px; display: grid; place-items: center; border: 0; background: none; color: #F3D58A; cursor: pointer; border-radius: 50%; }
+  .song-close svg { width: 20px; height: 20px; }
+  .song-close:focus-visible, .song-link:focus-visible { outline: 2px solid #F3D58A; outline-offset: 2px; }
+  .song-cap { margin: 0; display: inline-flex; align-items: center; gap: 8px; font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: #F3D58A; }
+  .song-cap svg { width: 12px; height: 12px; }
+  .song-cap [lang="hi"] { letter-spacing: 0; font-size: 15px; }
+  .song-t { margin: 2px 0 0; font-family: var(--font-display); font-style: italic; font-weight: 500; font-size: 32px; line-height: 1.1; color: #FFF6E6; }
+  .song-t[lang="hi"] { font-family: var(--font-deva-script); font-style: normal; font-weight: 400; font-size: 30px; }
+  .song-meta { margin: 0 0 10px; font-size: 14px; color: rgb(255 246 230 / .75); }
+  .song-frame { width: 100%; max-width: 356px; aspect-ratio: 16 / 9; min-height: 200px; border-radius: 10px; overflow: hidden; background: #1C0409; box-shadow: 0 0 0 1px rgb(227 185 94 / .45); }
+  .song-frame iframe { display: block; width: 100%; height: 100%; border: 0; }
+  .song-link { display: none; align-items: center; gap: 8px; min-height: 48px; padding: 0 20px; border-radius: 999px; background: #F3D58A; color: #3E0B18; text-decoration: none; font-size: 15px; font-weight: 500; }
+  .song-link svg { width: 14px; height: 14px; }
+  .song-sheet.song-off .song-frame { display: none; }
+  .song-sheet.song-off .song-link { display: inline-flex; margin-top: 6px; }
   .couple-ov .script { font-size: 7.6cqw; white-space: nowrap; }
   .couple-ov .script[lang="hi"] { font-size: 7cqw; }
   /* the couple: heads lean together, they blink, her jhumkas sway; a tap brings them closer */
@@ -503,7 +550,7 @@
   .ill.is-drawn .couple-rise { transform: none; transition: opacity 1200ms ease var(--d, 0s), transform 1600ms var(--ease-out) var(--d, 0s); }
   .invite-art .ov { top: 17%; color: #3E0B18; text-shadow: 0 0 14px rgb(255 255 255 / .95), 0 0 4px rgb(255 255 255 / .8); }
   .invite-art .ov .small { color: #6E4B0E; }
-  .invite-text-col { text-align: center; display: grid; gap: 14px; justify-items: center; position: relative; z-index: 3; }
+  .invite-text-col { text-align: center; display: grid; gap: 14px; justify-items: center; }
   .invite-text-col h2 { font-size: clamp(34px, 5svh, 48px); color: var(--acc); }
   .invite-text-col h2[lang="hi"] { font-family: var(--font-deva-script); font-weight: 400; font-size: clamp(30px, 4.4svh, 40px); line-height: 1.4; }
   .hosts { font-size: 20px; font-weight: 500; line-height: 1.45; margin: 0; text-wrap: balance; }
@@ -514,28 +561,6 @@
   .parents .rel { font-size: 14.5px; color: var(--muted); text-wrap: balance; }
   .parents .weds { font-family: var(--font-display); letter-spacing: .3em; text-transform: uppercase; font-size: 13px; color: var(--gold); }
   .parents .weds[lang="hi"] { font-family: var(--font-deva-script); font-weight: 400; font-size: 20px; }
-  /* Our song: the official YouTube player, kept visible (YouTube asks for at least 200×200) */
-  .our-song { margin: 6px 0 0; width: min(100%, 356px); display: grid; gap: 10px; justify-items: center; position: relative; z-index: 3; }
-  @media (min-width: 761px) and (max-height: 820px) {
-    .invite-text-col { gap: 9px; }
-    .invite-text-col h2 { font-size: clamp(30px, 4.6svh, 40px); }
-    .our-song { margin-top: 2px; gap: 6px; }
-  }
-  .our-song figcaption { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center; column-gap: 10px; row-gap: 2px; }
-  .song-cap { font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
-  .song-cap[lang="hi"] { letter-spacing: 0; font-size: 14px; }
-  .song-t { font-family: var(--font-display); font-style: italic; font-size: 22px; color: var(--acc); }
-  .song-t[lang="hi"] { font-family: var(--font-deva-script); font-style: normal; font-size: 21px; }
-  .song-meta { font-size: 13px; color: var(--muted); }
-  .song-frame { width: 100%; aspect-ratio: 16 / 9; min-height: 200px; border-radius: 10px; overflow: hidden; background: #2A0A12;
-    box-shadow: 0 0 0 1px rgba(122, 26, 44, .18), 0 14px 30px -18px rgba(62, 11, 24, .55); transition: box-shadow 400ms ease; }
-  .song-frame iframe { display: block; width: 100%; height: 100%; border: 0; }
-  .our-song.song-playing .song-frame { box-shadow: 0 0 0 2px #E3B95E, 0 14px 34px -14px rgba(176, 120, 30, .6); }
-  .song-link { display: none; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 999px; background: #3E0B18; color: #FFFDF9; text-decoration: none; font-size: 15px; }
-  .song-link svg { width: 14px; height: 14px; }
-  .song-link:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
-  .our-song.song-off .song-frame { display: none; }
-  .our-song.song-off .song-link { display: inline-flex; }
   .resi { font-size: 13px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
 
   /* ---------- Event pages ---------- */
@@ -565,7 +590,33 @@
   .past-badge { display: none; margin-top: 12px; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
   .day.past .past-badge { display: block; }
   .day.past .cal { display: none; }
-  .day .links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+  .day .links { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 22px; }
+  /* The button guests will need on the day: big, filled, unmistakable */
+  .map-cta {
+    display: inline-flex; align-items: center; gap: 14px; min-height: 60px; padding: 8px 18px 8px 10px; min-width: 260px;
+    color: var(--btn-fg); background: var(--btn-bg); border-radius: 999px; text-decoration: none;
+    box-shadow: 0 10px 24px -12px color-mix(in srgb, var(--btn-bg) 80%, #000), inset 0 0 0 1px rgb(255 255 255 / .14);
+    transition: transform 160ms var(--ease-out), box-shadow 200ms ease, filter 200ms ease;
+  }
+  .map-cta .pin { position: relative; display: grid; place-items: center; width: 42px; height: 42px; flex: none; border-radius: 50%; background: rgb(255 255 255 / .16); }
+  .map-cta .pin svg { width: 22px; height: 22px; }
+  .map-cta .pin::after { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 2px solid currentColor; opacity: 0; }
+  .page.lit .map-cta .pin::after { animation: pin-ping 2.2s var(--ease-out) 1.2s 3; }
+  @keyframes pin-ping { 0% { transform: scale(1); opacity: .6; } 70%, 100% { transform: scale(1.7); opacity: 0; } }
+  .page.lit .map-cta .pin svg { animation: pin-drop 700ms var(--ease-out) 900ms both; }
+  @keyframes pin-drop { 0% { transform: translateY(-9px); opacity: 0; } 60% { transform: translateY(1px); opacity: 1; } 100% { transform: none; } }
+  .map-cta .cta-t { display: grid; flex: 1; text-align: left; line-height: 1.2; }
+  .map-cta b { font-size: 17px; font-weight: 600; letter-spacing: .01em; }
+  .map-cta small { font-size: 12.5px; letter-spacing: .06em; opacity: .82; }
+  .map-cta .cta-t[lang="hi"] b { font-size: 18px; }
+  .map-cta .arrow { width: 20px; height: 20px; flex: none; opacity: .9; transition: transform 200ms var(--ease-out); }
+  .map-cta:active { transform: scale(0.97); }
+  .map-cta:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+  @media (hover: hover) and (pointer: fine) { .map-cta:hover { filter: brightness(1.08); } .map-cta:hover .arrow { transform: translate(2px, -2px); } }
+  .link-btn.ghost { background: transparent; border-color: color-mix(in srgb, var(--ink) 22%, transparent); border-radius: 999px; }
+  .today-badge { display: none; justify-self: start; margin-top: 10px; padding: 4px 12px; border-radius: 999px; background: var(--btn-bg); color: var(--btn-fg); font-size: 12px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; }
+  .today-badge[lang="hi"] { letter-spacing: 0; font-size: 14px; }
+  .day.is-today .today-badge { display: inline-block; }
   .link-btn {
     display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 18px;
     font-size: 13px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; text-decoration: none;
@@ -680,7 +731,8 @@
   }
 
   /* ---------- Phones ---------- */
-  @media (max-width: 760px) {
+  /* Phones and tablets held upright: one column, art on top */
+  @media (max-width: 900px) {
     body { font-size: 16px; }
     .pager { display: none; }
     .page { padding-block: calc(68px + env(safe-area-inset-top, 0px)) calc(28px + env(safe-area-inset-bottom, 0px)); }
@@ -708,12 +760,12 @@
     .timings { justify-content: center; margin-top: 12px; }
     .timing b { font-size: 24px; }
     .venue { margin-top: 12px; text-align: left; }
-    .day .links { justify-content: center; justify-self: stretch; width: 100%; max-width: 380px; margin-inline: auto; margin-top: 16px; gap: 8px; flex-wrap: nowrap; }
-    .day .links > * { flex: 1 1 0; min-width: 0; }
-    .link-btn { justify-content: center; padding: 0 10px; gap: 8px; font-size: 12px; letter-spacing: .05em; }
-    .cal > summary { width: 100%; }
-    .link-btn .long { display: none; }
-    .link-btn .short { display: inline; }
+    .day .links { flex-direction: column; align-items: stretch; justify-self: stretch; width: 100%; max-width: 380px; margin-inline: auto; margin-top: 18px; gap: 6px; }
+    .map-cta { min-width: 0; width: 100%; }
+    .cal { align-self: center; }
+    .cal > .link-btn { border-color: transparent; min-height: 44px; font-size: 12px; text-decoration: underline; text-underline-offset: 4px; text-decoration-color: color-mix(in srgb, var(--ink) 35%, transparent); }
+    .cal-menu { left: 50%; translate: -50% 0; min-width: 240px; top: calc(100% + 4px); bottom: auto; }
+    .today-badge { justify-self: center; }
     .hosts { font-size: 17.5px; }
     .invite-text { font-size: 15.5px; }
     .parents { gap: 8px; }
@@ -725,16 +777,33 @@
     .replay-btn .replay-label, .music-btn .music-label { display: none; }
     .music-btn { padding: 0 12px; }
     #top .inst { display: none; }
-    #invitation .inst { left: auto; right: 4px; bottom: auto; top: calc(min(100vw, 520px) * .98); width: 92px; }
+    #invitation .inst { right: 4px; bottom: auto; top: calc(min(100vw, 520px) * .98); width: 92px; }
     #day-28 .inst { right: 0; bottom: auto; top: calc(min(100vw, 520px) * 1.0); width: 120px; }
     #day-29 .inst { left: auto; right: 6px; bottom: auto; top: calc(min(100vw, 520px) * 1.0); width: 80px; }
-    #day-30 .inst { right: 6px; top: calc(44px + env(safe-area-inset-top, 0px)); height: 104px; }
+    #day-30 .inst { left: auto; translate: none; right: 6px; top: calc(44px + env(safe-area-inset-top, 0px)); height: 104px; }
     #rsvp .inst { left: 6px; bottom: 12px; height: 140px; }
     .tap-hint { left: auto; right: 16%; bottom: auto; top: 16%; translate: none; padding: 7px; border-radius: 50%; }
     .tap-hint > span { display: none; }
     .tap-hint svg { width: 16px; height: 16px; }
     .invite-art .tap-hint { top: 50%; right: 7%; }
     .replay-btn { padding: 0 12px; }
+  }
+  /* Short phones: the doors' nameplate and buttons tuck closer together */
+  @media (max-height: 680px) and (orientation: portrait) {
+    .plaque { padding: 10px 16px 9px; }
+    .gate-names { font-size: clamp(26px, 7vw, 34px); }
+    .gate-hint { margin-top: 12px; min-height: 48px; }
+    .gate-sound { margin-top: 6px; font-size: 12px; }
+  }
+  @media (max-width: 380px) { .song-sheet { padding-top: 46px; } }
+  /* Phones on their side: pages grow to fit and snapping relaxes, so nothing is cut off */
+  @media (orientation: landscape) and (max-height: 520px) {
+    html { scroll-snap-type: y proximity; }
+    .pager, #top .inst { display: none; }
+    .gate-center { padding-top: 7svh; gap: 4px; }
+    .gate-center .mono { width: 92px; margin-bottom: 6px; }
+    .gate-names { font-size: 30px; }
+    .gate-hint { margin-top: 10px; }
   }
   @media (max-width: 360px) {
     .gate-date { letter-spacing: .14em; font-size: 14px; }
@@ -755,6 +824,9 @@
     .gate.opening .flood { animation: none; }
     .bi > span { filter: none !important; transform: none !important; transition-property: opacity, visibility !important; }
     .btn:active, .link-btn:active, .date:active, .choice input:active + span { transform: none; }
+    .page.lit .map-cta .pin svg, .map-cta .pin::after, .today-cta .map-cta .pin::after, .gate-hint { animation: none; }
+    .map-cta:active { transform: none; }
+    .song-sheet { transition: none; }
     .status-card:not([hidden]), .yes-group:not([hidden]), .cal-menu { @starting-style { transform: none; } }
   }
 </style>
@@ -786,9 +858,21 @@
     <div class="gate-names"><span class="bi" style="--i:0"><span class="en">Shivanshi <span class="amp">&amp;</span> Shashwat</span><span class="hi" lang="hi">शिवांशी संग शाश्वत</span></span></div>
     <div class="gate-date"><span class="bi" style="--i:1"><span class="en">28 · 29 · 30 November 2026</span><span class="hi" lang="hi">२८ · २९ · ३० नवंबर २०२६</span></span></div>
     </div>
-    <div class="gate-hint fade-in" id="gate-hint" style="--d:2000ms"><span class="bi" style="--i:2"><span class="en">Open the invitation</span><span class="hi" lang="hi">निमंत्रण खोलें</span></span></div>
+    <div class="gate-hint fade-in" id="gate-hint" style="--d:1800ms"><span class="bi" style="--i:2"><span class="en">Tap to open the invitation</span><span class="hi" lang="hi">निमंत्रण खोलने के लिए छुएँ</span></span></div>
+    <div class="gate-sound fade-in" style="--d:2200ms"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></svg><span class="bi" style="--i:3"><span class="en">Opens with our song · sound on</span><span class="hi" lang="hi">हमारे गीत के साथ खुलेगा · आवाज़ चालू रखें</span></span></div>
   </div>
 </div>
+
+<!-- Easter egg: tap the couple three times. The player lives here, just below the screen, from the start. -->
+<div class="song-scrim" aria-hidden="true"></div>
+<aside class="song-sheet" id="our-song" role="dialog" aria-modal="false" aria-labelledby="song-t" inert>
+  <button type="button" class="song-close" aria-label="Close" data-hi-aria="बंद करें"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  <p class="song-cap"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0l1.8 6.2L16 8l-6.2 1.8L8 16l-1.8-6.2L0 8l6.2-1.8z" fill="currentColor"/></svg><span data-hi="आपने हमारा गीत ढूँढ लिया">You found our song</span></p>
+  <h2 class="song-t" id="song-t" data-hi="गहरा हुआ">Gehra Hua</h2>
+  <p class="song-meta" data-hi="धुरंधर · अरिजीत सिंह">Dhurandhar · Arijit Singh</p>
+  <div class="song-frame"><div id="yt-song"></div></div>
+  <a class="song-link" href="https://www.youtube.com/watch?v=0KYJPoGJcMc" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9.5-5.5z" fill="currentColor"/></svg><span data-hi="YouTube पर सुनें">Listen on YouTube</span></a>
+</aside>
 
 <div id="page">
   <div class="controls">
@@ -841,6 +925,7 @@
         <a class="date wed" href="#day-30"><span class="dow" data-hi="सोमवार">Mon</span><span class="num" data-hi="३०">30</span><span class="fn" data-hi="शुभ विवाह">Wedding</span></a>
       </nav>
       <p class="month-line in" style="--d:280ms;--y:4px" data-hi="नवंबर २०२६ · मेरठ">November 2026 · Meerut</p>
+      <div class="today-cta" id="today-cta" hidden></div>
       <div class="countdown-wrap in" style="--d:340ms;--y:4px">
         <p class="countdown-cap" id="cd-cap" data-hi="विवाह में शेष">Until the wedding</p>
         <div class="countdown" id="countdown" role="timer" aria-labelledby="cd-cap">
@@ -878,15 +963,6 @@
             <div><div class="nm magic" data-hi="शाश्वत">Shashwat</div><div class="rel" data-hi="सुपुत्र श्रीमती आभा त्यागी एवं श्री भूपेंद्र त्यागी">S/o Mrs. Abha Tyagi &amp; Mr. Bhupendra Tyagi</div></div>
           </div>
           <div class="resi" data-hi="निवास: मेरठ (उ.प्र.)">Resi.: Meerut (U.P.)</div>
-          <figure class="our-song" id="our-song" aria-labelledby="song-t">
-            <figcaption>
-              <span class="song-cap" data-hi="हमारा गीत">Our song</span>
-              <span class="song-t" id="song-t" data-hi="गहरा हुआ">Gehra Hua</span>
-              <span class="song-meta" data-hi="धुरंधर · अरिजीत सिंह">Dhurandhar · Arijit Singh</span>
-            </figcaption>
-            <div class="song-frame"><div id="yt-song"></div></div>
-            <a class="song-link" href="https://www.youtube.com/watch?v=0KYJPoGJcMc" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9.5-5.5z" fill="currentColor"/></svg><span data-hi="YouTube पर सुनें">Listen on YouTube</span></a>
-          </figure>
         </div>
       </div>
     </section>
@@ -964,6 +1040,7 @@
           <p class="ev-line" data-hi="अंगूठियों, गुलाबों और आशीर्वाद की एक शाम।">An evening of rings, roses and blessings.</p>
           <div class="timings"><div class="timing"><b data-hi="सायं ७:००">7:00 PM</b><span data-hi="बजे से">Onwards</span></div></div>
           <div class="venue"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"/></svg><div><strong>The Bhutani Heritage</strong><span data-hi="ग्राम जठोली, एनएच-58 बाईपास, कंकरखेड़ा, मेरठ">Vill. Jatholi, NH-58 Bypass, Kanker Khera, Meerut</span></div></div>
+          <div class="today-badge" data-hi="आज">Today</div>
           <div class="past-badge" data-hi="सम्पन्न">Celebrated</div>
           <div class="links"></div>
         </div>
@@ -1061,6 +1138,7 @@
           <p class="ev-line" data-hi="मेहंदी, गेंदे के फूल, ढोलक और नृत्य।">Henna, marigolds, dholak and dancing.</p>
           <div class="timings"><div class="timing"><b data-hi="सायं ५:००">5:00 PM</b><span data-hi="बजे से">Onwards</span></div></div>
           <div class="venue"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"/></svg><div><strong>NOVAH Rooftop</strong><span data-hi="तीसरी मंज़िल, डीएमए स्कूल के सामने, पल्लवपुरम, मेरठ">3rd floor, opposite DMA School, Pallavpuram, Meerut</span></div></div>
+          <div class="today-badge" data-hi="आज">Today</div>
           <div class="past-badge" data-hi="सम्पन्न">Celebrated</div>
           <div class="links"></div>
         </div>
@@ -1149,6 +1227,7 @@
             <div class="timing"><b data-hi="रात्रि ८:००">8:00 PM</b><span data-hi="प्रीतिभोज">Dinner</span></div>
           </div>
           <div class="venue"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"/></svg><div><strong>Grand Rishala Resort</strong><span data-hi="खिरवा रोड, कंकरखेड़ा बाईपास, मेरठ">Khirwa Road, Kanker Khera Bypass, Meerut</span></div></div>
+          <div class="today-badge" data-hi="आज">Today</div>
           <div class="past-badge" data-hi="सम्पन्न">Celebrated</div>
           <div class="links"></div>
         </div>
@@ -1404,8 +1483,8 @@
 
   var STR = {
     en: {
-      calendar: "Add to calendar", calShort: "Calendar", google: "Google Calendar", ics: "Apple / Outlook (.ics)", location: "Open in Maps",
-      mapsLabel: function (p) { return "Open " + p + " in Google Maps"; },
+      calendar: "Add to calendar", calShort: "Calendar", google: "Google Calendar", ics: "Apple / Outlook (.ics)", location: "Get directions", today: "Today", mapsSub: "Google Maps",
+      mapsLabel: function (p) { return "Get directions to " + p + " in Google Maps"; },
       eName: "Please add your name so the family knows who is replying.",
       eAtt: "Please choose whether you will attend.",
       eCount: "Please enter how many people are coming, from 1 to 99.",
@@ -1421,8 +1500,8 @@
       copied: "Copied", copy: "Copy message", selected: "Selected, press copy"
     },
     hi: {
-      calendar: "कैलेंडर में जोड़ें", calShort: "कैलेंडर", google: "गूगल कैलेंडर", ics: "ऐप्पल / आउटलुक (.ics)", location: "मैप में देखें",
-      mapsLabel: function (p) { return p + " गूगल मैप्स में खोलें"; },
+      calendar: "कैलेंडर में जोड़ें", calShort: "कैलेंडर", google: "गूगल कैलेंडर", ics: "ऐप्पल / आउटलुक (.ics)", location: "रास्ता देखें", today: "आज", mapsSub: "गूगल मैप्स",
+      mapsLabel: function (p) { return p + " का रास्ता गूगल मैप्स में देखें"; },
       eName: "कृपया अपना नाम लिखें ताकि परिवार को पता चले कि उत्तर किसका है।",
       eAtt: "कृपया बताएँ कि आप आएँगे या नहीं।",
       eCount: "कृपया बताएँ कि कितने लोग आ रहे हैं (१ से ९९)।",
@@ -1465,7 +1544,7 @@
     document.querySelectorAll(".lang-switch button").forEach(function (b) {
       b.setAttribute("aria-pressed", String(b.dataset.set === lang));
     });
-    buildEventLinks();
+    buildEventLinks(); markToday();
     clearErrors();
     updatePreview();
     renderReplied();
@@ -1582,9 +1661,9 @@
       var gc = document.querySelector(".gate-center");
       if (gc) gc.dataset.show = lang === "hi" ? "en" : "hi";
     }, 3200);
-    autoOpen = setTimeout(function () { openGate(false); }, 5400);
+    // The doors wait for the guest: that tap is what lets the song play with sound on every phone
   }
-  gate.addEventListener("click", openGate);
+  gate.addEventListener("click", function () { openGate(true); });
   gate.addEventListener("keydown", function (e) {
     if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openGate(true); }
   });
@@ -1630,6 +1709,7 @@
 
   // ---- Map & calendar links ----
   var PIN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"/></svg>';
+  var ARROW = '<svg class="arrow" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>';
   var CAL = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 2h2v2h6V2h2v2h3a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3V2Zm12 8H5v9h14v-9Z"/></svg>';
   var DETAILS = "Shivanshi weds Shashwat. With best compliments from the Tyagi Family.";
   function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;"); }
@@ -1652,12 +1732,39 @@
     document.querySelectorAll(".day").forEach(function (ev) {
       var d = ev.dataset, venue = d.place.split(",")[0];
       ev.querySelector(".links").innerHTML =
-        '<a class="link-btn primary" href="' + esc(mapUrl(d)) + '" target="_blank" rel="noopener" aria-label="' + esc(S.mapsLabel(venue)) + '">' + PIN + '<span' + (lang === "hi" ? ' lang="hi"' : "") + '>' + S.location + '</span></a>' +
-        '<details class="cal"><summary class="link-btn">' + CAL + '<span' + (lang === "hi" ? ' lang="hi"' : "") + '><span class="long">' + S.calendar + '</span><span class="short">' + S.calShort + '</span></span></summary>' +
+        '<a class="map-cta" href="' + esc(mapUrl(d)) + '" target="_blank" rel="noopener" aria-label="' + esc(S.mapsLabel(venue)) + '">' +
+          '<span class="pin">' + PIN + '</span><span class="cta-t"' + (lang === "hi" ? ' lang="hi"' : "") + '><b>' + S.location + '</b><small>' + S.mapsSub + '</small></span>' + ARROW + '</a>' +
+        '<details class="cal"><summary class="link-btn ghost">' + CAL + '<span' + (lang === "hi" ? ' lang="hi"' : "") + '><span class="long">' + S.calendar + '</span><span class="short">' + S.calShort + '</span></span></summary>' +
         '<div class="cal-menu"><a href="' + esc(gcalUrl(d)) + '" target="_blank" rel="noopener">' + S.google + '</a>' +
         '<a href="' + esc(icsUrl(d)) + '" download="' + esc(d.title.split(" ·")[0].toLowerCase().replace(/[^a-z]+/g, "-")) + '.ics">' + S.ics + '</a></div></details>';
     });
   }
+  // ---- On a function day: "Today" where it helps, and directions first on the welcome page ----
+  var todayCta = document.getElementById("today-cta");
+  function todayISO() {
+    var q = /[?&]today=(\d{4}-\d{2}-\d{2})/.exec(location.search);   // ?today=2026-11-30 previews a function day
+    if (q) return q[1];
+    try { return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kolkata" }).format(new Date()); } catch (x) { return ""; }
+  }
+  function markToday() {
+    var S = STR[lang], iso = todayISO().replace(/-/g, ""), hit = null;
+    document.querySelectorAll(".day").forEach(function (ev) {
+      var on = ev.dataset.start.slice(0, 8) === iso;
+      ev.classList.toggle("is-today", on);
+      var chip = document.querySelector('.date[href="#' + ev.id + '"]');
+      if (chip) chip.classList.toggle("is-today", on);
+      if (on) hit = ev;
+    });
+    if (!hit) { todayCta.hidden = true; return; }
+    var d = hit.dataset, venue = d.place.split(",")[0], hiA = lang === "hi" ? ' lang="hi"' : "";
+    var title = hit.querySelector(".ev-title"), time = hit.querySelector(".timing b");
+    todayCta.innerHTML = '<span class="t-cap"' + hiA + '>' + S.today + '</span>' +
+      '<span class="t-what"' + hiA + '>' + esc((title.querySelector(".sr") || title).textContent.trim()) + ' · ' + esc(time.textContent.trim()) + '</span>' +
+      '<a class="map-cta" href="' + esc(mapUrl(d)) + '" target="_blank" rel="noopener" aria-label="' + esc(S.mapsLabel(venue)) + '">' +
+      '<span class="pin">' + PIN + '</span><span class="cta-t"' + hiA + '><b>' + S.location + '</b><small>' + esc(venue) + '</small></span>' + ARROW + '</a>';
+    todayCta.hidden = false;
+  }
+
   // Close an open calendar menu on outside click or Escape
   document.addEventListener("click", function (e) {
     document.querySelectorAll("details.cal[open]").forEach(function (det) { if (!det.contains(e.target)) det.open = false; });
@@ -2096,6 +2203,13 @@
   soundBtn.addEventListener("click", function () { setSound(!Music.on, true); });
   // A deliberate tap (the doors, a drawing) starts the music unless the guest switched it off before
   function soundFromGesture() { if (!Music.on && soundPref() !== "off") setSound(true, false); }
+  if (!root.classList.contains("has-gate")) {
+    document.addEventListener("click", function first(e) {
+      if (e.target.closest(".music-btn, .lang-switch, .song-sheet")) return;
+      document.removeEventListener("click", first, true);
+      soundFromGesture();
+    }, true);
+  }
   function nudgeSound() { if (!Music.on && soundPref() !== "off") soundBtn.classList.add("nudge"); }
 
   // =====================================================================
@@ -2119,7 +2233,7 @@
       "day-30":   { emit: [["ember", 7, 80, null], ["lantern", .3, 9, null]], stars: 80, tap: [["ember", 26, null], ["lantern", 1, null]] },
       rsvp:       { emit: [["bokeh", .8, 12, "gold"], ["petal", 1.1, 20, "marigold"], ["mote", 1.8, 30, "gold"]], tap: [["petal", 14, "marigold"], ["mote", 10, "gold"]] }
     };
-    var scenes = {}, active = null, raf = 0, last = 0;
+    var scenes = {}, active = null, raf = 0, last = 0, coarse = matchMedia("(pointer: coarse)").matches;
     function rnd(a, b) { return a + Math.random() * (b - a); }
     function pick(arr) { return arr[(Math.random() * arr.length) | 0]; }
 
@@ -2165,6 +2279,19 @@
       [[0, 0], [-22, -10], [-22, 12], [-44, -20], [-44, 22]].forEach(function (o) { make(sc, "bird", null, sx + o[0] * dir, sy + o[1], v * rnd(.95, 1.05)); });
     }
 
+    // Glows are drawn once into small sprites and stamped, instead of blurring every particle every frame
+    var SPR = {};
+    function glowSprite(key, paint) {
+      if (SPR[key]) return SPR[key];
+      var c = document.createElement("canvas"); c.width = c.height = 96;
+      paint(c.getContext("2d")); return (SPR[key] = c);
+    }
+    function dotGlow(col, glowCol) {   // a solid dot of radius 12 with a 30px halo, in a 96px square
+      return glowSprite("d" + col + glowCol, function (x) { x.shadowColor = glowCol; x.shadowBlur = 30; x.fillStyle = col; x.beginPath(); x.arc(48, 48, 12, 0, 6.283); x.fill(); });
+    }
+    function softDisc(col) {           // a disc that fades from its colour to clear
+      return glowSprite("s" + col, function (x) { var g = x.createRadialGradient(48, 48, 0, 48, 48, 48); g.addColorStop(0, col); g.addColorStop(1, "rgba(255,255,255,0)"); x.fillStyle = g; x.fillRect(0, 0, 96, 96); });
+    }
     function draw(ctx, p, t) {
       var life = p.age / p.life, fade = Math.min(1, p.age / .6) * Math.min(1, (p.life - p.age) / 1.2);
       ctx.save();
@@ -2174,12 +2301,11 @@
         if (p.kind === "confetti") ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
         else { ctx.beginPath(); ctx.ellipse(0, 0, p.w, p.h, 0, 0, 6.283); ctx.fill(); ctx.globalAlpha = .22 * fade; ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.ellipse(-p.w * .3, -p.h * .2, p.w * .35, p.h * .5, 0, 0, 6.283); ctx.fill(); }
       } else if (p.kind === "mote") {
-        ctx.globalAlpha = fade * (.45 + .45 * Math.sin(t * 3 + p.phase)); ctx.fillStyle = p.col;
-        ctx.shadowColor = p.col; ctx.shadowBlur = 8; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283); ctx.fill();
+        ctx.globalAlpha = fade * (.45 + .45 * Math.sin(t * 3 + p.phase));
+        var ms = p.r * 4; ctx.drawImage(dotGlow(p.col, p.col), p.x - ms * 2, p.y - ms * 2, ms * 4, ms * 4);
       } else if (p.kind === "bokeh") {
-        var g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
-        g.addColorStop(0, p.col); g.addColorStop(1, "rgba(255,255,255,0)");
-        ctx.globalAlpha = p.peak * Math.sin(Math.PI * Math.min(1, life)); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283); ctx.fill();
+        ctx.globalAlpha = p.peak * Math.sin(Math.PI * Math.min(1, life));
+        ctx.drawImage(softDisc(p.col), p.x - p.r, p.y - p.r, p.r * 2, p.r * 2);
       } else if (p.kind === "heart") {
         var s = p.s; ctx.translate(p.x, p.y); ctx.globalAlpha = .85 * fade; ctx.fillStyle = p.col; ctx.beginPath();
         ctx.moveTo(0, s * .35); ctx.bezierCurveTo(-s * 1.1, -s * .4, -s * .45, -s * 1.1, 0, -s * .45); ctx.bezierCurveTo(s * .45, -s * 1.1, s * 1.1, -s * .4, 0, s * .35); ctx.fill();
@@ -2188,14 +2314,13 @@
         ctx.beginPath(); ctx.ellipse(0, 0, n * .42, n * .3, -.35, 0, 6.283); ctx.fill();
         ctx.beginPath(); ctx.moveTo(n * .38, -n * .1); ctx.lineTo(n * .38, -n * 1.5); ctx.quadraticCurveTo(n * .95, -n * 1.2, n * .85, -n * .7); ctx.stroke();
       } else if (p.kind === "ember") {
-        ctx.globalAlpha = fade * (1 - life * .6); var hue = 30 + life * 20;
-        ctx.fillStyle = "hsl(" + hue + ",100%," + (62 + life * 15) + "%)"; ctx.shadowColor = "#FF9A3C"; ctx.shadowBlur = 10;
-        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283); ctx.fill();
+        ctx.globalAlpha = fade * (1 - life * .6); var step5 = Math.min(4, Math.floor(life * 5));
+        var es = p.r * 4; ctx.drawImage(dotGlow("hsl(" + (30 + step5 * 4) + ",100%," + (62 + step5 * 3) + "%)", "#FF9A3C"), p.x - es * 2, p.y - es * 2, es * 4, es * 4);
       } else if (p.kind === "lantern") {
         var L = p.s, fl = .85 + .15 * Math.sin(t * 6 + p.phase);
         ctx.translate(p.x, p.y); ctx.globalAlpha = Math.min(1, p.age / 2) * Math.min(1, Math.max(0, (p.y + 20) / 120));
-        var lg = ctx.createRadialGradient(0, 0, 0, 0, 0, L * 2.4); lg.addColorStop(0, "rgba(255,190,90," + (.35 * fl) + ")"); lg.addColorStop(1, "rgba(255,190,90,0)");
-        ctx.fillStyle = lg; ctx.beginPath(); ctx.arc(0, 0, L * 2.4, 0, 6.283); ctx.fill();
+        var ga = ctx.globalAlpha; ctx.globalAlpha = ga * fl;
+        ctx.drawImage(softDisc("rgba(255,190,90,.35)"), -L * 2.4, -L * 2.4, L * 4.8, L * 4.8); ctx.globalAlpha = ga;
         ctx.fillStyle = "rgba(246,170,70," + (.92 * fl) + ")"; ctx.beginPath();
         ctx.moveTo(-L * .55, -L * .7); ctx.lineTo(L * .55, -L * .7); ctx.lineTo(L * .4, L * .6); ctx.quadraticCurveTo(0, L * .75, -L * .4, L * .6); ctx.closePath(); ctx.fill();
         ctx.fillStyle = "rgba(255,236,170," + (.9 * fl) + ")"; ctx.beginPath(); ctx.ellipse(0, L * .45, L * .22, L * .12, 0, 0, 6.283); ctx.fill();
@@ -2247,7 +2372,9 @@
       raf = requestAnimationFrame(loop);
     }
     function resize(sc) {
-      var r = sc.canvas.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2);
+      // Soft particles don't need full phone resolution; and a phone's address bar sliding away is no reason to redraw
+      var r = sc.canvas.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, coarse ? 1.5 : 2);
+      if (sc.W && Math.abs(r.width - sc.W) < 1 && Math.abs(r.height - sc.H) < 2) return;
       sc.W = r.width; sc.H = r.height; sc.canvas.width = Math.round(r.width * dpr); sc.canvas.height = Math.round(r.height * dpr);
       sc.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
@@ -2313,7 +2440,29 @@
     Music.sfx(kind);
     var at = { couple: [.5, .52], rings: [.5, .5], dholak: [.86, .86], fire: [.5, .72], peacock: [.76, .84], rangoli: [.5, .64], seal: [.5, .5] }[kind];
     if (!reduceMotion) Amb.burstFrom(el, PLAY[kind], at[0], at[1]);
+    // Easter egg: three quick taps on the couple bring up their song
+    if (kind === "couple") {
+      var nowT = Date.now();
+      el._taps = (el._taps || []).filter(function (t0) { return nowT - t0 < 1800; }); el._taps.push(nowT);
+      if (el._taps.length >= 3) { el._taps = []; openSongSheet(el); }
+    }
   }
+  // ---- The "Our song" sheet ----
+  var songSheet = document.getElementById("our-song"), songScrim = document.querySelector(".song-scrim"), songOpener = null;
+  function openSongSheet(from) {
+    songOpener = from || document.activeElement;
+    songSheet.inert = false; songSheet.classList.add("open"); songScrim.classList.add("open");
+    if (!reduceMotion) Amb.burstFrom(from, [["heart", 18, "rose"]], .5, .45);
+    setTimeout(function () { songSheet.querySelector(".song-close").focus({ preventScroll: true }); }, 60);
+  }
+  function closeSongSheet() {
+    if (!songSheet.classList.contains("open")) return;
+    songSheet.classList.remove("open"); songScrim.classList.remove("open"); songSheet.inert = true;
+    if (songOpener && songOpener.focus) songOpener.focus({ preventScroll: true });
+  }
+  songSheet.querySelector(".song-close").addEventListener("click", closeSongSheet);
+  songScrim.addEventListener("click", closeSongSheet);
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeSongSheet(); });
   // ---- Instruments: tap one to hear it ----
   function playInst(el) {
     el.classList.remove("strike"); void el.getBoundingClientRect(); el.classList.add("strike");
