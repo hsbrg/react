@@ -449,53 +449,87 @@
   }
   .block > h2[lang="hi"] { font-family: var(--font-deva); font-size: 38px; line-height: 1.4; }
 
-  /* Invitation */
-  .invite { max-width: 680px; margin-inline: auto; text-align: center; }
-  .hosts { font-size: 21px; font-weight: 500; line-height: 1.45; margin: 0; text-wrap: balance; }
-  .invite-text { margin: 12px auto 0; max-width: 54ch; color: var(--muted); font-size: 18px; text-wrap: balance; }
-  .couple { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 20px; margin-top: 40px; }
-  .person .nm { font-family: var(--font-script); font-size: 60px; line-height: 1.15; }
-  .person .nm[lang="hi"] { font-family: var(--font-deva-script); font-weight: 700; font-size: 40px; line-height: 1.5; }
-  .person .rel { font-size: 15px; color: var(--muted); margin-top: 4px; text-wrap: balance; }
-  .couple .weds { font-family: var(--font-display); letter-spacing: .3em; text-transform: uppercase; font-size: 15px; color: var(--gold); }
-  .couple .weds[lang="hi"] { font-family: var(--font-deva-script); font-weight: 700; font-size: 24px; }
-  .resi { margin-top: 34px; font-size: 14px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+  /* Illustrations: framed like the printed card, with a gold double rule inside the edge.
+     Short overlays (names, a title) sit in each picture's open sky or arch; details stay as text beside it. */
+  .art {
+    position: relative;
+    margin: 0;
+    overflow: hidden;
+    container-type: inline-size;
+    background: var(--card);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--gold) 55%, transparent), 0 18px 36px -20px rgb(30 5 12 / .5);
+  }
+  .art img { display: block; width: 100%; height: auto; }
+  .art::after {
+    content: "";
+    position: absolute;
+    inset: 8px;
+    border: 1px solid rgb(255 250 240 / .75);
+    box-shadow: inset 0 0 0 4px rgb(255 250 240 / .18);
+    pointer-events: none;
+  }
+  .ov { position: absolute; left: 12%; right: 12%; display: grid; justify-items: center; text-align: center; pointer-events: none; }
+  .ov .script { font-family: var(--font-script); font-size: 15cqw; line-height: 1.05; }
+  .ov .script[lang="hi"] { font-family: var(--font-deva-script); font-weight: 700; font-size: 10.5cqw; line-height: 1.45; }
+  .ov .small { font-family: var(--font-display); font-size: 4.2cqw; letter-spacing: .3em; text-transform: uppercase; }
+  .ov .small[lang="hi"] { font-family: var(--font-deva); font-size: 5cqw; }
+  .ov .numdate { font-family: var(--font-display); font-size: 5.4cqw; letter-spacing: .22em; margin-top: 2cqw; }
+  .ov .numdate[lang="hi"] { font-family: var(--font-deva); }
 
-  /* Functions: one row per day, each in its own colour; the wedding gets the most room */
-  .days { display: grid; max-width: 880px; margin-inline: auto; }
+  /* Invitation: picture with the couple's names, wording beside it */
+  .invite-layout { display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: 48px; align-items: center; max-width: 900px; margin-inline: auto; }
+  .invite-art .ov { top: 15%; color: #3E0B18; text-shadow: 0 0 14px rgb(255 255 255 / .95), 0 0 4px rgb(255 255 255 / .8); }
+  .invite-art .ov .small { color: #6E4B0E; }
+  .invite { text-align: center; }
+  .hosts { font-size: 21px; font-weight: 500; line-height: 1.45; margin: 0; text-wrap: balance; }
+  .invite-text { margin: 12px auto 0; max-width: 46ch; color: var(--muted); font-size: 18px; text-wrap: balance; }
+  .couple { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 16px; margin-top: 30px; }
+  .person .nm { font-family: var(--font-script); font-size: 44px; line-height: 1.15; }
+  .person .nm[lang="hi"] { font-family: var(--font-deva-script); font-weight: 700; font-size: 32px; line-height: 1.5; }
+  .person .rel { font-size: 15px; color: var(--muted); margin-top: 4px; text-wrap: balance; }
+  .couple .weds { font-family: var(--font-display); letter-spacing: .3em; text-transform: uppercase; font-size: 14px; color: var(--gold); }
+  .couple .weds[lang="hi"] { font-family: var(--font-deva-script); font-weight: 700; font-size: 22px; }
+  .resi { margin-top: 26px; font-size: 14px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+
+  /* Functions: a picture and the details for each day, alternating sides; each day has its own colour */
+  .days { display: grid; gap: 28px; max-width: 900px; margin-inline: auto; }
   .day {
     --acc: var(--gold);
     position: relative;
     display: grid;
-    grid-template-columns: 104px minmax(0, 1fr) auto;
-    gap: 6px 28px;
-    align-items: start;
+    grid-template-columns: minmax(0, 280px) minmax(0, 1fr);
+    gap: 24px 44px;
+    align-items: center;
     padding: 28px 0;
-    border-top: 1px solid var(--line);
-    scroll-margin-top: 72px;
+    scroll-margin-top: 24px;
   }
-  .day:first-child { border-top: 0; }
+  .day + .day { border-top: 1px solid var(--line); }
+  .day:nth-child(2) { grid-template-columns: minmax(0, 1fr) minmax(0, 300px); }
+  .day:nth-child(2) .day-art { order: 2; }
   .day.engage { --acc: var(--acc-engage); }
   .day.mehendi { --acc: var(--acc-mehendi); }
   .day.wed {
     --acc: var(--acc-wed);
-    margin-top: 12px;
-    padding: 36px 28px;
+    grid-template-columns: minmax(0, 340px) minmax(0, 1fr);
+    padding: 36px;
     border-top: 0;
     background: color-mix(in srgb, var(--acc-wed) 7%, var(--paper));
     box-shadow: 0 1px 0 color-mix(in srgb, var(--acc-wed) 25%, transparent), 0 14px 34px -22px color-mix(in srgb, var(--acc-wed) 60%, transparent);
   }
-  .dcol { display: grid; justify-items: start; line-height: 1.1; }
-  .dcol .dnum { font-family: var(--font-display); font-size: 68px; line-height: .95; color: var(--acc); font-variant-numeric: lining-nums; }
-  .dcol .dnum[lang="hi"] { font-family: var(--font-deva); font-size: 54px; line-height: 1.2; }
+  .wed-art .ov { top: 16%; color: #FBEBD3; text-shadow: 0 2px 12px rgb(0 0 0 / .45); }
+  .wed-art .ov .small, .wed-art .ov .numdate { color: #E8C06A; }
+  .day-top { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+  .dcol { display: grid; justify-items: start; line-height: 1.1; padding-right: 18px; border-right: 1px solid var(--line); }
+  .dcol .dnum { font-family: var(--font-display); font-size: 60px; line-height: .95; color: var(--acc); font-variant-numeric: lining-nums; }
+  .dcol .dnum[lang="hi"] { font-family: var(--font-deva); font-size: 48px; line-height: 1.2; }
   .dcol .dmon, .dcol .ddow { font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
   .dcol .dmon[lang="hi"], .dcol .ddow[lang="hi"] { font-size: 15px; }
   .day h3 { display: flex; align-items: center; gap: 12px; margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 34px; line-height: 1.15; color: var(--acc); }
   .day h3 [lang="hi"] { font-family: var(--font-deva-script); font-weight: 700; font-size: 30px; line-height: 1.4; }
-  .day.wed h3 { font-size: 44px; }
-  .day.wed h3 [lang="hi"] { font-size: 38px; }
+  .day.wed h3 { font-size: 42px; }
+  .day.wed h3 [lang="hi"] { font-size: 36px; }
   .motif { width: 30px; height: 30px; flex: none; color: var(--acc); }
-  .timings { display: flex; flex-wrap: wrap; gap: 8px 28px; margin-top: 12px; }
+  .timings { display: flex; flex-wrap: wrap; gap: 8px 28px; margin-top: 16px; }
   .timing { display: flex; align-items: baseline; gap: 10px; }
   .timing b { font-family: var(--font-display); font-weight: 400; font-size: 26px; font-variant-numeric: tabular-nums; }
   .timing b[lang="hi"] { font-family: var(--font-deva); font-size: 22px; }
@@ -508,7 +542,8 @@
   .past-badge { display: none; margin-top: 12px; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
   .day.past .past-badge { display: block; }
   .day.past .cal { display: none; }
-  .day .links { display: flex; flex-direction: column; gap: 10px; align-items: stretch; padding-top: 4px; min-width: 200px; }
+  .day .links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+  .day .links > * { flex: 0 1 auto; }
   .link-btn {
     display: inline-flex;
     align-items: center;
@@ -554,8 +589,12 @@
   @media (hover: hover) and (pointer: fine) { .cal-menu a:hover { background: color-mix(in srgb, var(--acc) 8%, transparent); } }
 
   /* RSVP */
-  .rsvp-wrap { max-width: 720px; margin-inline: auto; }
-  .rsvp-contact { text-align: center; margin: -12px 0 28px; }
+  .rsvp-wrap { max-width: 960px; margin-inline: auto; display: grid; grid-template-columns: minmax(0, 320px) minmax(0, 1fr); gap: 40px; align-items: start; }
+  .rsvp-art { position: sticky; top: 24px; }
+  .rsvp-art .ov { top: 14%; color: #3E0B18; text-shadow: 0 0 14px rgb(255 255 255 / .9); }
+  .rsvp-art .ov .script { font-size: 13cqw; }
+  .rsvp-art .ov .script[lang="hi"] { font-size: 9.5cqw; }
+  .rsvp-contact { text-align: center; margin: 0 0 24px; }
   .rsvp-contact .who { font-family: var(--font-display); font-size: 30px; }
   .rsvp-contact .who[lang="hi"] { font-family: var(--font-deva); font-size: 26px; }
   .rsvp-contact p { margin: 4px 0 0; color: var(--muted); }
@@ -681,22 +720,29 @@
     section.block { padding-block: 52px 44px; }
     .block > h2 { font-size: 36px; }
     .block > h2[lang="hi"] { font-size: 32px; }
+    .invite-layout { grid-template-columns: minmax(0, 1fr); gap: 28px; justify-items: center; }
+    .invite-art { width: min(100%, 340px); }
     .hosts { font-size: 19px; }
     .invite-text { font-size: 17px; }
-    .couple { grid-template-columns: minmax(0, 1fr); gap: 8px; }
-    .person .nm { font-size: 54px; }
-    .day { grid-template-columns: 72px minmax(0, 1fr); gap: 6px 16px; padding: 24px 0; }
-    .day.wed { padding: 28px 16px; margin-inline: -8px; }
-    .dcol .dnum { font-size: 52px; }
-    .dcol .dnum[lang="hi"] { font-size: 42px; }
+    .couple { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+    .person .nm { font-size: 42px; }
+    .day, .day:nth-child(2), .day.wed { grid-template-columns: minmax(0, 1fr); gap: 20px; padding: 24px 0; }
+    .day:nth-child(2) .day-art { order: 0; }
+    .day-art { width: min(100%, 360px); justify-self: center; }
+    .day.wed { padding: 24px 16px 28px; margin-inline: -8px; }
+    .dcol .dnum { font-size: 50px; }
+    .dcol .dnum[lang="hi"] { font-size: 40px; }
     .day h3 { font-size: 28px; }
     .day.wed h3 { font-size: 34px; }
     .day h3 [lang="hi"] { font-size: 26px; }
     .day.wed h3 [lang="hi"] { font-size: 30px; }
     .motif { width: 26px; height: 26px; }
-    .day .links { grid-column: 2; flex-direction: row; flex-wrap: wrap; min-width: 0; margin-top: 8px; }
     .day .links > * { flex: 1 1 150px; }
     .cal-menu { left: 0; right: auto; transform-origin: top left; }
+    .rsvp-wrap { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+    .rsvp-art { position: static; width: min(100%, 360px); justify-self: center; max-height: 340px; }
+    .rsvp-art img { height: 340px; object-fit: cover; object-position: 50% 62%; }
+    .rsvp-art .ov { top: 9%; }
     .rsvp-card { padding: 22px 16px; }
   }
   @media (max-width: 360px) {
@@ -813,6 +859,16 @@
   <main>
     <section class="block" id="invitation">
       <h2 class="reveal" data-hi="निमंत्रण">Invitation</h2>
+      <div class="invite-layout">
+      <figure class="art invite-art reveal">
+        <img src="art/invitation.jpg" width="334" height="598" loading="lazy" alt="Illustration of a bride and groom exchanging garlands before a temple, framed by an arch">
+        <figcaption class="ov">
+          <span class="script" data-hi="शिवांशी">Shivanshi</span>
+          <span class="small" data-hi="संग">weds</span>
+          <span class="script" data-hi="शाश्वत">Shashwat</span>
+          <span class="numdate" data-hi="३० · ११ · २०२६">30 · 11 · 2026</span>
+        </figcaption>
+      </figure>
       <div class="invite reveal">
         <p class="hosts" data-hi="श्रीमती कुसुम लता त्यागी एवं स्व. श्री महेंद्र सिंह त्यागी">Mrs. Kusum Lata Tyagi &amp; Lt. Mr. Mahendra Singh Tyagi</p>
         <p class="invite-text" data-hi="अपनी प्रिय पौत्री के शुभ विवाह के मंगल अवसर पर आपकी गरिमामयी उपस्थिति एवं आशीर्वाद हेतु सादर आमंत्रित करते हैं">feel immense pleasure in requesting your presence and blessings on the auspicious occasion of the marriage ceremony of their beloved granddaughter</p>
@@ -830,6 +886,7 @@
         </div>
         <div class="resi" data-hi="निवास: मेरठ (उ.प्र.)">Resi.: Meerut (U.P.)</div>
       </div>
+      </div>
     </section>
 
     <section class="block" id="functions">
@@ -838,46 +895,58 @@
         <article class="day engage reveal" id="day-28"
           data-start="20261128T190000" data-end="2026-11-28T23:00:00+05:30" data-end-ics="20261128T230000"
           data-title="Engagement · Shivanshi & Shashwat"
-          data-place="The Bhutani Heritage, NH-58, Kanker Khera, Meerut, Uttar Pradesh">
-          <div class="dcol"><span class="dnum" data-hi="२८">28</span><span class="dmon" data-hi="नवंबर">Nov</span><span class="ddow" data-hi="शनिवार">Saturday</span></div>
-          <div>
-            <h3><svg class="motif" viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="19" r="7.5"/><circle cx="20" cy="19" r="7.5"/><path d="M20 5.5l2.5 2.5-2.5 2.5-2.5-2.5z"/></svg><span data-hi="सगाई">Engagement</span></h3>
+          data-place="The Bhutani Heritage, Vill. Jatholi, NH-58 Bypass, Delhi-Haridwar Rd, Kanker Khera, Meerut, Uttar Pradesh 250001"
+          data-map="https://maps.app.goo.gl/DYucdS2oPKSbjW4UA">
+          <figure class="art day-art"><img src="art/engagement.jpg" width="334" height="336" loading="lazy" alt="Illustration of a couple exchanging rings among roses and candlelight"></figure>
+          <div class="day-info">
+          <div class="day-top"><div class="dcol"><span class="dnum" data-hi="२८">28</span><span class="dmon" data-hi="नवंबर">Nov</span><span class="ddow" data-hi="शनिवार">Saturday</span></div>
+            <h3><svg class="motif" viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="19" r="7.5"/><circle cx="20" cy="19" r="7.5"/><path d="M20 5.5l2.5 2.5-2.5 2.5-2.5-2.5z"/></svg><span data-hi="सगाई">Engagement</span></h3></div>
             <div class="timings"><div class="timing"><b data-hi="सायं ७:००">7:00 PM</b><span data-hi="बजे से">Onwards</span></div></div>
-            <div class="venue"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"/></svg><div><strong>The Bhutani Heritage</strong><span data-hi="एनएच-58, कंकरखेड़ा, मेरठ">NH-58, Kanker Khera, Meerut</span></div></div>
+            <div class="venue"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"/></svg><div><strong>The Bhutani Heritage</strong><span data-hi="ग्राम जठोली, एनएच-58 बाईपास, कंकरखेड़ा, मेरठ">Vill. Jatholi, NH-58 Bypass, Kanker Khera, Meerut</span></div></div>
             <div class="past-badge" data-hi="सम्पन्न">Celebrated</div>
+            <div class="links"></div>
           </div>
-          <div class="links"></div>
         </article>
 
         <article class="day mehendi reveal" id="day-29"
           data-start="20261129T170000" data-end="2026-11-29T23:00:00+05:30" data-end-ics="20261129T230000"
           data-title="Mehendi & Sangeet · Shivanshi & Shashwat"
-          data-place="Novah, Modipuram, Meerut, Uttar Pradesh">
-          <div class="dcol"><span class="dnum" data-hi="२९">29</span><span class="dmon" data-hi="नवंबर">Nov</span><span class="ddow" data-hi="रविवार">Sunday</span></div>
-          <div>
-            <h3><svg class="motif" viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 29c-5.8 0-9.5-3.9-9.5-8.6 0-6 5.3-8 8-11.3 1.6-2 1.8-4 1-5.6 4.8 1.8 9.5 7.4 9.5 13.9 0 6.8-3.5 11.6-9 11.6z"/><path d="M16 24c-2.6 0-4-1.7-4-3.7 0-2.6 2.6-4 4-5.8"/><circle cx="16.5" cy="20" r="1.2" fill="currentColor"/></svg><span data-hi="मेहंदी व संगीत">Mehendi <span class="amp">&amp;</span> Sangeet</span></h3>
+          data-place="NOVAH Rooftop, 3rd floor, opposite DMA School, Pallavpuram, Meerut, Uttar Pradesh 250110"
+          data-map="https://maps.app.goo.gl/44NuDkuCya3pmmgX7">
+          <figure class="art day-art"><img src="art/mehendi.jpg" width="436" height="329" loading="lazy" alt="Illustration of a smiling bride in green with mehendi on her hands, beside a Mehndi Celebration sign and marigolds"></figure>
+          <div class="day-info">
+          <div class="day-top"><div class="dcol"><span class="dnum" data-hi="२९">29</span><span class="dmon" data-hi="नवंबर">Nov</span><span class="ddow" data-hi="रविवार">Sunday</span></div>
+            <h3><svg class="motif" viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 29c-5.8 0-9.5-3.9-9.5-8.6 0-6 5.3-8 8-11.3 1.6-2 1.8-4 1-5.6 4.8 1.8 9.5 7.4 9.5 13.9 0 6.8-3.5 11.6-9 11.6z"/><path d="M16 24c-2.6 0-4-1.7-4-3.7 0-2.6 2.6-4 4-5.8"/><circle cx="16.5" cy="20" r="1.2" fill="currentColor"/></svg><span data-hi="मेहंदी व संगीत">Mehendi <span class="amp">&amp;</span> Sangeet</span></h3></div>
             <div class="timings"><div class="timing"><b data-hi="सायं ५:००">5:00 PM</b><span data-hi="बजे से">Onwards</span></div></div>
-            <div class="venue"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"/></svg><div><strong>Novah</strong><span data-hi="मोदीपुरम, मेरठ">Modipuram, Meerut</span></div></div>
+            <div class="venue"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"/></svg><div><strong>NOVAH Rooftop</strong><span data-hi="तीसरी मंज़िल, डीएमए स्कूल के सामने, पल्लवपुरम, मेरठ">3rd floor, opposite DMA School, Pallavpuram, Meerut</span></div></div>
             <div class="past-badge" data-hi="सम्पन्न">Celebrated</div>
+            <div class="links"></div>
           </div>
-          <div class="links"></div>
         </article>
 
         <article class="day wed reveal" id="day-30"
           data-start="20261130T190000" data-end="2026-11-30T23:59:00+05:30" data-end-ics="20261130T235900"
           data-title="Wedding · Shivanshi weds Shashwat"
-          data-place="Grand Rishala, NH-58, Kanker Khera, Meerut, Uttar Pradesh">
-          <div class="dcol"><span class="dnum" data-hi="३०">30</span><span class="dmon" data-hi="नवंबर">Nov</span><span class="ddow" data-hi="सोमवार">Monday</span></div>
-          <div>
-            <h3><svg class="motif" viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 18.5h24c-1.4 5-6.2 8.5-12 8.5S5.4 23.5 4 18.5z"/><path d="M16 4c2.6 3.2 3.4 5.6 3.4 7.6a3.4 3.4 0 0 1-6.8 0c0-2 .8-4.4 3.4-7.6z"/><path d="M11 30h10"/></svg><span data-hi="शुभ विवाह">Wedding</span></h3>
+          data-place="Grand Rishala Resort, Khirwa Rd, Kanker Khera Bypass, Meerut, Uttar Pradesh 250001"
+          data-map="https://maps.app.goo.gl/9JJ7yEkKCTfctee86">
+          <figure class="art day-art wed-art"><img src="art/wedding.jpg" width="470" height="652" loading="lazy" alt="Illustration of the bride and groom taking pheras around the sacred fire under an arch, with lotuses">
+            <figcaption class="ov">
+              <span class="small" data-hi="शुभ विवाह">Shubh Vivah</span>
+              <span class="script" data-hi="शिवांशी संग शाश्वत">Shivanshi <span class="amp">&amp;</span> Shashwat</span>
+              <span class="numdate" data-hi="३० · ११ · २०२६">30 · 11 · 2026</span>
+            </figcaption>
+          </figure>
+          <div class="day-info">
+          <div class="day-top"><div class="dcol"><span class="dnum" data-hi="३०">30</span><span class="dmon" data-hi="नवंबर">Nov</span><span class="ddow" data-hi="सोमवार">Monday</span></div>
+            <h3><svg class="motif" viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 18.5h24c-1.4 5-6.2 8.5-12 8.5S5.4 23.5 4 18.5z"/><path d="M16 4c2.6 3.2 3.4 5.6 3.4 7.6a3.4 3.4 0 0 1-6.8 0c0-2 .8-4.4 3.4-7.6z"/><path d="M11 30h10"/></svg><span data-hi="शुभ विवाह">Wedding</span></h3></div>
             <div class="timings">
               <div class="timing"><b data-hi="सायं ७:००">7:00 PM</b><span data-hi="बारात स्वागत">Baraat Swagat</span></div>
               <div class="timing"><b data-hi="रात्रि ८:००">8:00 PM</b><span data-hi="प्रीतिभोज">Dinner</span></div>
             </div>
-            <div class="venue"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"/></svg><div><strong>Grand Rishala</strong><span data-hi="एनएच-58, कंकरखेड़ा, मेरठ">NH-58, Kanker Khera, Meerut</span></div></div>
+            <div class="venue"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"/></svg><div><strong>Grand Rishala Resort</strong><span data-hi="खिरवा रोड, कंकरखेड़ा बाईपास, मेरठ">Khirwa Road, Kanker Khera Bypass, Meerut</span></div></div>
             <div class="past-badge" data-hi="सम्पन्न">Celebrated</div>
+            <div class="links"></div>
           </div>
-          <div class="links"></div>
         </article>
       </div>
     </section>
@@ -885,6 +954,13 @@
     <section class="block" id="rsvp">
       <h2 class="reveal" data-hi="कृपया उत्तर दें">R.S.V.P.</h2>
       <div class="rsvp-wrap reveal">
+        <figure class="art rsvp-art">
+          <img src="art/rsvp.jpg" width="415" height="699" loading="lazy" alt="Illustration of a carved sandstone arch opening onto a green landscape with a peacock and lotuses">
+          <figcaption class="ov">
+            <span class="script" data-hi="आपकी प्रतीक्षा है">We await you</span>
+          </figcaption>
+        </figure>
+        <div class="rsvp-main">
         <div class="rsvp-contact">
           <div class="who" data-hi="अमित त्यागी">Amit Tyagi</div>
           <p class="phone"><a href="tel:+919811529201">+91 98115 29201</a></p>
@@ -971,6 +1047,7 @@
             <p data-hi="हमारे उत्सव में शामिल होने और आशीर्वाद देने के लिए हृदय से धन्यवाद।">Thank you for celebrating with us and for your blessings.</p>
           </div>
         </div>
+        </div>
       </div>
     </section>
   </main>
@@ -998,7 +1075,7 @@
 
   var STR = {
     en: {
-      calendar: "Add to calendar", google: "Google Calendar", ics: "Apple / Outlook (.ics)", location: "Location",
+      calendar: "Add to calendar", google: "Google Calendar", ics: "Apple / Outlook (.ics)", location: "Open in Maps",
       mapsLabel: function (p) { return "Open " + p + " in Google Maps"; },
       eName: "Please add your name so the family knows who is replying.",
       eAtt: "Please choose whether you will attend.",
@@ -1015,7 +1092,7 @@
       copied: "Copied", copy: "Copy message", selected: "Selected, press copy"
     },
     hi: {
-      calendar: "कैलेंडर में जोड़ें", google: "गूगल कैलेंडर", ics: "ऐप्पल / आउटलुक (.ics)", location: "स्थान देखें",
+      calendar: "कैलेंडर में जोड़ें", google: "गूगल कैलेंडर", ics: "ऐप्पल / आउटलुक (.ics)", location: "मैप में देखें",
       mapsLabel: function (p) { return p + " गूगल मैप्स में खोलें"; },
       eName: "कृपया अपना नाम लिखें ताकि परिवार को पता चले कि उत्तर किसका है।",
       eAtt: "कृपया बताएँ कि आप आएँगे या नहीं।",
@@ -1197,7 +1274,7 @@
   var CAL = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 2h2v2h6V2h2v2h3a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3V2Zm12 8H5v9h14v-9Z"/></svg>';
   var DETAILS = "Shivanshi weds Shashwat. With best compliments from the Tyagi Family.";
   function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;"); }
-  function mapUrl(place) { return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(place); }
+  function mapUrl(d) { return d.map || "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(d.place); }
   function gcalUrl(d) {
     return "https://calendar.google.com/calendar/render?action=TEMPLATE&text=" + encodeURIComponent(d.title) +
       "&dates=" + d.start + "/" + d.endIcs + "&ctz=Asia/Kolkata&location=" + encodeURIComponent(d.place) +
@@ -1216,7 +1293,7 @@
     document.querySelectorAll(".day").forEach(function (ev) {
       var d = ev.dataset, venue = d.place.split(",")[0];
       ev.querySelector(".links").innerHTML =
-        '<a class="link-btn" href="' + esc(mapUrl(d.place)) + '" target="_blank" rel="noopener" aria-label="' + esc(S.mapsLabel(venue)) + '">' + PIN + '<span' + (lang === "hi" ? ' lang="hi"' : "") + '>' + S.location + '</span></a>' +
+        '<a class="link-btn" href="' + esc(mapUrl(d)) + '" target="_blank" rel="noopener" aria-label="' + esc(S.mapsLabel(venue)) + '">' + PIN + '<span' + (lang === "hi" ? ' lang="hi"' : "") + '>' + S.location + '</span></a>' +
         '<details class="cal"><summary class="link-btn">' + CAL + '<span' + (lang === "hi" ? ' lang="hi"' : "") + '>' + S.calendar + '</span></summary>' +
         '<div class="cal-menu"><a href="' + esc(gcalUrl(d)) + '" target="_blank" rel="noopener">' + S.google + '</a>' +
         '<a href="' + esc(icsUrl(d)) + '" download="' + esc(d.title.split(" ·")[0].toLowerCase().replace(/[^a-z]+/g, "-")) + '.ics">' + S.ics + '</a></div></details>';
