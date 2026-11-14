@@ -2,7 +2,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Italiana&family=Jost:wght@300;400;500&family=Pinyon+Script&family=Tiro+Devanagari+Hindi&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Italiana&family=Jost:wght@300;400;500&family=Great+Vibes&family=Amita:wght@700&family=Tiro+Devanagari+Hindi&display=swap">
 <style>
   /* Layout: a printed Indian wedding card. A maroon hero card under a marigold toran,
      then ivory sections: the invitation, three functions by day, RSVP to Amit Tyagi. */
@@ -20,7 +20,8 @@
     --hero-muted: #E2C3A8;
     --hero-gold: #E3B95E;
     --error: #A2412F;
-    --font-script: "Pinyon Script", "Snell Roundhand", "Apple Chancery", cursive;
+    --font-script: "Great Vibes", "Snell Roundhand", "Apple Chancery", cursive;
+    --font-deva-script: "Amita", "Tiro Devanagari Hindi", "Noto Serif Devanagari", serif;
     --font-display: "Italiana", "Didot", "Bodoni 72", Georgia, serif;
     --font-deva: "Tiro Devanagari Hindi", "Noto Serif Devanagari", "Kohinoor Devanagari", serif;
     --font-body: "Jost", "Avenir Next", "Segoe UI", system-ui, sans-serif;
@@ -270,9 +271,10 @@
   .names {
     font-family: var(--font-script);
     font-weight: 400;
-    font-size: clamp(60px, 13vw, 124px);
-    line-height: 1;
+    font-size: clamp(64px, 14vw, 128px);
+    line-height: 1.05;
     margin: 18px 0 0;
+    text-shadow: 0 2px 18px rgb(0 0 0 / .25);
     text-wrap: balance;
   }
   .names span { display: inline-block; }
@@ -286,6 +288,26 @@
     margin-block: 14px 10px;
     padding-left: .4em;
   }
+  /* Bilingual text: English and Hindi share one grid cell and swap with a soft blur.
+     --i staggers the swap so the card changes language as one wave, top to bottom. */
+  .bi, .names .bi { display: inline-grid; }
+  .bi > span {
+    grid-area: 1 / 1;
+    justify-self: center;
+    align-self: center;
+    transition:
+      opacity 420ms ease calc(var(--i, 0) * 70ms),
+      filter 420ms ease calc(var(--i, 0) * 70ms),
+      transform 600ms var(--ease-out) calc(var(--i, 0) * 70ms);
+  }
+  .bi > .hi { opacity: 0; filter: blur(6px); transform: translateY(10px); }
+  [data-show="hi"] .bi > .en { opacity: 0; filter: blur(6px); transform: translateY(-10px); }
+  [data-show="hi"] .bi > .hi { opacity: 1; filter: none; transform: none; }
+  .hi { font-family: var(--font-deva); letter-spacing: 0; text-transform: none; }
+  .names .hi { font-family: var(--font-deva-script); font-weight: 700; font-size: .6em; line-height: 1.5; }
+  .names .weds .hi { font-family: var(--font-deva-script); font-size: 1.9em; line-height: 1; }
+  .gate-names .hi { font-family: var(--font-deva-script); font-weight: 700; font-size: .66em; }
+
   .when {
     margin: 30px auto 0;
     display: grid;
@@ -543,6 +565,7 @@
     html { scroll-behavior: auto; }
     .in, .fade-in, .seal { animation: fade 250ms ease both; animation-delay: 0ms; }
     .mandala, .glint { animation: none; }
+    .bi > span, [data-show="hi"] .bi > span { filter: none !important; transform: none !important; transition: opacity 300ms ease; }
     .glint { display: none; }
     .btn:active, .link-btn:active, .choice input:active + span { transform: none; }
     .result { @starting-style { opacity: 0; transform: none; } }
@@ -566,9 +589,9 @@
   <div class="door r"><div class="toran" aria-hidden="true"></div><span class="knob"></span></div>
   <div class="gate-center">
     <img class="seal" src="monogram.jpg" width="520" height="520" alt="">
-    <div class="gate-names in" style="--d:120ms;--y:12px">Shivanshi &amp; Shashwat</div>
-    <div class="gate-date in" style="--d:220ms;--y:6px">28 · 29 · 30 November 2026</div>
-    <div class="gate-hint fade-in" style="--d:700ms">Tap to open</div>
+    <div class="gate-names in" style="--d:120ms;--y:12px"><span class="bi" style="--i:0"><span class="en">Shivanshi &amp; Shashwat</span><span class="hi" lang="hi" aria-hidden="true">शिवांशी संग शाश्वत</span></span></div>
+    <div class="gate-date in" style="--d:220ms;--y:6px"><span class="bi" style="--i:1"><span class="en">28 · 29 · 30 November 2026</span><span class="hi" lang="hi" aria-hidden="true">२८ · २९ · ३० नवंबर २०२६</span></span></div>
+    <div class="gate-hint fade-in" style="--d:700ms"><span class="bi" style="--i:2"><span class="en">Tap to open</span><span class="hi" lang="hi" aria-hidden="true">खोलने के लिए टैप करें</span></span></div>
   </div>
 </div>
 
@@ -585,24 +608,24 @@
       </div>
 
 
-      <h1 class="names">
-        <span class="in" style="--y:16px;--dur:800ms">Shivanshi</span>
-        <span class="weds fade-in" style="--d:60ms">weds</span>
-        <span class="in" style="--y:16px;--dur:800ms;--d:110ms">Shashwat</span>
+      <h1 class="names" aria-label="Shivanshi weds Shashwat">
+        <span class="in" style="--y:16px;--dur:800ms"><span class="bi" style="--i:0"><span class="en">Shivanshi</span><span class="hi" lang="hi" aria-hidden="true">शिवांशी</span></span></span>
+        <span class="weds fade-in" style="--d:60ms"><span class="bi" style="--i:1"><span class="en">weds</span><span class="hi" lang="hi" aria-hidden="true">संग</span></span></span>
+        <span class="in" style="--y:16px;--dur:800ms;--d:110ms"><span class="bi" style="--i:2"><span class="en">Shashwat</span><span class="hi" lang="hi" aria-hidden="true">शाश्वत</span></span></span>
       </h1>
 
       <div class="when in" style="--d:220ms;--y:6px" aria-label="Monday, 30 November 2026">
-        <div class="side">Monday</div>
-        <div><span class="day">30</span><span class="month">November</span></div>
-        <div class="side">2026</div>
+        <div class="side"><span class="bi" style="--i:3"><span class="en">Monday</span><span class="hi" lang="hi" aria-hidden="true">सोमवार</span></span></div>
+        <div><span class="day"><span class="bi" style="--i:3"><span class="en">30</span><span class="hi" lang="hi" aria-hidden="true">३०</span></span></span><span class="month"><span class="bi" style="--i:4"><span class="en">November</span><span class="hi" lang="hi" aria-hidden="true">नवंबर</span></span></span></div>
+        <div class="side"><span class="bi" style="--i:3"><span class="en">2026</span><span class="hi" lang="hi" aria-hidden="true">२०२६</span></span></div>
       </div>
-      <p class="place in" style="--d:220ms;--y:6px">Meerut, Uttar Pradesh</p>
+      <p class="place in" style="--d:220ms;--y:6px"><span class="bi" style="--i:5"><span class="en">Meerut, Uttar Pradesh</span><span class="hi" lang="hi" aria-hidden="true">मेरठ, उत्तर प्रदेश</span></span></p>
 
       <div class="countdown in" style="--d:320ms;--y:4px" id="countdown" aria-label="Time until the wedding">
-        <div><b id="cd-d">--</b><small>Days</small></div>
-        <div><b id="cd-h">--</b><small>Hours</small></div>
-        <div><b id="cd-m">--</b><small>Minutes</small></div>
-        <div><b id="cd-s">--</b><small>Seconds</small></div>
+        <div><b id="cd-d">--</b><small><span class="bi" style="--i:6"><span class="en">Days</span><span class="hi" lang="hi" aria-hidden="true">दिन</span></span></small></div>
+        <div><b id="cd-h">--</b><small><span class="bi" style="--i:6"><span class="en">Hours</span><span class="hi" lang="hi" aria-hidden="true">घंटे</span></span></small></div>
+        <div><b id="cd-m">--</b><small><span class="bi" style="--i:6"><span class="en">Minutes</span><span class="hi" lang="hi" aria-hidden="true">मिनट</span></span></small></div>
+        <div><b id="cd-s">--</b><small><span class="bi" style="--i:6"><span class="en">Seconds</span><span class="hi" lang="hi" aria-hidden="true">सेकंड</span></span></small></div>
       </div>
       <p class="countdown-done" id="countdown-done" hidden>Shubh Vivah</p>
 
@@ -875,6 +898,7 @@
     try { sessionStorage.setItem("ss-gate-opened", "1"); } catch (e) {}
     gate.classList.add("opening");
     setTimeout(function () { root.classList.remove("gate-hold"); }, 380);
+    setTimeout(cycleHero, 1800);
     setTimeout(function () { showerPetals(); }, 600);
     setTimeout(function () { root.classList.remove("has-gate"); gate.remove(); }, 1350);
   }
@@ -883,10 +907,27 @@
     gate.addEventListener("keydown", function (e) {
       if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openGate(); }
     });
-    autoOpen = setTimeout(openGate, 3200); // opens on its own if the guest doesn't tap
+    autoOpen = setTimeout(openGate, 3800); // opens on its own if the guest doesn't tap
   } else {
     gate.remove();
+    setTimeout(cycleHero, 1800);
   }
+
+  // ---- English / Hindi swap ----
+  // The doors switch to Hindi once while they wait; the card then alternates every 4s.
+  // Guests who prefer reduced motion stay on English, with no automatic changes.
+  var heroEl = document.querySelector(".hero");
+  var gateCenter = document.querySelector(".gate-center");
+  var langTimer;
+  function cycleHero() {
+    clearInterval(langTimer);
+    if (reduceMotion) return;
+    langTimer = setInterval(function () {
+      if (document.hidden) return;
+      heroEl.dataset.show = heroEl.dataset.show === "hi" ? "en" : "hi";
+    }, 4000);
+  }
+  if (gateCenter && !reduceMotion) setTimeout(function () { gateCenter.dataset.show = "hi"; }, 1800);
 
   // ---- Countdown ----
   var cd = document.getElementById("countdown");
