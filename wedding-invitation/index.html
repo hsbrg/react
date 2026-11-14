@@ -733,6 +733,7 @@
   /* ---------- Phones ---------- */
   /* Phones and tablets held upright: one column, art on top */
   @media (max-width: 900px) {
+    :root { --artw: min(100vw, 520px); }
     body { font-size: 16px; }
     .pager { display: none; }
     .page { padding-block: calc(68px + env(safe-area-inset-top, 0px)) calc(28px + env(safe-area-inset-bottom, 0px)); }
@@ -742,11 +743,11 @@
     html { scroll-snap-type: y proximity; }
     .page.has-art { align-items: start; padding-top: 0; }
     .split > .art {
-      width: min(100vw, 520px); max-width: none; margin: 0 -16px; justify-self: center;
+      width: var(--artw); max-width: none; margin: 0 -16px; justify-self: center;
       -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 70%, transparent 98%);
       mask-image: linear-gradient(to bottom, #000 0, #000 70%, transparent 98%);
     }
-    .split > .event-info, .split > .invite-text-col { margin-top: calc(min(100vw, 520px) * -.2); }
+    .split > .event-info, .split > .invite-text-col { margin-top: calc(var(--artw) * -.2); }
     .split > .invite-text-col { gap: 10px; }
     .event-info { justify-items: center; text-align: center; }
     .day-top { justify-content: center; gap: 14px; }
@@ -777,9 +778,9 @@
     .replay-btn .replay-label, .music-btn .music-label { display: none; }
     .music-btn { padding: 0 12px; }
     #top .inst { display: none; }
-    #invitation .inst { right: 4px; bottom: auto; top: calc(min(100vw, 520px) * .98); width: 92px; }
-    #day-28 .inst { right: 0; bottom: auto; top: calc(min(100vw, 520px) * 1.0); width: 120px; }
-    #day-29 .inst { left: auto; right: 6px; bottom: auto; top: calc(min(100vw, 520px) * 1.0); width: 80px; }
+    #invitation .inst { right: 4px; bottom: auto; top: calc(var(--artw) * .98); width: 92px; }
+    #day-28 .inst { right: 0; bottom: auto; top: calc(var(--artw) * 1.0); width: 120px; }
+    #day-29 .inst { left: auto; right: 6px; bottom: auto; top: calc(var(--artw) * 1.0); width: 80px; }
     #day-30 .inst { left: auto; translate: none; right: 6px; top: calc(44px + env(safe-area-inset-top, 0px)); height: 104px; }
     #rsvp .inst { left: 6px; bottom: 12px; height: 140px; }
     .tap-hint { left: auto; right: 16%; bottom: auto; top: 16%; translate: none; padding: 7px; border-radius: 50%; }
@@ -809,6 +810,124 @@
     .gate-date { letter-spacing: .14em; font-size: 14px; }
     .date .fn { font-size: 12px; }
   }
+  /* ================= Timeline and Swipe: the card stays put, pages change inside it ================= */
+  .tl, .stories, .swipe-hint, .deck-arrow { display: none; }
+  html:is([data-mode="timeline"], [data-mode="swipe"]) { scroll-snap-type: none; height: 100%; overflow: hidden; }
+  html:is([data-mode="timeline"], [data-mode="swipe"]) body { height: 100%; overflow: hidden; overscroll-behavior: none; }
+  html:is([data-mode="timeline"], [data-mode="swipe"]) main { display: contents; }
+  html:is([data-mode="timeline"], [data-mode="swipe"]) .pager { display: none; }
+  html:is([data-mode="timeline"], [data-mode="swipe"]) #page { position: fixed; inset: 0; background: #2B0A12; }
+  /* Each page keeps its decorations clipped, like the classic site; only its content block scrolls, and only when it must */
+  html:is([data-mode="timeline"], [data-mode="swipe"]) .page {
+    min-height: 0; height: 100%; overflow: hidden; scroll-snap-align: none; outline: none;
+    grid-template-rows: minmax(0, 1fr); padding-left: 0; padding-right: 0;
+  }
+  html:is([data-mode="timeline"], [data-mode="swipe"]) .page > .page-inner {
+    max-height: 100%; align-self: safe center; overflow-x: hidden; overflow-y: auto; overscroll-behavior-y: contain; scrollbar-width: none;
+    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  html:is([data-mode="timeline"], [data-mode="swipe"]) .page > .page-inner::-webkit-scrollbar { display: none; }
+  @media (hover: hover) and (pointer: fine) {
+    html:is([data-mode="timeline"], [data-mode="swipe"]) .deck-arrow {
+      display: grid; place-items: center; position: fixed; z-index: 56; top: 50%; translate: 0 -50%; width: 48px; height: 48px; border-radius: 50%;
+      border: 1px solid rgb(227 185 94 / .55); background: rgb(46 6 17 / .72); color: #F3D58A; cursor: pointer;
+      transition: opacity 250ms ease, background-color 200ms ease, transform 160ms var(--ease-out);
+    }
+    .deck-arrow svg { width: 22px; height: 22px; }
+    .deck-arrow.prev { left: 18px; } .deck-arrow.next { right: 18px; }
+    .deck-arrow:hover { background: rgb(74 13 29 / .92); }
+    .deck-arrow:active { transform: scale(.94); }
+    html.at-first .deck-arrow.prev, html.at-last .deck-arrow.next { opacity: 0; pointer-events: none; }
+  }
+  .deck-arrow:focus-visible, .tl button:focus-visible, .stories button:focus-visible { outline: 2px solid #F3D58A; outline-offset: 2px; }
+
+  @media (max-width: 900px) {
+    html[data-mode="timeline"] { --artw: min(100vw, 520px, max(260px, calc(100dvh - 380px))); }
+    html[data-mode="swipe"] { --artw: min(100vw, 520px, max(260px, calc(100dvh - 320px))); }
+    html:is([data-mode="timeline"], [data-mode="swipe"]) .split > .art { margin-inline: auto; }
+  }
+  @media (min-width: 901px) {
+    html[data-mode="timeline"] :is(.invite-art, .event-art) { width: clamp(300px, calc((100svh - 188px) * .8), 720px); margin-block: 0; }
+    html[data-mode="swipe"] :is(.invite-art, .event-art) { width: clamp(300px, calc((100svh - 120px) * .8), 720px); margin-block: 0; }
+    html[data-mode="timeline"] #top { padding-top: calc(54px + env(safe-area-inset-top, 0px)); }
+  }
+  /* Phones: the directions button rides along the bottom of the page until its own place scrolls into view */
+  @media (max-width: 900px) {
+    html:is([data-mode="timeline"], [data-mode="swipe"]) .day .links {
+      position: sticky; bottom: 0; z-index: 3; padding: 18px 0 8px; margin-bottom: -8px;
+      background: linear-gradient(to bottom, color-mix(in srgb, var(--paper) 0%, transparent), var(--paper) 26px);
+    }
+    html:is([data-mode="timeline"], [data-mode="swipe"]) .cal-menu { top: auto; bottom: calc(100% + 4px); }
+  }
+  /* ---- Timeline: one card; the outgoing page slides away as the next arrives ---- */
+  html[data-mode="timeline"] .page { position: absolute; inset: 0; display: none; padding-bottom: calc(108px + env(safe-area-inset-bottom, 0px)); }
+  html[data-mode="timeline"] .page.is-on, html[data-mode="timeline"] .page.is-off { display: grid; }
+  html[data-mode="timeline"] .page.is-on { z-index: 2; animation: tl-in 620ms var(--ease-out) both; }
+  html[data-mode="timeline"] .page.is-on.no-anim { animation: none; }
+  html[data-mode="timeline"] .page.is-off { z-index: 1; animation: tl-out 480ms var(--ease-out) both; pointer-events: none; }
+  @keyframes tl-in { from { opacity: 0; transform: translateX(calc(var(--dir, 1) * 40px)) scale(1.015); } }
+  @keyframes tl-out { to { opacity: 0; transform: translateX(calc(var(--dir, 1) * -40px)) scale(.985); } }
+  /* the journey map */
+  html[data-mode="timeline"] .tl {
+    display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); position: fixed; z-index: 55;
+    left: 50%; translate: -50% 0; bottom: max(10px, env(safe-area-inset-bottom, 0px)); width: min(calc(100% - 16px), 640px);
+    padding: 8px 4px 6px; border-radius: 22px; color: #FFF0D6;
+    background: linear-gradient(180deg, rgb(63 9 24 / .9), rgb(40 5 14 / .92)); border: 1px solid rgb(227 185 94 / .45);
+    box-shadow: 0 16px 40px -14px rgb(0 0 0 / .65), inset 0 1px 0 rgb(255 255 255 / .06);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  }
+  .tl-rail { position: absolute; left: calc(100% / 12 + 2px); right: calc(100% / 12 + 2px); top: 26px; height: 0; border-top: 2px dashed rgb(227 185 94 / .38); pointer-events: none; }
+  .tl-fill { position: absolute; left: 0; top: -2px; height: 2px; width: calc(var(--at, 0) / 5 * 100%); background: linear-gradient(90deg, #E3B95E, #F8E2A6); transition: width 640ms var(--ease-out); }
+  .tl-dot { position: absolute; top: -1px; left: calc(var(--at, 0) / 5 * 100%); width: 46px; height: 46px; translate: -50% -50%; border-radius: 50%;
+    background: radial-gradient(circle, rgb(255 214 140 / .55), rgb(255 214 140 / 0) 70%); transition: left 640ms var(--ease-out); }
+  .tl button { position: relative; display: grid; justify-items: center; gap: 4px; min-height: 60px; padding: 2px 0 0; border: 0; background: none; color: inherit; cursor: pointer; font: inherit; -webkit-tap-highlight-color: transparent; }
+  .tl-node { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: #2A0811; border: 1.5px solid rgb(227 185 94 / .55); color: #F3D58A;
+    transition: background-color 300ms ease, color 300ms ease, transform 300ms var(--ease-out), border-color 300ms ease; }
+  .tl-node svg { width: 18px; height: 18px; }
+  .tl-node b { font-family: var(--font-display); font-weight: 500; font-size: 16px; line-height: 1; }
+  .tl-node b[lang="hi"] { font-family: var(--font-deva); font-size: 15px; }
+  .tl-lbl { font-size: 10.5px; line-height: 1.2; letter-spacing: .02em; white-space: nowrap; color: rgb(255 240 214 / .72); transition: color 300ms ease; }
+  .tl-lbl[lang="hi"] { font-size: 12px; }
+  .tl button.done .tl-node { background: rgb(227 185 94 / .2); border-color: #E3B95E; }
+  .tl button.on .tl-node { background: #F3D58A; color: #3E0B18; border-color: #F3D58A; transform: scale(1.1); }
+  .tl button.on .tl-lbl { color: #F3D58A; font-weight: 600; }
+  html.show-hint .tl button.next .tl-node { animation: next-stop 1.3s ease-in-out 3; }
+  @keyframes next-stop { 50% { box-shadow: 0 0 0 6px rgb(243 213 138 / .25); } }
+  .tl button:active .tl-node { transform: scale(.92); }
+  @media (min-width: 520px) { .tl-lbl { font-size: 12px; } .tl-lbl[lang="hi"] { font-size: 13px; } }
+
+  /* ---- Swipe: pages side by side, a flick moves one page ---- */
+  html[data-mode="swipe"] #page { display: flex; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; }
+  html[data-mode="swipe"] #page::-webkit-scrollbar { display: none; }
+  html[data-mode="swipe"] .page { flex: 0 0 100%; scroll-snap-align: start; scroll-snap-stop: always; }
+  html[data-mode="swipe"] .controls { top: calc(env(safe-area-inset-top, 0px) + 26px); }
+  html[data-mode="swipe"] .page:not(.has-art) { padding-top: calc(90px + env(safe-area-inset-top, 0px)); }
+  html[data-mode="swipe"] .stories {
+    display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 5px; position: fixed; z-index: 92;
+    top: calc(env(safe-area-inset-top, 0px) + 2px); left: max(10px, env(safe-area-inset-left, 0px)); right: max(10px, env(safe-area-inset-right, 0px));
+    color: var(--pager-ink, #FBEBD3); transition: color 400ms ease;
+  }
+  .stories button { height: 24px; padding: 0; border: 0; background: none; cursor: pointer; display: grid; align-items: center; -webkit-tap-highlight-color: transparent; }
+  .stories i { display: block; height: 3px; border-radius: 3px; background: currentColor; opacity: .26; transition: opacity 300ms ease; position: relative; overflow: hidden; }
+  .stories .done i { opacity: .8; }
+  .stories .on i { opacity: .3; }
+  .stories .on i::after { content: ""; position: absolute; inset: 0; background: currentColor; border-radius: inherit; transform-origin: left; animation: story-fill 900ms var(--ease-out) forwards; }
+  @keyframes story-fill { from { transform: scaleX(0); } }
+  html[data-mode="swipe"] .swipe-hint {
+    display: inline-flex; align-items: center; gap: 10px; position: fixed; z-index: 56; left: 50%; translate: -50% 0;
+    bottom: calc(max(14px, env(safe-area-inset-bottom, 0px)) + 4px); padding: 10px 18px; border-radius: 999px; white-space: nowrap;
+    background: rgb(30 4 10 / .82); color: #FFF0D6; font-size: 14px; border: 1px solid rgb(227 185 94 / .5);
+    opacity: 0; transform: translateY(12px); pointer-events: none; transition: opacity 400ms ease, transform 400ms var(--ease-out);
+  }
+  .swipe-hint [lang="hi"] { font-size: 15px; }
+  html.show-hint[data-mode="swipe"] .swipe-hint { opacity: 1; transform: none; }
+  .sh-hand { display: inline-grid; color: #F3D58A; }
+  .sh-hand svg { width: 22px; height: 22px; }
+  html.show-hint .sh-hand { animation: hand-swipe 1.5s ease-in-out infinite; }
+  @keyframes hand-swipe { 0%, 100% { transform: translateX(8px) rotate(6deg); } 50% { transform: translateX(-10px) rotate(-6deg); } }
+  html[data-mode="swipe"] #page.peek .page { animation: peek 1.3s cubic-bezier(.45, 0, .2, 1) .2s 2; }
+  @keyframes peek { 0%, 100% { transform: none; } 45% { transform: translateX(-64px); } }
+
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     .in, .fade-in { animation: fade 250ms ease both; animation-delay: 0ms; }
@@ -827,6 +946,8 @@
     .page.lit .map-cta .pin svg, .map-cta .pin::after, .today-cta .map-cta .pin::after, .gate-hint { animation: none; }
     .map-cta:active { transform: none; }
     .song-sheet { transition: none; }
+    html[data-mode] .page.is-on, html[data-mode] .page.is-off, #page.peek .page, .sh-hand, .tl button.next .tl-node, .stories .on i::after { animation: none !important; }
+    .tl-fill, .tl-dot { transition: none; }
     .status-card:not([hidden]), .yes-group:not([hidden]), .cal-menu { @starting-style { transform: none; } }
   }
 </style>
@@ -840,6 +961,7 @@
     if (lang !== "hi" && lang !== "en") lang = /^hi\b/i.test(navigator.language || "") ? "hi" : "en";
     root.dataset.lang = lang;
     root.lang = lang;
+    root.dataset.mode = "scroll";
     if (!location.hash) root.classList.add("has-gate", "gate-hold");
   })();
 </script>
@@ -893,6 +1015,16 @@
     </div>
   </div>
 
+  <!-- Timeline mode: the journey map -->
+  <nav class="tl" aria-label="The celebrations" data-hi-aria="समारोह">
+    <div class="tl-rail" aria-hidden="true"><i class="tl-fill"></i><i class="tl-dot"></i></div>
+    <button type="button" data-go="top"><span class="tl-node"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 21V10a7 7 0 0 1 14 0v11M5 21h14M12 3v18"/></svg></span><span class="tl-lbl" data-hi="स्वागत">Welcome</span></button><button type="button" data-go="invitation"><span class="tl-node"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M3.5 6.5h17v11h-17z"/><path d="M3.5 7l8.5 6.5L20.5 7"/></svg></span><span class="tl-lbl" data-hi="निमंत्रण">Invitation</span></button><button type="button" data-go="day-28"><span class="tl-node"><b data-hi="२८">28</b></span><span class="tl-lbl" data-hi="सगाई">Engagement</span></button><button type="button" data-go="day-29"><span class="tl-node"><b data-hi="२९">29</b></span><span class="tl-lbl" data-hi="मेहंदी">Mehendi</span></button><button type="button" data-go="day-30"><span class="tl-node"><b data-hi="३०">30</b></span><span class="tl-lbl" data-hi="विवाह">Wedding</span></button><button type="button" data-go="rsvp"><span class="tl-node"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2z"/></svg></span><span class="tl-lbl" data-hi="उत्तर दें">R.S.V.P.</span></button>
+  </nav>
+  <!-- Swipe mode: story bars along the top, and a first-time hint -->
+  <nav class="stories" aria-label="Pages" data-hi-aria="पृष्ठ"><button type="button" data-go="top" aria-label="Welcome" data-hi-aria="स्वागत"><i></i></button><button type="button" data-go="invitation" aria-label="Invitation" data-hi-aria="निमंत्रण"><i></i></button><button type="button" data-go="day-28" aria-label="Engagement" data-hi-aria="सगाई"><i></i></button><button type="button" data-go="day-29" aria-label="Mehendi and Sangeet" data-hi-aria="मेहंदी व संगीत"><i></i></button><button type="button" data-go="day-30" aria-label="Wedding" data-hi-aria="शुभ विवाह"><i></i></button><button type="button" data-go="rsvp" aria-label="R.S.V.P." data-hi-aria="उत्तर दें"><i></i></button></nav>
+  <div class="swipe-hint" aria-hidden="true"><span class="sh-hand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V10m0-1.5a1.5 1.5 0 0 1 3 0V11m0-1a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1-6 6h-.6a6 6 0 0 1-4.6-2.2L4.4 15.4a1.6 1.6 0 0 1 2.3-2.2L9 15"/></svg></span><span data-hi="समारोह देखने के लिए स्वाइप करें">Swipe to see the celebrations</span></div>
+  <button type="button" class="deck-arrow prev" data-step="-1" aria-label="Previous page" data-hi-aria="पिछला पृष्ठ"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+  <button type="button" class="deck-arrow next" data-step="1" aria-label="Next page" data-hi-aria="अगला पृष्ठ"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
   <nav class="pager" aria-label="Pages">
     <a href="#top" data-for="top" aria-label="Welcome" data-hi-aria="स्वागत"><span class="lbl" data-hi="स्वागत">Welcome</span></a>
     <a href="#invitation" data-for="invitation" aria-label="Invitation" data-hi-aria="निमंत्रण"><span class="lbl" data-hi="निमंत्रण">Invitation</span></a>
@@ -1651,6 +1783,7 @@
     setTimeout(function () { showerPetals(); }, 900);
     setTimeout(function () {
       root.classList.remove("has-gate");
+      if (window.ssOpened) window.ssOpened();
       if (hadFocus) document.getElementById("names").focus({ preventScroll: true });
     }, reduceMotion ? 500 : 1800);
   }
@@ -1677,6 +1810,7 @@
     delete document.querySelector(".gate-center").dataset.show;
     if (!reduceMotion) gateIlls.forEach(function (svg) { svg.classList.remove("is-drawn"); });
     window.scrollTo({ top: 0, behavior: "auto" });
+    if (window.ssGo) window.ssGo("top", true);
     root.classList.add("has-gate");
     requestAnimationFrame(function () {
       requestAnimationFrame(function () {
@@ -2526,20 +2660,146 @@
     });
   }
 
-  // ---- Page dots: mark the page crossing the middle of the screen, and take on its ink colour ----
+  // =====================================================================
+  // ---- Moving between pages ----
+  // Classic: the site scrolls. Timeline: the card stays put and a journey map
+  // along the bottom jumps between the functions. Swipe: pages sit side by
+  // side and are swiped like stories. Everything a page does on arrival
+  // (music, particles, the letters) is shared by all three.
+  // =====================================================================
+  var MODE = root.dataset.mode || "scroll";
+  var stage = document.getElementById("page");
+  var pages = Array.prototype.slice.call(document.querySelectorAll(".page"));
   var pagerLinks = document.querySelectorAll(".pager a");
-  if ("IntersectionObserver" in window) {
-    var pio = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        if (!en.isIntersecting) return;
-        pagerLinks.forEach(function (a) { a.setAttribute("aria-current", String(a.dataset.for === en.target.id)); });
-        if (!(root.classList.contains("gate-hold") && en.target.id === "top")) light(en.target);
-        Amb.setActive(en.target.id);
-        Music.setTheme(en.target.id);
-        root.style.setProperty("--pager-ink", getComputedStyle(en.target).getPropertyValue("--ink").trim());
+  function arrive(sec) {
+    pagerLinks.forEach(function (a) { a.setAttribute("aria-current", String(a.dataset.for === sec.id)); });
+    if (!(root.classList.contains("gate-hold") && sec.id === "top")) light(sec);
+    Amb.setActive(sec.id);
+    Music.setTheme(sec.id);
+    root.style.setProperty("--pager-ink", getComputedStyle(sec).getPropertyValue("--ink").trim());
+  }
+  if (MODE === "scroll") {
+    // Page dots: mark the page crossing the middle of the screen
+    if ("IntersectionObserver" in window) {
+      var pio = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) { if (en.isIntersecting) arrive(en.target); });
+      }, { rootMargin: "-50% 0px -50% 0px", threshold: 0 });
+      pages.forEach(function (p) { pio.observe(p); });
+    }
+  } else {
+    var cur = -1, navBtns = document.querySelectorAll("[data-go]");
+    var inner = function (sec) { return sec.querySelector(".page-inner") || sec; };   // the part of a page that scrolls
+    var idx = function (id) { for (var k = 0; k < pages.length; k++) if (pages[k].id === id) return k; return -1; };
+    pages.forEach(function (p) { p.tabIndex = -1; });
+    var mark = function (i) {
+      navBtns.forEach(function (b) {
+        var j = idx(b.dataset.go);
+        b.classList.toggle("on", j === i); b.classList.toggle("done", j < i); b.classList.toggle("next", j === i + 1);
+        if (j === i) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
       });
-    }, { rootMargin: "-50% 0px -50% 0px", threshold: 0 });
-    document.querySelectorAll(".page").forEach(function (p) { pio.observe(p); });
+      root.style.setProperty("--at", i);
+      root.classList.toggle("at-first", i === 0); root.classList.toggle("at-last", i === pages.length - 1);
+    };
+    var go, settle;
+    if (MODE === "timeline") {
+      // One page on show at a time; the outgoing one slides away as the next arrives
+      var offTimer = 0;
+      go = function (i, o) {
+        o = o || {};
+        if (i < 0 || i >= pages.length || i === cur) return;
+        var prev = pages[cur], next = pages[i];
+        stage.style.setProperty("--dir", i > cur ? 1 : -1);
+        pages.forEach(function (p) { p.classList.remove("is-off", "no-anim"); });
+        if (prev) {
+          prev.classList.remove("is-on");
+          if (!o.instant && !reduceMotion) { prev.classList.add("is-off"); clearTimeout(offTimer); offTimer = setTimeout(function () { prev.classList.remove("is-off"); }, 560); }
+        }
+        if (o.instant) next.classList.add("no-anim");
+        next.classList.add("is-on"); inner(next).scrollTop = 0;
+        cur = i;
+        window.dispatchEvent(new Event("resize"));   // the canvas of a page just shown takes its size
+        arrive(next); mark(i);
+        if (o.focus) next.focus({ preventScroll: true });
+      };
+      // A sideways flick works here too
+      var sx = 0, sy = 0, st = 0;
+      stage.addEventListener("touchstart", function (e) { var t = e.touches[0]; sx = t.clientX; sy = t.clientY; st = Date.now(); }, { passive: true });
+      stage.addEventListener("touchend", function (e) {
+        var t = e.changedTouches[0], dx = t.clientX - sx, dy = t.clientY - sy;
+        if (Math.abs(dx) > 56 && Math.abs(dx) > Math.abs(dy) * 1.6 && Date.now() - st < 700) go(cur + (dx < 0 ? 1 : -1));
+      }, { passive: true });
+    } else {
+      // Swipe: the browser's own sideways scrolling, one page per flick
+      var width = function () { return stage.clientWidth || innerWidth; };
+      var target = -1, targetTimer = 0, raf2 = 0;
+      settle = function (i) {
+        if (i === cur) return;
+        cur = i;
+        pages.forEach(function (p, k) { p.inert = k !== i; });
+        arrive(pages[i]); mark(i);
+        if (i > 0) hideHint();
+      };
+      go = function (i, o) {
+        o = o || {};
+        if (i < 0 || i >= pages.length) return;
+        if (o.instant) { stage.scrollTo({ left: i * width(), behavior: "auto" }); settle(i); return; }
+        target = i; clearTimeout(targetTimer); targetTimer = setTimeout(function () { target = -1; }, 1400);
+        stage.scrollTo({ left: i * width(), behavior: reduceMotion ? "auto" : "smooth" });
+        if (o.focus) setTimeout(function () { pages[i].focus({ preventScroll: true }); }, 450);
+      };
+      stage.addEventListener("scroll", function () {
+        if (raf2) return;
+        raf2 = requestAnimationFrame(function () {
+          raf2 = 0;
+          var i = Math.round(stage.scrollLeft / width());
+          if (target >= 0 && i !== target) { mark(i); return; }   // passing through on a jump: no music or particles for those
+          target = -1; settle(i);
+        });
+      }, { passive: true });
+      window.addEventListener("resize", function () { if (cur >= 0) stage.scrollTo({ left: cur * width(), behavior: "auto" }); });
+    }
+    var step = function (d) { go(cur + d); };
+    window.ssGo = function (id, instant) { var i = idx(id); if (i >= 0) go(i, { instant: !!instant }); };
+    navBtns.forEach(function (b) { b.addEventListener("click", function () { go(idx(b.dataset.go)); }); });
+    document.querySelectorAll("[data-step]").forEach(function (b) { b.addEventListener("click", function () { step(+b.dataset.step); }); });
+    // Links inside the card (the three dates on the welcome page) jump instead of scrolling
+    document.addEventListener("click", function (e) {
+      var a = e.target.closest('a[href^="#"]'); if (!a) return;
+      var i = idx(a.getAttribute("href").slice(1)); if (i < 0) return;
+      e.preventDefault(); go(i, { focus: true });
+    });
+    document.addEventListener("keydown", function (e) {
+      if (root.classList.contains("has-gate") || e.altKey || e.metaKey || e.ctrlKey) return;
+      if (e.target.closest && e.target.closest("input, textarea, select, summary, [contenteditable], .song-sheet")) return;
+      if (e.key === "ArrowRight") { e.preventDefault(); step(1); }
+      else if (e.key === "ArrowLeft") { e.preventDefault(); step(-1); }
+    });
+    // Mouse wheel or trackpad: read the page to its end first, then move on to the next
+    var wheelLock = 0, wheelAcc = 0, innerAt = 0;
+    stage.addEventListener("wheel", function (e) {
+      if (root.classList.contains("has-gate")) return;
+      var sideways = Math.abs(e.deltaX) > Math.abs(e.deltaY);
+      if (sideways && MODE === "swipe") return;
+      var sec = inner(pages[cur]), d = sideways ? e.deltaX : e.deltaY;
+      if (!sideways && ((d > 0 && sec.scrollTop + sec.clientHeight < sec.scrollHeight - 2) || (d < 0 && sec.scrollTop > 1))) { innerAt = Date.now(); wheelAcc = 0; return; }
+      if (Date.now() < wheelLock || Date.now() - innerAt < 400) return;
+      wheelAcc += d;
+      if (Math.abs(wheelAcc) < 50) return;
+      wheelLock = Date.now() + 950; step(wheelAcc > 0 ? 1 : -1); wheelAcc = 0;
+    }, { passive: true });
+    // First-time guidance: the swipe deck peeks at the next page; the journey map lights its next stop
+    var hinted = false;
+    function hideHint() { root.classList.remove("show-hint"); }
+    function showHint() {
+      if (hinted || cur !== 0) return; hinted = true;
+      root.classList.add("show-hint");
+      if (MODE === "swipe" && !reduceMotion) { stage.classList.add("peek"); setTimeout(function () { stage.classList.remove("peek"); }, 3200); }
+      setTimeout(hideHint, 7000);
+    }
+    window.ssOpened = function () { setTimeout(showHint, 500); };
+    var startAt = idx(location.hash.slice(1));
+    go(startAt < 0 ? 0 : startAt, { instant: true });
+    if (!root.classList.contains("has-gate")) setTimeout(showHint, 1200);
   }
 
   applyLang(lang, false);

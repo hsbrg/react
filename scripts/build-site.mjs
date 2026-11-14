@@ -7,6 +7,8 @@ import { readFileSync, writeFileSync, mkdirSync, copyFileSync, rmSync } from "no
 const SRC = "wedding-invitation";
 const OUT = "dist";
 
+// Three ways through the same card: classic scrolling (/), a journey map (/timeline) and story swipes (/swipe)
+const PAGES = [["index.html", ""], ["timeline.html", "timeline"], ["swipe.html", "swipe"]];
 const body = readFileSync(`${SRC}/index.html`, "utf8");
 const title = (body.match(/<title>([^<]*)<\/title>/) || [, "Wedding Invitation"])[1];
 const description = "Engagement 28 Nov, Mehendi & Sangeet 29 Nov, Wedding 30 Nov 2026 in Meerut. With best compliments from the Tyagi Family.";
@@ -15,7 +17,7 @@ const description = "Engagement 28 Nov, Mehendi & Sangeet 29 Nov, Wedding 30 Nov
 const host = process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL || "";
 const base = host ? `https://${host}` : "";
 
-const head = `<!doctype html>
+const headFor = (path) => `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -28,7 +30,7 @@ const head = `<!doctype html>
 <meta property="og:image" content="${base}/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-${base ? `<meta property="og:url" content="${base}/">\n` : ""}<meta name="twitter:card" content="summary_large_image">
+${base ? `<meta property="og:url" content="${base}/${path}">\n` : ""}<meta name="twitter:card" content="summary_large_image">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="icon" href="data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#5A1123"/><circle cx="32" cy="32" r="14" fill="#E8890C"/><circle cx="32" cy="32" r="6" fill="#F6B23C"/></svg>')}">
 <style>
@@ -43,8 +45,10 @@ ${base ? `<meta property="og:url" content="${base}/">\n` : ""}<meta name="twitte
 
 rmSync(OUT, { recursive: true, force: true });
 mkdirSync(OUT, { recursive: true });
-writeFileSync(`${OUT}/index.html`, head + body + "\n</body>\n</html>\n");
+for (const [file, path] of PAGES) {
+  writeFileSync(`${OUT}/${file}`, headFor(path) + readFileSync(`${SRC}/${file}`, "utf8") + "\n</body>\n</html>\n");
+}
 for (const f of ["og.png", "apple-touch-icon.png"]) {
   copyFileSync(`${SRC}/${f}`, `${OUT}/${f}`);
 }
-console.log(`Built ${OUT}/index.html${base ? ` for ${base}` : ""}`);
+console.log(`Built ${PAGES.map(([f]) => `${OUT}/${f}`).join(", ")}${base ? ` for ${base}` : ""}`);
