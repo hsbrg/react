@@ -296,6 +296,8 @@
   .rsvp-contact { text-align: center; margin: -16px 0 28px; }
   .rsvp-contact .who { font-family: var(--font-display); font-size: 30px; }
   .rsvp-contact p { margin: 4px 0 0; color: var(--muted); }
+  .rsvp-contact .phone { font-size: 20px; letter-spacing: .06em; color: var(--ink); font-variant-numeric: tabular-nums; user-select: all; }
+  .rsvp-contact .phone a { text-decoration: none; border-bottom: 1px solid var(--marigold); }
   .rsvp-card { background: var(--card); border: 1px solid var(--line); padding: 32px; }
   form { display: grid; gap: 22px; }
   .row { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 22px; }
@@ -506,6 +508,7 @@
     <div class="rsvp-wrap">
       <div class="rsvp-contact">
         <div class="who">Amit Tyagi</div>
+        <p class="phone"><a href="tel:+919811529201">+91 98115 29201</a></p>
         <p>Let us know who is coming and to which functions.</p>
       </div>
       <div class="rsvp-card">
@@ -573,7 +576,7 @@
 (function () {
   // ---- Details you can change ----
   var WEDDING = new Date("2026-11-30T19:00:00+05:30"); // Baraat Swagat, India time
-  var RSVP_WHATSAPP = "";   // Amit Tyagi's number with country code, digits only, e.g. "9198XXXXXXXX". Empty = guest picks the contact.
+  var RSVP_WHATSAPP = "919811529201";   // Amit Tyagi's number with country code, digits only. Empty = guest picks the contact.
   var COUPLE = "Shivanshi & Shashwat";
 
   // ---- Countdown ----
