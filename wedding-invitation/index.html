@@ -81,7 +81,25 @@
   .swapped { animation: fade 260ms ease both; }
 
   /* ---------- Language switch ---------- */
-  .topbar { display: flex; justify-content: flex-end; padding-block: 12px; }
+  .topbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding-block: 12px; }
+  .replay-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 12px 0 8px;
+    border: 0;
+    background: none;
+    color: var(--ink);
+    font: 500 14px/1 var(--font-body);
+    text-decoration: underline;
+    text-decoration-color: var(--marigold);
+    text-underline-offset: 4px;
+    cursor: pointer;
+  }
+  .replay-btn svg { width: 22px; height: 22px; color: var(--gold); flex: none; }
+  .replay-btn[lang="hi"], .replay-btn [lang="hi"] { font-size: 16px; }
+  .footer-replay { margin-top: 18px; }
   .lang-switch {
     display: inline-flex;
     background: var(--card);
@@ -801,6 +819,8 @@
     html { scroll-behavior: auto; }
     .in, .fade-in, .seal { animation: fade 250ms ease both; animation-delay: 0ms; }
     .mandala { animation: none; }
+    .door { transition: opacity 450ms ease; }
+    .gate.opening .door.l, .gate.opening .door.r { transform: none; opacity: 0; }
     .ill .draw, .ill .pop, .ill .fadein { transition: none !important; }
     .glint { display: none; }
     .bi > span { filter: none !important; transform: none !important; transition-property: opacity, visibility !important; }
@@ -818,11 +838,7 @@
     if (lang !== "hi" && lang !== "en") lang = /^hi\b/i.test(navigator.language || "") ? "hi" : "en";
     root.dataset.lang = lang;
     root.lang = lang;
-    try {
-      if (matchMedia("(prefers-reduced-motion: reduce)").matches || location.hash) return;
-      try { if (sessionStorage.getItem("ss-gate-opened")) return; } catch (e) {}
-      root.classList.add("has-gate", "gate-hold");
-    } catch (e) {}
+    if (!location.hash) root.classList.add("has-gate", "gate-hold");
   })();
 </script>
 
@@ -840,6 +856,7 @@
 
 <div class="wrap" id="page">
   <div class="topbar">
+    <button type="button" class="replay-btn" aria-label="Watch the welcome again" data-hi-aria="स्वागत फिर देखें"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 21V9a8 8 0 0 1 16 0v12M4 21h16M12 3v18"/><circle cx="10" cy="14" r=".9" fill="currentColor"/><circle cx="14" cy="14" r=".9" fill="currentColor"/></svg><span class="replay-label" data-hi="स्वागत">Welcome</span></button>
     <div class="lang-switch" role="group" aria-label="Language / भाषा">
       <button type="button" data-set="en" lang="en" aria-pressed="true">English</button>
       <button type="button" data-set="hi" lang="hi" aria-pressed="false">हिंदी</button>
@@ -1447,6 +1464,7 @@
   <footer class="reveal">
     <div class="pre" data-hi="दर्शनाभिलाषी">With best compliments from</div>
     <div class="sig" data-hi="त्यागी परिवार">Tyagi Family</div>
+    <div class="footer-replay"><button type="button" class="replay-btn"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 21V9a8 8 0 0 1 16 0v12M4 21h16M12 3v18"/><circle cx="10" cy="14" r=".9" fill="currentColor"/><circle cx="14" cy="14" r=".9" fill="currentColor"/></svg><span data-hi="स्वागत फिर देखें">Watch the welcome again</span></button></div>
     <div class="lang-switch" role="group" aria-label="Language / भाषा">
       <button type="button" data-set="en" lang="en" aria-pressed="true">English</button>
       <button type="button" data-set="hi" lang="hi" aria-pressed="false">हिंदी</button>
@@ -1516,6 +1534,10 @@
       if (animate && !reduceMotion && !el.closest(".hero")) {
         el.classList.remove("swapped"); void el.offsetWidth; el.classList.add("swapped");
       }
+    });
+    document.querySelectorAll("[data-hi-aria]").forEach(function (el) {
+      if (!el.dataset.enAria) el.dataset.enAria = el.getAttribute("aria-label");
+      el.setAttribute("aria-label", lang === "hi" ? el.dataset.hiAria : el.dataset.enAria);
     });
     document.querySelectorAll("[data-hi-ph]").forEach(function (el) {
       if (!el.dataset.enPh) el.dataset.enPh = el.placeholder;
@@ -1608,16 +1630,15 @@
 
   // ---- Welcome gate ----
   // Timeline: seal and names leave (0–220ms) → doors swing open (120–1270ms)
-  // → page entrance resumes (380ms) → petals fall (600ms) → gate removed (1350ms).
+  // → page entrance resumes (380ms) → petals fall (600ms) → gate hidden (1350ms), kept for replays.
   // While the doors are closed the page behind them is inert, so Tab reaches only the doors.
   var gate = document.getElementById("gate");
   var page = document.getElementById("page");
-  var autoOpen;
+  var autoOpen, langSwap;
   function openGate() {
     if (gate.classList.contains("opening")) return;
     var hadFocus = document.activeElement === gate;
-    clearTimeout(autoOpen);
-    try { sessionStorage.setItem("ss-gate-opened", "1"); } catch (e) {}
+    clearTimeout(autoOpen); clearTimeout(langSwap);
     gate.classList.add("opening");
     page.inert = false;
     setTimeout(function () {
@@ -1627,25 +1648,44 @@
     setTimeout(function () { showerPetals(); }, 600);
     setTimeout(function () {
       root.classList.remove("has-gate");
-      gate.remove();
       if (hadFocus) document.getElementById("names").focus({ preventScroll: true });
-    }, 1350);
+    }, reduceMotion ? 500 : 1350);
   }
-  if (root.classList.contains("has-gate")) {
+  function startGate() {
     page.inert = true;
-    gate.addEventListener("click", openGate);
-    gate.addEventListener("keydown", function (e) {
-      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openGate(); }
-    });
     // The doors show the other language once, then open by themselves if the guest doesn't tap.
-    if (!reduceMotion) setTimeout(function () {
+    if (!reduceMotion) langSwap = setTimeout(function () {
       var gc = document.querySelector(".gate-center");
       if (gc) gc.dataset.show = lang === "hi" ? "en" : "hi";
     }, 3200);
     autoOpen = setTimeout(openGate, 5400);
-  } else {
-    gate.remove();
   }
+  gate.addEventListener("click", openGate);
+  gate.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openGate(); }
+  });
+  if (root.classList.contains("has-gate")) startGate();
+
+  // "Watch the welcome again": close the doors, redraw them, and play the opening once more
+  function replayGate() {
+    var gateIlls = gate.querySelectorAll(".ill");
+    document.querySelectorAll(".petals").forEach(function (c) { c.remove(); });
+    gate.classList.remove("opening");
+    delete document.querySelector(".gate-center").dataset.show;
+    if (!reduceMotion) gateIlls.forEach(function (svg) { svg.classList.remove("is-drawn"); });
+    window.scrollTo({ top: 0, behavior: "auto" });
+    root.classList.add("has-gate");
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        gateIlls.forEach(function (svg) { svg.classList.add("is-drawn"); setLive(svg, true); });
+        gate.focus({ preventScroll: true });
+      });
+    });
+    startGate();
+  }
+  document.addEventListener("click", function (e) {
+    if (e.target.closest(".replay-btn")) replayGate();
+  });
 
   // ---- Countdown ----
   var cd = document.getElementById("countdown");
