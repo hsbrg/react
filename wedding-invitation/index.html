@@ -2,8 +2,8 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rozha+One&text=%E0%A4%B6&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Italiana&family=Jost:wght@300;400;500&family=Great+Vibes&family=Amita:wght@700&family=Tiro+Devanagari+Hindi&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Great+Vibes&text=S&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+Display:ital,wght@0,400..600;1,400..600&family=Rozha+One&family=Jost:wght@300;400;500&family=Tiro+Devanagari+Hindi&display=swap">
 <style>
   /* Layout: six full-screen pages that snap as you scroll. Each page is its own world, with a palette
      taken from the occasion: maroon welcome, dawn sandstone invitation, blush engagement, mehendi-green
@@ -15,9 +15,11 @@
     --btn-bg: #E3B95E; --btn-fg: #3A0914;
     --marigold: #E8890C; --leaf: #5C7A34;
     --hero-bg: #5A1123; --hero-fg: #FBEBD3; --hero-muted: #E2C3A8; --hero-gold: #E3B95E;
-    --font-script: "Great Vibes", "Snell Roundhand", "Apple Chancery", cursive;
-    --font-deva-script: "Amita", "Tiro Devanagari Hindi", "Noto Serif Devanagari", serif;
-    --font-display: "Italiana", "Didot", "Bodoni 72", Georgia, serif;
+    /* Type: Noto Serif Display (roman for headings and dates, italic for the couple's names),
+       Rozha One for Devanagari display, Jost for reading text, Tiro Devanagari Hindi for Hindi text */
+    --font-script: "Noto Serif Display", "Didot", "Bodoni 72", Georgia, serif;
+    --font-deva-script: "Rozha One", "Tiro Devanagari Hindi", "Noto Serif Devanagari", serif;
+    --font-display: "Noto Serif Display", "Didot", "Bodoni 72", Georgia, serif;
     --font-deva: "Tiro Devanagari Hindi", "Noto Serif Devanagari", "Kohinoor Devanagari", serif;
     --font-body: "Jost", "Avenir Next", "Segoe UI", system-ui, sans-serif;
     --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
@@ -71,6 +73,23 @@
   .amp { font-family: var(--font-body); font-weight: 300; }
   html[data-lang="hi"]:not(.lang-ready) [data-hi] { visibility: hidden; }
   .swapped { animation: fade 260ms ease both; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  /* Headings and names arrive letter by letter (Hindi word by word) as their page comes into view */
+  .chs { display: inline; }
+  .ch { display: inline-block; white-space: pre; }
+  .w { display: inline-block; white-space: nowrap; }
+  .page:not(.lit) .ch { opacity: 0; transform: translateY(.42em) scale(.94); filter: blur(7px); }
+  .page.lit .ch {
+    transition: opacity 700ms ease calc(var(--k) * 34ms + var(--base, 0ms)), transform 1000ms var(--ease-out) calc(var(--k) * 34ms + var(--base, 0ms)),
+      filter 800ms ease calc(var(--k) * 34ms + var(--base, 0ms));
+  }
+  /* After arriving, the couple's names keep a slow gold-foil shimmer */
+  .names.shine .bi > span, .gate-names .bi > span {
+    background: linear-gradient(100deg, currentColor 0%, currentColor 42%, #FFE29A 50%, currentColor 58%, currentColor 100%) 100% 0 / 300% 100% no-repeat;
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    animation: foil 7s ease-in-out infinite;
+  }
+  @keyframes foil { 0% { background-position: 100% 0; } 32%, 100% { background-position: 0 0; } }
 
   /* ---------- Pages ---------- */
   .page {
@@ -101,7 +120,7 @@
   .bg-mandala.bl { left: -26%; bottom: -38%; animation-direction: reverse; }
   .bg-mandala.tr { right: -28%; top: -40%; animation-direction: reverse; }
   .t-invite .bg-mandala, .t-engage .bg-mandala { opacity: .14; color: var(--acc); }
-  .page h2 { font-family: var(--font-display); font-weight: 400; margin: 0; text-wrap: balance; }
+  .page h2 { font-family: var(--font-display); font-weight: 500; margin: 0; text-wrap: balance; letter-spacing: -.005em; }
 
   /* ---------- Fixed controls ---------- */
   .controls {
@@ -203,11 +222,11 @@
   @keyframes glint { 0% { transform: translateX(-34%); } 15%, 100% { transform: translateX(34%); } }
   @keyframes spin { to { rotate: 360deg; } }
   .names {
-    font-family: var(--font-script); font-weight: 400; font-size: clamp(42px, min(13vw, 8svh), 110px); line-height: 1.02;
+    font-family: var(--font-script); font-style: italic; font-weight: 500; font-size: clamp(40px, min(11.5vw, 7.4svh), 100px); line-height: 1.04; letter-spacing: -.01em;
     margin: 0; text-shadow: 0 2px 18px rgb(0 0 0 / .25); text-wrap: balance; outline: none;
   }
   .names > span { display: inline-block; }
-  .names .weds { display: block; font-family: var(--font-display); font-size: .2em; letter-spacing: .4em; text-transform: uppercase; color: var(--gold); margin-block: 6px 2px; padding-left: .4em; }
+  .names .weds { display: block; font-family: var(--font-display); font-style: normal; font-weight: 500; font-size: .2em; letter-spacing: .4em; text-transform: uppercase; color: var(--gold); margin-block: 6px 2px; padding-left: .4em; }
   .bi { display: inline-grid; }
   .bi > span {
     grid-area: 1 / 1; justify-self: center; align-self: center;
@@ -220,15 +239,15 @@
       transform 600ms var(--ease-out) calc(var(--i, 0) * 60ms), visibility 0s linear calc(var(--i, 0) * 60ms + 420ms);
   }
   html[data-lang="hi"] .bi > .hi, .gate-center[data-show="hi"] .bi > .hi, .gate-center[data-show="en"] .bi > .en { opacity: 1; filter: none; transform: none; visibility: visible; }
-  .names .hi { font-family: var(--font-deva-script); font-weight: 700; font-size: .6em; line-height: 1.5; }
-  .names .weds .hi { font-family: var(--font-deva-script); font-size: 1.9em; line-height: 1; }
+  .names .hi { font-family: var(--font-deva-script); font-weight: 400; font-size: .6em; line-height: 1.5; }
+  .names .weds .hi { font-family: var(--font-deva-script); font-weight: 400; font-size: 1.9em; line-height: 1; }
 
   .dates { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: min(100%, 540px); margin-top: 4px; border-block: 1px solid rgb(227 185 94 / .5); }
   .date { display: flex; flex-direction: column; align-items: center; gap: 0; padding: 7px 4px 9px; color: var(--ink); text-decoration: none; transition: background-color 160ms ease, transform 160ms var(--ease-out); }
   .date + .date { border-left: 1px solid rgb(227 185 94 / .32); }
   .date:active { transform: scale(0.97); }
   .date .dow { font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
-  .date .num { font-family: var(--font-display); font-size: clamp(34px, 5.4svh, 46px); line-height: 1; }
+  .date .num { font-family: var(--font-display); font-weight: 500; font-size: clamp(32px, 5svh, 44px); line-height: 1.05; }
   .date .fn { font-size: 13.5px; line-height: 1.3; text-wrap: balance; }
   .date.wed .num { color: var(--gold); font-size: clamp(42px, 6.8svh, 60px); }
   .date .dow[lang="hi"] { font-size: 14px; }
@@ -243,11 +262,11 @@
   .countdown-cap[lang="hi"] { font-size: 15px; }
   .countdown { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; width: min(100%, 340px); }
   .countdown > div { padding: 6px 2px 5px; border: 1px solid rgb(227 185 94 / .4); }
-  .countdown b { display: block; font-family: var(--font-display); font-weight: 400; font-size: clamp(20px, 3.2svh, 30px); line-height: 1.15; font-variant-numeric: tabular-nums; }
+  .countdown b { display: block; font-family: var(--font-display); font-weight: 500; font-size: clamp(20px, 3.2svh, 30px); line-height: 1.15; font-variant-numeric: tabular-nums; }
   .countdown b:lang(hi) { font-family: var(--font-deva); }
   .countdown small { display: block; font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
   .countdown small[lang="hi"] { font-size: 13px; }
-  .countdown-done { margin: 0; font-family: var(--font-script); font-size: 42px; color: var(--gold); }
+  .countdown-done { margin: 0; font-family: var(--font-script); font-style: italic; font-weight: 500; font-size: 36px; color: var(--gold); }
   .countdown-done[lang="hi"] { font-family: var(--font-deva-script); font-size: 34px; }
   .scroll-cue { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; min-height: 44px; padding: 4px 12px; color: var(--muted); text-decoration: none; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; }
   .scroll-cue svg { width: 18px; height: 18px; animation: cue 2.4s ease-in-out infinite; }
@@ -275,8 +294,8 @@
   .door .door-diya { position: absolute; bottom: calc(2.5% + env(safe-area-inset-bottom, 0px)); left: 50%; width: 58px; translate: -50% 0; }
   .gate-center { position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding-inline: 16px; text-align: center; color: var(--hero-fg); pointer-events: none; transition: opacity 220ms var(--ease-out), transform 220ms var(--ease-out); }
   .gate-center .mono { width: clamp(170px, 40vw, 220px); margin: 0 0 14px; box-shadow: 0 0 0 5px #551024, 0 0 0 6px rgb(227 185 94 / .45), 0 18px 40px rgb(0 0 0 / .5); }
-  .gate-names { font-family: var(--font-script); font-size: clamp(38px, 9vw, 58px); line-height: 1.15; text-shadow: 0 2px 12px rgb(0 0 0 / .4); text-wrap: balance; }
-  .gate-names .hi { font-family: var(--font-deva-script); font-weight: 700; font-size: .66em; }
+  .gate-names { font-family: var(--font-script); font-style: italic; font-weight: 500; font-size: clamp(32px, 7.6vw, 52px); line-height: 1.15; text-shadow: 0 2px 12px rgb(0 0 0 / .4); text-wrap: balance; }
+  .gate-names .hi { font-family: var(--font-deva-script); font-weight: 400; font-size: .66em; }
   .gate-date { font-family: var(--font-display); font-size: 15px; letter-spacing: .24em; text-transform: uppercase; color: var(--hero-gold); }
   .gate-hint { margin-top: 22px; min-height: 48px; display: grid; place-items: center; padding: 0 22px; border: 1px solid rgb(227 185 94 / .7); background: rgb(74 13 29 / .85); font-size: 13px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; }
   .gate-hint .hi { font-size: 16px; }
@@ -325,11 +344,52 @@
   @keyframes ill-spin { to { transform: rotate(360deg); } }
   @keyframes ill-ripple { to { stroke-dashoffset: -48; } }
 
+  /* ---------- Instruments: one per page, from that page's music ---------- */
+  .inst { position: absolute; z-index: 2; height: auto; cursor: pointer; color: var(--gold); filter: drop-shadow(0 12px 18px rgb(0 0 0 / .28)); -webkit-tap-highlight-color: transparent; }
+  .inst:focus-visible { outline: 2px solid var(--focus); outline-offset: 6px; }
+  .inst .m-note, .inst .m-spark, .inst .m-wave { opacity: 0; }
+  .inst.is-live { animation: inst-idle 6s ease-in-out infinite alternate; }
+  @keyframes inst-idle { to { transform: translateY(-8px); } }
+  .inst.strike { animation: inst-strike 600ms var(--ease-out); }
+  @keyframes inst-strike { 30% { transform: scale(1.07); filter: brightness(1.15); } }
+  .music-on .inst.is-live .m-note, .inst.strike .m-note { animation: inst-note 3s ease-out infinite; animation-delay: calc(var(--n) * 900ms); }
+  @keyframes inst-note { 0% { opacity: 0; transform: translate(0, 0); } 15% { opacity: 1; } 100% { opacity: 0; transform: translate(-12px, -70px); } }
+  .music-on .inst.is-live .m-breathe, .inst.strike .m-breathe { animation: inst-breathe 2.2s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 0%; }
+  @keyframes inst-breathe { 50% { transform: rotate(1.6deg) translateY(-2px); } }
+  .music-on .inst.is-live .m-strings, .inst.strike .m-strings { animation: inst-strings 90ms linear infinite alternate; }
+  @keyframes inst-strings { to { transform: translateY(.7px); } }
+  .m-mallet { transform-box: view-box; }
+  .m-mallet.m1 { transform-origin: 62px -40px; } .m-mallet.m2 { transform-origin: 198px -40px; }
+  .music-on .inst.is-live .m-mallet.m1, .inst.strike .m-mallet.m1 { animation: mallet1 360ms ease-in-out infinite alternate; }
+  .music-on .inst.is-live .m-mallet.m2, .inst.strike .m-mallet.m2 { animation: mallet2 360ms ease-in-out 180ms infinite alternate; }
+  @keyframes mallet1 { from { transform: rotate(-7deg); } to { transform: rotate(4deg); } }
+  @keyframes mallet2 { from { transform: rotate(7deg); } to { transform: rotate(-4deg); } }
+  .m-clash { transform-box: fill-box; transform-origin: center; }
+  .music-on .inst.is-live .m-clash.l, .inst.strike .m-clash.l { animation: clash-l 577ms ease-in-out infinite; }
+  .music-on .inst.is-live .m-clash.r, .inst.strike .m-clash.r { animation: clash-r 577ms ease-in-out infinite; }
+  .music-on .inst.is-live .m-spark, .inst.strike .m-spark { animation: spark 577ms ease-out infinite; }
+  @keyframes clash-l { 45% { transform: translateX(13px) rotate(9deg); } }
+  @keyframes clash-r { 45% { transform: translateX(-13px) rotate(-9deg); } }
+  @keyframes spark { 0%, 40% { opacity: 0; } 48% { opacity: 1; } 80%, 100% { opacity: 0; } }
+  .m-swing { transform-box: view-box; transform-origin: 80px 0px; }
+  .music-on .inst.is-live .m-swing, .inst.strike .m-swing { animation: swing 2.1s ease-in-out infinite; }
+  .music-on .inst.is-live .m-wave, .inst.strike .m-wave { animation: wave 1.05s ease-out infinite; }
+  @keyframes swing { 0%, 100% { transform: rotate(-8deg); } 50% { transform: rotate(8deg); } }
+  @keyframes wave { 0% { opacity: 0; } 20% { opacity: .9; } 100% { opacity: 0; } }
+  #top .inst { top: 54%; height: min(48svh, 380px); width: auto; }
+  #top .inst.sh-l { left: 6%; translate: 0 -50%; rotate: -14deg; }
+  #top .inst.sh-r { right: 6%; translate: 0 -50%; rotate: 14deg; scale: -1 1; }
+  #invitation .inst { right: 2%; bottom: 2%; width: clamp(150px, 15vw, 220px); }
+  #day-28 .inst { right: 2%; bottom: 7%; width: clamp(220px, 23vw, 340px); }
+  #day-29 .inst { left: 4%; bottom: 6%; width: clamp(140px, 13vw, 200px); }
+  #day-30 .inst { right: 17%; top: 0; height: min(36svh, 280px); width: auto; }
+  #rsvp .inst { left: 2%; bottom: 3%; height: min(44svh, 340px); width: auto; }
+
   /* Drawings you can play with: a tap makes each one do its thing */
   .art[data-play], .seal-wrap[data-play] { cursor: pointer; -webkit-tap-highlight-color: transparent; }
   .art[data-play]:focus-visible, .seal-wrap[data-play]:focus-visible { outline: 2px solid var(--focus); outline-offset: 5px; }
   .tap-hint {
-    position: absolute; z-index: 2; left: 50%; bottom: 20px; translate: -50% 0;
+    position: absolute; z-index: 2; left: 50%; bottom: 15%; translate: -50% 0;
     display: inline-flex; align-items: center; gap: 7px; padding: 7px 13px;
     background: rgb(24 8 14 / .66); color: #FFF4DE; font-size: 12.5px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; white-space: nowrap;
     opacity: 0; transition: opacity 500ms ease; pointer-events: none;
@@ -348,57 +408,61 @@
   @keyframes seal-poke { 40% { transform: scale(1.06) rotate(-5deg); filter: brightness(1.2); } }
 
   /* Illustration frame: the card's gold double rule inside the edge */
-  .art { position: relative; margin: 0; overflow: hidden; container-type: inline-size; box-shadow: 0 0 0 1px color-mix(in srgb, var(--gold) 60%, transparent), 0 22px 44px -22px rgb(0 0 0 / .55); }
-  .art::after { content: ""; position: absolute; inset: 8px; border: 1px solid rgb(255 250 240 / .75); box-shadow: inset 0 0 0 4px rgb(255 250 240 / .16); pointer-events: none; }
+  /* Drawings dissolve into the page: no frame, edges fade to the page colour */
+  .art {
+    position: relative; margin: 0; container-type: inline-size;
+    -webkit-mask-image: radial-gradient(ellipse 64% 62% at 50% 50%, #000 66%, transparent 100%);
+    mask-image: radial-gradient(ellipse 64% 62% at 50% 50%, #000 66%, transparent 100%);
+  }
   .ov { position: absolute; left: 12%; right: 12%; display: grid; justify-items: center; text-align: center; pointer-events: none; }
-  .ov .script { font-family: var(--font-script); font-size: 15cqw; line-height: 1.05; }
-  .ov .script[lang="hi"] { font-family: var(--font-deva-script); font-weight: 700; font-size: 10.5cqw; line-height: 1.45; }
+  .ov .script { font-family: var(--font-script); font-style: italic; font-weight: 500; font-size: 11.5cqw; line-height: 1.08; }
+  .ov .script[lang="hi"] { font-family: var(--font-deva-script); font-weight: 400; font-size: 10.5cqw; line-height: 1.45; }
   .ov .small { font-family: var(--font-display); font-size: 4.2cqw; letter-spacing: .3em; text-transform: uppercase; }
   .ov .small[lang="hi"] { font-family: var(--font-deva); font-size: 5cqw; }
   .ov .numdate { font-family: var(--font-display); font-size: 5.4cqw; letter-spacing: .22em; margin-top: 2cqw; }
   .ov .numdate[lang="hi"] { font-family: var(--font-deva); }
 
   .wed-ov { top: 39%; left: 16%; right: 16%; color: #FBEBD3; text-shadow: 0 2px 12px rgb(0 0 0 / .45); }
-  .wed-ov .script { font-size: 7.4cqw; white-space: nowrap; }
+  .wed-ov .script { font-size: 6.2cqw; white-space: nowrap; }
   .wed-ov .script[lang="hi"] { font-size: 7cqw; }
   .wed-ov .numdate { color: #E8C06A; }
 
   /* ---------- Invitation page ---------- */
   .split { display: grid; grid-template-columns: minmax(0, auto) minmax(0, 1fr); gap: clamp(24px, 5vw, 64px); align-items: center; }
   .split.flip > .art { order: 2; }
-  .invite-art, .event-art { width: clamp(240px, calc((100svh - 130px) * .8), 580px); justify-self: center; }
+  .invite-art, .event-art { width: clamp(300px, calc((100svh - 24px) * .8), 720px); margin-block: -44px; justify-self: center; }
   .invite-art .ov { top: 17%; color: #3E0B18; text-shadow: 0 0 14px rgb(255 255 255 / .95), 0 0 4px rgb(255 255 255 / .8); }
   .invite-art .ov .small { color: #6E4B0E; }
   .invite-text-col { text-align: center; display: grid; gap: 14px; justify-items: center; }
   .invite-text-col h2 { font-size: clamp(34px, 5svh, 48px); color: var(--acc); }
-  .invite-text-col h2[lang="hi"] { font-family: var(--font-deva-script); font-weight: 700; font-size: clamp(30px, 4.4svh, 40px); line-height: 1.4; }
+  .invite-text-col h2[lang="hi"] { font-family: var(--font-deva-script); font-weight: 400; font-size: clamp(30px, 4.4svh, 40px); line-height: 1.4; }
   .hosts { font-size: 20px; font-weight: 500; line-height: 1.45; margin: 0; text-wrap: balance; }
   .invite-text { margin: 0; max-width: 44ch; color: var(--muted); font-size: 17.5px; text-wrap: balance; }
   .parents { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 14px; align-items: center; width: min(100%, 540px); margin-top: 6px; padding-top: 16px; border-top: 1px solid var(--line); }
-  .parents .nm { font-family: var(--font-script); font-size: 38px; line-height: 1.1; color: var(--acc); }
-  .parents .nm[lang="hi"] { font-family: var(--font-deva-script); font-weight: 700; font-size: 26px; line-height: 1.5; }
+  .parents .nm { font-family: var(--font-script); font-style: italic; font-weight: 500; font-size: 32px; line-height: 1.15; color: var(--acc); }
+  .parents .nm[lang="hi"] { font-family: var(--font-deva-script); font-weight: 400; font-size: 26px; line-height: 1.5; }
   .parents .rel { font-size: 14.5px; color: var(--muted); text-wrap: balance; }
   .parents .weds { font-family: var(--font-display); letter-spacing: .3em; text-transform: uppercase; font-size: 13px; color: var(--gold); }
-  .parents .weds[lang="hi"] { font-family: var(--font-deva-script); font-weight: 700; font-size: 20px; }
+  .parents .weds[lang="hi"] { font-family: var(--font-deva-script); font-weight: 400; font-size: 20px; }
   .resi { font-size: 13px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
 
   /* ---------- Event pages ---------- */
   .event-info { display: grid; gap: 0; }
   .day-top { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
   .dcol { display: grid; justify-items: start; line-height: 1.1; padding-right: 18px; border-right: 1px solid var(--line); }
-  .dcol .dnum { font-family: var(--font-display); font-size: 64px; line-height: .95; color: var(--acc); font-variant-numeric: lining-nums; }
+  .dcol .dnum { font-family: var(--font-display); font-weight: 500; font-size: 60px; line-height: .95; color: var(--acc); font-variant-numeric: lining-nums; }
   .dcol .dnum[lang="hi"] { font-family: var(--font-deva); font-size: 50px; line-height: 1.2; }
   .dcol .dmon, .dcol .ddow { font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
   .dcol .dmon[lang="hi"], .dcol .ddow[lang="hi"] { font-size: 15px; }
   .ev-title { display: flex; align-items: center; gap: 12px; font-size: clamp(36px, 5.6svh, 54px); line-height: 1.1; color: var(--acc); }
-  .ev-title [lang="hi"] { font-family: var(--font-deva-script); font-weight: 700; font-size: .84em; line-height: 1.4; }
+  .ev-title [lang="hi"] { font-family: var(--font-deva-script); font-weight: 400; font-size: .84em; line-height: 1.4; }
   .motif { width: 34px; height: 34px; flex: none; color: var(--acc); }
   .ev-line { margin: 14px 0 0; font-size: 19px; color: var(--muted); max-width: 36ch; }
   .ev-line[lang="hi"] { font-size: 20px; }
   .t-mehendi .ev-line { color: var(--acc2); }
   .timings { display: flex; flex-wrap: wrap; gap: 8px 28px; margin-top: 18px; }
   .timing { display: flex; align-items: baseline; gap: 10px; }
-  .timing b { font-family: var(--font-display); font-weight: 400; font-size: 28px; font-variant-numeric: tabular-nums; color: var(--ink); }
+  .timing b { font-family: var(--font-display); font-weight: 500; font-size: 26px; font-variant-numeric: tabular-nums; color: var(--ink); }
   .timing b[lang="hi"] { font-family: var(--font-deva); font-size: 23px; }
   .timing span { font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
   .timing span[lang="hi"] { font-size: 16px; }
@@ -438,11 +502,11 @@
   .t-rsvp { align-items: start; }
   .rsvp-head { text-align: center; display: grid; gap: 4px; justify-items: center; margin-bottom: 22px; }
   .rsvp-head h2 { font-size: clamp(34px, 5svh, 46px); color: var(--gold); }
-  .rsvp-head h2[lang="hi"] { font-family: var(--font-deva-script); font-weight: 700; font-size: clamp(28px, 4.2svh, 38px); line-height: 1.4; }
-  .rsvp-layout { display: grid; grid-template-columns: minmax(0, 380px) minmax(0, 1fr); gap: 44px; align-items: start; }
-  .rsvp-art { width: min(100%, 380px); justify-self: center; position: sticky; top: 90px; }
+  .rsvp-head h2[lang="hi"] { font-family: var(--font-deva-script); font-weight: 400; font-size: clamp(28px, 4.2svh, 38px); line-height: 1.4; }
+  .rsvp-layout { display: grid; grid-template-columns: minmax(0, 460px) minmax(0, 1fr); gap: 32px; align-items: start; }
+  .rsvp-art { width: min(100%, 460px); justify-self: center; position: sticky; top: 60px; }
   .rsvp-art .ov { top: 5%; color: #FBEBD3; text-shadow: 0 2px 10px rgb(0 0 0 / .4); }
-  .rsvp-art .ov .script { font-size: 13cqw; }
+  .rsvp-art .ov .script { font-size: 10cqw; }
   .rsvp-art .ov .script[lang="hi"] { font-size: 9.5cqw; }
   .rsvp-contact { text-align: center; margin: 0 0 20px; }
   .rsvp-contact .who { font-family: var(--font-display); font-size: 28px; }
@@ -503,8 +567,8 @@
   .alt a { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink); text-decoration-color: var(--acc); }
   .status-card { text-align: center; padding: 8px 0; }
   .status-card:not([hidden]) { transition: opacity 300ms var(--ease-out), transform 300ms var(--ease-out); @starting-style { opacity: 0; transform: translateY(8px); } }
-  .status-card h3 { margin: 0; font-family: var(--font-script); font-weight: 400; font-size: 46px; line-height: 1.2; color: var(--gold); }
-  .status-card h3[lang="hi"] { font-family: var(--font-deva-script); font-weight: 700; font-size: 32px; line-height: 1.5; }
+  .status-card h3 { margin: 0; font-family: var(--font-script); font-style: italic; font-weight: 500; font-size: 38px; line-height: 1.2; color: var(--gold); }
+  .status-card h3[lang="hi"] { font-family: var(--font-deva-script); font-weight: 400; font-size: 32px; line-height: 1.5; }
   .status-card p { margin: 8px auto 0; max-width: 46ch; color: var(--muted); }
   .status-card .row-btns { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 18px; }
   .status-card .check-q { font-size: 20px; font-weight: 500; color: var(--ink); margin: 0; }
@@ -512,8 +576,8 @@
   .closing { text-align: center; margin-top: 48px; padding-top: 32px; border-top: 1px solid var(--line); display: grid; justify-items: center; gap: 4px; }
   .closing .pre { font-size: 13px; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); }
   .closing .pre[lang="hi"] { font-size: 17px; }
-  .closing .sig { font-family: var(--font-script); font-size: 56px; line-height: 1.2; color: var(--gold); }
-  .closing .sig[lang="hi"] { font-family: var(--font-deva-script); font-weight: 700; font-size: 40px; line-height: 1.5; }
+  .closing .sig { font-family: var(--font-script); font-style: italic; font-weight: 500; font-size: 46px; line-height: 1.2; color: var(--gold); }
+  .closing .sig[lang="hi"] { font-family: var(--font-deva-script); font-weight: 400; font-size: 40px; line-height: 1.5; }
   .closing .replay-btn { margin-top: 12px; }
 
   /* Reveal of each page's content as it scrolls in */
@@ -530,8 +594,16 @@
     .page { padding-block: calc(68px + env(safe-area-inset-top, 0px)) calc(28px + env(safe-area-inset-bottom, 0px)); }
     .split, .split.flip { grid-template-columns: minmax(0, 1fr); gap: 18px; justify-items: center; }
     .split.flip > .art { order: 0; }
-    .event-art { width: clamp(130px, calc((100svh - 540px) * .8), 290px); }
-    .invite-art { width: clamp(140px, calc((100svh - 560px) * .8), 280px); }
+    /* Phones: the drawing runs edge to edge from the top and fades down into the page; details follow beneath */
+    html { scroll-snap-type: y proximity; }
+    .page.has-art { align-items: start; padding-top: 0; }
+    .split > .art {
+      width: min(100vw, 520px); max-width: none; margin: 0 -16px; justify-self: center;
+      -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 70%, transparent 98%);
+      mask-image: linear-gradient(to bottom, #000 0, #000 70%, transparent 98%);
+    }
+    .split > .event-info, .split > .invite-text-col { margin-top: calc(min(100vw, 520px) * -.2); }
+    .split > .invite-text-col { gap: 10px; }
     .event-info { justify-items: center; text-align: center; }
     .day-top { justify-content: center; gap: 14px; }
     .dcol { justify-items: end; padding-right: 14px; }
@@ -553,14 +625,20 @@
     .hosts { font-size: 17.5px; }
     .invite-text { font-size: 15.5px; }
     .parents { gap: 8px; }
-    .parents .nm { font-size: 32px; }
+    .parents .nm { font-size: 25px; white-space: nowrap; }
     .parents .rel { font-size: 13px; }
     .rsvp-layout { grid-template-columns: minmax(0, 1fr); gap: 18px; }
-    .rsvp-art { position: relative; top: 0; width: min(100%, 220px); justify-self: center; }
+    .rsvp-art { position: relative; top: 0; width: min(100%, 320px); justify-self: center; margin-block: -20px -30px; }
     .rsvp-card { padding: 22px 16px; }
     .replay-btn .replay-label, .music-btn .music-label { display: none; }
     .music-btn { padding: 0 12px; }
-    .tap-hint { left: auto; right: 12px; bottom: 12px; translate: none; padding: 7px; border-radius: 50%; }
+    #top .inst { display: none; }
+    #invitation .inst { right: 4px; bottom: auto; top: calc(min(100vw, 520px) * .98); width: 92px; }
+    #day-28 .inst { right: 0; bottom: auto; top: calc(min(100vw, 520px) * 1.0); width: 120px; }
+    #day-29 .inst { left: auto; right: 6px; bottom: auto; top: calc(min(100vw, 520px) * 1.0); width: 80px; }
+    #day-30 .inst { right: 6px; top: calc(44px + env(safe-area-inset-top, 0px)); height: 104px; }
+    #rsvp .inst { left: 6px; bottom: 12px; height: 140px; }
+    .tap-hint { left: auto; right: 16%; bottom: auto; top: 16%; translate: none; padding: 7px; border-radius: 50%; }
     .tap-hint > span { display: none; }
     .tap-hint svg { width: 16px; height: 16px; }
     .replay-btn { padding: 0 12px; }
@@ -574,7 +652,7 @@
     .in, .fade-in { animation: fade 250ms ease both; animation-delay: 0ms; }
     .mandala, .bg-mandala { animation: none; }
     .glint { display: none; }
-    .scroll-cue svg, .tap-hint svg, .music-btn .eq i, .music-btn.nudge { animation: none; }
+    .inst, .inst *, .scroll-cue svg, .tap-hint svg, .music-btn .eq i, .music-btn.nudge, .names.shine .bi > span, .gate-names .bi > span { animation: none; }
     .art.poke .ill, .seal-wrap.poke .mono { animation: none; }
     .ill .draw, .ill .pop, .ill .fadein, .ill .draw-text { transition: none !important; }
     .door { transition: opacity 450ms ease; }
@@ -640,6 +718,7 @@
 
   <header class="page t-welcome hero" id="top">
     <canvas class="amb" aria-hidden="true"></canvas>
+    <svg class="ill inst sh-l" data-inst="shehnai" viewBox="0 -40 120 320" role="button" tabindex="0" aria-label="Shehnai: tap to play" data-hi-aria="शहनाई: बजाने के लिए छुएँ"><defs><linearGradient id="ish1-brass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FCE7AA"/><stop offset=".45" stop-color="#E3B95E"/><stop offset="1" stop-color="#B8852D"/></linearGradient></defs><g class="m-breathe"><rect x="57" y="2" width="6" height="18" rx="2" fill="#EAD7A6"/><ellipse cx="60" cy="22" rx="11" ry="3.2" fill="url(#ish1-brass)"/><path d="M53 25H67L73 196H47Z" fill="#6B2E17"/><path class="draw" pathLength="1" style="--d:0.2s;--t:1.6s" d="M53 25H67L73 196H47Z" stroke="url(#ish1-brass)" stroke-width="1.4"/><path d="M54 40H66M51 108H69M48 162H72" stroke="url(#ish1-brass)" stroke-width="3"/><circle cx="60" cy="64" r="2.5" fill="#2A0F08"/><circle cx="60" cy="78" r="2.5" fill="#2A0F08"/><circle cx="60" cy="92" r="2.5" fill="#2A0F08"/><circle cx="60" cy="124" r="2.5" fill="#2A0F08"/><circle cx="60" cy="138" r="2.5" fill="#2A0F08"/><circle cx="60" cy="152" r="2.5" fill="#2A0F08"/><circle cx="60" cy="176" r="2.5" fill="#2A0F08"/><path d="M47 196C40 226 20 248 12 266H108C100 248 80 226 73 196Z" fill="url(#ish1-brass)"/><path d="M44 214C52 222 68 222 76 214M34 236C48 246 72 246 86 236" fill="none" stroke="#A8752A" stroke-width=".9"/><ellipse cx="60" cy="266" rx="48" ry="7" fill="#F0CF7C" stroke="#B8852D"/><ellipse cx="60" cy="266" rx="38" ry="4" fill="#9C6A22" fill-opacity=".55"/></g><g class="m-note" style="--n:0"><ellipse cx="48" cy="238" rx="4.6" ry="3.4" transform="rotate(-20 48 238)" fill="#F3D58A"/><path d="M52 237v-19c3 2 6 4 6 9" fill="none" stroke="#F3D58A" stroke-width="1.5" stroke-linecap="round"/></g><g class="m-note" style="--n:1"><ellipse cx="70" cy="230" rx="4.6" ry="3.4" transform="rotate(-20 70 230)" fill="#F3D58A"/><path d="M74 229v-19c3 2 6 4 6 9" fill="none" stroke="#F3D58A" stroke-width="1.5" stroke-linecap="round"/></g><g class="m-note" style="--n:2"><ellipse cx="58" cy="222" rx="4.6" ry="3.4" transform="rotate(-20 58 222)" fill="#F3D58A"/><path d="M62 221v-19c3 2 6 4 6 9" fill="none" stroke="#F3D58A" stroke-width="1.5" stroke-linecap="round"/></g></svg><svg class="ill inst sh-r" data-inst="shehnai" viewBox="0 -40 120 320" aria-hidden="true"><defs><linearGradient id="ish2-brass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FCE7AA"/><stop offset=".45" stop-color="#E3B95E"/><stop offset="1" stop-color="#B8852D"/></linearGradient></defs><g class="m-breathe"><rect x="57" y="2" width="6" height="18" rx="2" fill="#EAD7A6"/><ellipse cx="60" cy="22" rx="11" ry="3.2" fill="url(#ish2-brass)"/><path d="M53 25H67L73 196H47Z" fill="#6B2E17"/><path class="draw" pathLength="1" style="--d:0.2s;--t:1.6s" d="M53 25H67L73 196H47Z" stroke="url(#ish2-brass)" stroke-width="1.4"/><path d="M54 40H66M51 108H69M48 162H72" stroke="url(#ish2-brass)" stroke-width="3"/><circle cx="60" cy="64" r="2.5" fill="#2A0F08"/><circle cx="60" cy="78" r="2.5" fill="#2A0F08"/><circle cx="60" cy="92" r="2.5" fill="#2A0F08"/><circle cx="60" cy="124" r="2.5" fill="#2A0F08"/><circle cx="60" cy="138" r="2.5" fill="#2A0F08"/><circle cx="60" cy="152" r="2.5" fill="#2A0F08"/><circle cx="60" cy="176" r="2.5" fill="#2A0F08"/><path d="M47 196C40 226 20 248 12 266H108C100 248 80 226 73 196Z" fill="url(#ish2-brass)"/><path d="M44 214C52 222 68 222 76 214M34 236C48 246 72 246 86 236" fill="none" stroke="#A8752A" stroke-width=".9"/><ellipse cx="60" cy="266" rx="48" ry="7" fill="#F0CF7C" stroke="#B8852D"/><ellipse cx="60" cy="266" rx="38" ry="4" fill="#9C6A22" fill-opacity=".55"/></g><g class="m-note" style="--n:0"><ellipse cx="48" cy="238" rx="4.6" ry="3.4" transform="rotate(-20 48 238)" fill="#F3D58A"/><path d="M52 237v-19c3 2 6 4 6 9" fill="none" stroke="#F3D58A" stroke-width="1.5" stroke-linecap="round"/></g><g class="m-note" style="--n:1"><ellipse cx="70" cy="230" rx="4.6" ry="3.4" transform="rotate(-20 70 230)" fill="#F3D58A"/><path d="M74 229v-19c3 2 6 4 6 9" fill="none" stroke="#F3D58A" stroke-width="1.5" stroke-linecap="round"/></g><g class="m-note" style="--n:2"><ellipse cx="58" cy="222" rx="4.6" ry="3.4" transform="rotate(-20 58 222)" fill="#F3D58A"/><path d="M62 221v-19c3 2 6 4 6 9" fill="none" stroke="#F3D58A" stroke-width="1.5" stroke-linecap="round"/></g></svg>
     <div class="toran fade-in" aria-hidden="true"></div>
     <div class="page-inner hero-inner">
       <div class="ganesh deva fade-in" lang="hi">॥ श्री गणेशाय नमः ॥</div>
@@ -650,9 +729,9 @@
         <span class="glint" aria-hidden="true"></span>
       </div>
       <h1 class="names" id="names" tabindex="-1">
-        <span class="in" style="--y:16px;--dur:800ms"><span class="bi" style="--i:0"><span class="en">Shivanshi</span><span class="hi" lang="hi">शिवांशी</span></span></span>
+        <span class="in" style="--y:16px;--dur:800ms"><span class="bi" style="--i:0"><span class="en magic">Shivanshi</span><span class="hi magic" lang="hi">शिवांशी</span></span></span>
         <span class="weds fade-in" style="--d:60ms"><span class="bi" style="--i:1"><span class="en">weds</span><span class="hi" lang="hi">संग</span></span></span>
-        <span class="in" style="--y:16px;--dur:800ms;--d:110ms"><span class="bi" style="--i:2"><span class="en">Shashwat</span><span class="hi" lang="hi">शाश्वत</span></span></span>
+        <span class="in" style="--y:16px;--dur:800ms;--d:110ms"><span class="bi" style="--i:2"><span class="en magic" style="--base:300ms">Shashwat</span><span class="hi magic" lang="hi" style="--base:300ms">शाश्वत</span></span></span>
       </h1>
       <nav class="dates in" style="--d:220ms;--y:6px" aria-label="The three functions">
         <a class="date" href="#day-28"><span class="dow" data-hi="शनिवार">Sat</span><span class="num" data-hi="२८">28</span><span class="fn" data-hi="सगाई">Engagement</span></a>
@@ -674,8 +753,9 @@
   </header>
 
   <main>
-    <section class="page t-invite" id="invitation" aria-labelledby="inv-h">
+    <section class="page has-art t-invite" id="invitation" aria-labelledby="inv-h">
       <svg class="bg-mandala br" viewBox="-100 -100 200 200" aria-hidden="true"></svg>
+      <svg class="ill inst" data-inst="santoor" viewBox="-6 -44 270 200" role="button" tabindex="0" aria-label="Santoor: tap to play" data-hi-aria="संतूर: बजाने के लिए छुएँ"><defs><linearGradient id="isa-brass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FCE7AA"/><stop offset=".45" stop-color="#E3B95E"/><stop offset="1" stop-color="#B8852D"/></linearGradient></defs><path d="M50 16H210L252 150H8Z" fill="#7A3B1F"/><path d="M58 24H202L240 142H20Z" fill="#94552B"/><circle cx="98" cy="112" r="9" fill="none" stroke="#F3D58A" stroke-width="1"/><circle cx="98" cy="112" r="3" fill="#F3D58A"/><circle cx="162" cy="112" r="9" fill="none" stroke="#F3D58A" stroke-width="1"/><circle cx="162" cy="112" r="3" fill="#F3D58A"/><g class="m-strings"><path d="M48.6 30H211.4M46.4 37H213.6M44.2 44H215.8M42 51H218M39.8 58H220.2M37.6 65H222.4M35.4 72H224.6M33.3 79H226.7M31.1 86H228.9M28.9 93H231.1M26.7 100H233.3M24.5 107H235.5M22.3 114H237.7M20.1 121H239.9M17.9 128H242.1M15.7 135H244.3" stroke="#F6DFA0" stroke-width=".8" stroke-opacity=".9"/></g><rect x="104.4" y="28.5" width="4" height="3" fill="#F3D58A"/><rect x="152.2" y="35.5" width="4" height="3" fill="#F3D58A"/><rect x="103.1" y="42.5" width="4" height="3" fill="#F3D58A"/><rect x="153.5" y="49.5" width="4" height="3" fill="#F3D58A"/><rect x="101.9" y="56.5" width="4" height="3" fill="#F3D58A"/><rect x="154.7" y="63.5" width="4" height="3" fill="#F3D58A"/><rect x="100.7" y="70.5" width="4" height="3" fill="#F3D58A"/><rect x="155.9" y="77.5" width="4" height="3" fill="#F3D58A"/><rect x="99.5" y="84.5" width="4" height="3" fill="#F3D58A"/><rect x="157.2" y="91.5" width="4" height="3" fill="#F3D58A"/><rect x="98.2" y="98.5" width="4" height="3" fill="#F3D58A"/><rect x="158.4" y="105.5" width="4" height="3" fill="#F3D58A"/><rect x="97" y="112.5" width="4" height="3" fill="#F3D58A"/><rect x="159.6" y="119.5" width="4" height="3" fill="#F3D58A"/><rect x="95.8" y="126.5" width="4" height="3" fill="#F3D58A"/><rect x="160.8" y="133.5" width="4" height="3" fill="#F3D58A"/><path class="draw" pathLength="1" style="--d:0.2s;--t:1.6s" d="M50 16H210L252 150H8Z" stroke="url(#isa-brass)" stroke-width="2"/><g class="m-mallet m1"><path d="M62 -40Q92 -8 112 40" fill="none" stroke="url(#isa-brass)" stroke-width="2.4" stroke-linecap="round"/><ellipse cx="112" cy="42" rx="5" ry="3.2" fill="url(#isa-brass)"/></g><g class="m-mallet m2"><path d="M198 -40Q170 -8 152 46" fill="none" stroke="url(#isa-brass)" stroke-width="2.4" stroke-linecap="round"/><ellipse cx="152" cy="48" rx="5" ry="3.2" fill="url(#isa-brass)"/></g><g class="m-note" style="--n:0"><ellipse cx="118" cy="20" rx="4.6" ry="3.4" transform="rotate(-20 118 20)" fill="#F3D58A"/><path d="M122 19v-19c3 2 6 4 6 9" fill="none" stroke="#F3D58A" stroke-width="1.5" stroke-linecap="round"/></g><g class="m-note" style="--n:1"><ellipse cx="140" cy="12" rx="4.6" ry="3.4" transform="rotate(-20 140 12)" fill="#F3D58A"/><path d="M144 11v-19c3 2 6 4 6 9" fill="none" stroke="#F3D58A" stroke-width="1.5" stroke-linecap="round"/></g><g class="m-note" style="--n:2"><ellipse cx="164" cy="22" rx="4.6" ry="3.4" transform="rotate(-20 164 22)" fill="#F3D58A"/><path d="M168 21v-19c3 2 6 4 6 9" fill="none" stroke="#F3D58A" stroke-width="1.5" stroke-linecap="round"/></g></svg>
       <canvas class="amb" aria-hidden="true"></canvas>
       <div class="page-inner split">
         <figure data-play="peacock" tabindex="0" role="button" aria-label="Tap the peacock" data-hi-aria="मोर को छुएँ" class="art invite-art reveal">
@@ -718,33 +798,34 @@
 <path class="draw" pathLength="1" style="--d:1.6s;--t:0.8s" d="M372 86l10 14l-10 14l-10-14z" stroke="#B97A4C" stroke-width="1"/>
 </svg>
           <figcaption class="ov">
-            <span class="script" data-hi="शिवांशी">Shivanshi</span>
+            <span class="script magic" data-hi="शिवांशी">Shivanshi</span>
             <span class="small" data-hi="संग">weds</span>
-            <span class="script" data-hi="शाश्वत">Shashwat</span>
+            <span class="script magic" data-hi="शाश्वत">Shashwat</span>
             <span class="numdate" data-hi="३० · ११ · २०२६">30 · 11 · 2026</span>
           </figcaption>
           <span class="tap-hint" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0l1.8 6.2L16 8l-6.2 1.8L8 16l-1.8-6.2L0 8l6.2-1.8z" fill="currentColor"/></svg><span data-hi="मोर को छुएँ">Tap the peacock</span></span>
         </figure>
         <div class="invite-text-col reveal">
-          <h2 id="inv-h" data-hi="निमंत्रण">Invitation</h2>
+          <h2 id="inv-h" class="magic" data-hi="निमंत्रण">Invitation</h2>
           <p class="hosts" data-hi="श्रीमती कुसुम लता त्यागी एवं स्व. श्री महेंद्र सिंह त्यागी">Mrs. Kusum Lata Tyagi &amp; Lt. Mr. Mahendra Singh Tyagi</p>
           <p class="invite-text" data-hi="अपनी प्रिय पौत्री के शुभ विवाह के मंगल अवसर पर आपकी गरिमामयी उपस्थिति एवं आशीर्वाद हेतु सादर आमंत्रित करते हैं">feel immense pleasure in requesting your presence and blessings on the auspicious occasion of the marriage ceremony of their beloved granddaughter</p>
           <div class="parents">
-            <div><div class="nm" data-hi="शिवांशी">Shivanshi</div><div class="rel" data-hi="सुपुत्री श्रीमती सरिता त्यागी एवं श्री सुधीर त्यागी">D/o Mrs. Sarita Tyagi &amp; Mr. Sudhir Tyagi</div></div>
+            <div><div class="nm magic" data-hi="शिवांशी">Shivanshi</div><div class="rel" data-hi="सुपुत्री श्रीमती सरिता त्यागी एवं श्री सुधीर त्यागी">D/o Mrs. Sarita Tyagi &amp; Mr. Sudhir Tyagi</div></div>
             <div class="weds" data-hi="संग">weds</div>
-            <div><div class="nm" data-hi="शाश्वत">Shashwat</div><div class="rel" data-hi="सुपुत्र श्रीमती आभा त्यागी एवं श्री भूपेंद्र त्यागी">S/o Mrs. Abha Tyagi &amp; Mr. Bhupendra Tyagi</div></div>
+            <div><div class="nm magic" data-hi="शाश्वत">Shashwat</div><div class="rel" data-hi="सुपुत्र श्रीमती आभा त्यागी एवं श्री भूपेंद्र त्यागी">S/o Mrs. Abha Tyagi &amp; Mr. Bhupendra Tyagi</div></div>
           </div>
           <div class="resi" data-hi="निवास: मेरठ (उ.प्र.)">Resi.: Meerut (U.P.)</div>
         </div>
       </div>
     </section>
 
-    <section class="page t-engage day engage" id="day-28" aria-labelledby="eng-h"
+    <section class="page has-art t-engage day engage" id="day-28" aria-labelledby="eng-h"
       data-start="20261128T190000" data-end="2026-11-28T23:00:00+05:30" data-end-ics="20261128T230000"
       data-title="Engagement · Shivanshi & Shashwat"
       data-place="The Bhutani Heritage, Vill. Jatholi, NH-58 Bypass, Delhi-Haridwar Rd, Kanker Khera, Meerut, Uttar Pradesh 250001"
       data-map="https://maps.app.goo.gl/DYucdS2oPKSbjW4UA">
       <svg class="bg-mandala br" viewBox="-100 -100 200 200" aria-hidden="true"></svg>
+      <svg class="ill inst" data-inst="bansuri" viewBox="0 -60 330 170" role="button" tabindex="0" aria-label="Bansuri: tap to play" data-hi-aria="बांसुरी: बजाने के लिए छुएँ"><g transform="rotate(-12 165 40)"><g class="m-breathe"><rect x="10" y="32" width="292" height="14" rx="7" fill="#E5C584"/><rect x="10" y="32" width="292" height="5" rx="2.5" fill="#F5DFA8"/><path d="M64 32v14M150 32v14M222 32v14" stroke="#B07A35" stroke-width="2.2"/><path d="M18 32v14M294 32v14" stroke="#C8264B" stroke-width="3"/><ellipse cx="44" cy="39" rx="4" ry="3" fill="#5A3416"/><ellipse cx="176" cy="39" rx="3" ry="2.6" fill="#5A3416"/><ellipse cx="194" cy="39" rx="3" ry="2.6" fill="#5A3416"/><ellipse cx="212" cy="39" rx="3" ry="2.6" fill="#5A3416"/><ellipse cx="236" cy="39" rx="3" ry="2.6" fill="#5A3416"/><ellipse cx="254" cy="39" rx="3" ry="2.6" fill="#5A3416"/><ellipse cx="272" cy="39" rx="3" ry="2.6" fill="#5A3416"/><path d="M300 46c6 10 2 22-2 32" fill="none" stroke="#C8264B" stroke-width="1.6"/><circle cx="298" cy="80" r="3.2" fill="#C8264B"/><path d="M296 82l-4 22M298 83l0 23M300 82l4 22" stroke="#C8264B" stroke-width="1.2"/><rect class="draw" pathLength="1" style="--d:0.2s;--t:1.6s" x="10" y="32" width="292" height="14" rx="7" stroke="#9C6B2A" stroke-width="1.2"/></g></g><g class="m-note" style="--n:0"><ellipse cx="40" cy="10" rx="4.6" ry="3.4" transform="rotate(-20 40 10)" fill="currentColor"/><path d="M44 9v-19c3 2 6 4 6 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></g><g class="m-note" style="--n:1"><ellipse cx="60" cy="-2" rx="4.6" ry="3.4" transform="rotate(-20 60 -2)" fill="currentColor"/><path d="M64 -3v-19c3 2 6 4 6 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></g><g class="m-note" style="--n:2"><ellipse cx="30" cy="-10" rx="4.6" ry="3.4" transform="rotate(-20 30 -10)" fill="currentColor"/><path d="M34 -11v-19c3 2 6 4 6 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></g></svg>
       <canvas class="amb" aria-hidden="true"></canvas>
       <div class="page-inner split">
         <figure data-play="rings" tabindex="0" role="button" aria-label="Tap the rings" data-hi-aria="अंगूठियों को छुएँ" class="art event-art reveal"><svg class="ill" viewBox="0 0 400 500" role="img" aria-label="Animated drawing: two engagement rings with a diamond under an arch of roses, with candles glowing and petals drifting down">
@@ -806,7 +887,7 @@
         <div class="event-info reveal">
           <div class="day-top">
             <div class="dcol"><span class="dnum" data-hi="२८">28</span><span class="dmon" data-hi="नवंबर">Nov</span><span class="ddow" data-hi="शनिवार">Saturday</span></div>
-            <h2 class="ev-title" id="eng-h"><svg class="motif" viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="19" r="7.5"/><circle cx="20" cy="19" r="7.5"/><path d="M20 5.5l2.5 2.5-2.5 2.5-2.5-2.5z"/></svg><span data-hi="सगाई">Engagement</span></h2>
+            <h2 class="ev-title" id="eng-h"><svg class="motif" viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="19" r="7.5"/><circle cx="20" cy="19" r="7.5"/><path d="M20 5.5l2.5 2.5-2.5 2.5-2.5-2.5z"/></svg><span class="magic" data-hi="सगाई">Engagement</span></h2>
           </div>
           <p class="ev-line" data-hi="अंगूठियों, गुलाबों और आशीर्वाद की एक शाम।">An evening of rings, roses and blessings.</p>
           <div class="timings"><div class="timing"><b data-hi="सायं ७:००">7:00 PM</b><span data-hi="बजे से">Onwards</span></div></div>
@@ -817,12 +898,13 @@
       </div>
     </section>
 
-    <section class="page t-mehendi day mehendi" id="day-29" aria-labelledby="meh-h"
+    <section class="page has-art t-mehendi day mehendi" id="day-29" aria-labelledby="meh-h"
       data-start="20261129T170000" data-end="2026-11-29T23:00:00+05:30" data-end-ics="20261129T230000"
       data-title="Mehendi & Sangeet · Shivanshi & Shashwat"
       data-place="NOVAH Rooftop, 3rd floor, opposite DMA School, Pallavpuram, Meerut, Uttar Pradesh 250110"
       data-map="https://maps.app.goo.gl/44NuDkuCya3pmmgX7">
       <svg class="bg-mandala bl" viewBox="-100 -100 200 200" aria-hidden="true"></svg>
+      <svg class="ill inst" data-inst="manjira" viewBox="0 -10 200 130" role="button" tabindex="0" aria-label="Manjira: tap to play" data-hi-aria="मंजीरा: बजाने के लिए छुएँ"><defs><linearGradient id="ima-brass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FCE7AA"/><stop offset=".45" stop-color="#E3B95E"/><stop offset="1" stop-color="#B8852D"/></linearGradient></defs><path d="M66 52C80 10 120 10 134 52" fill="none" stroke="#C8264B" stroke-width="2"/><circle cx="100" cy="18" r="3" fill="#C8264B"/><g class="m-clash l"><path d="M30 82Q60 44 90 82Z" fill="url(#ima-brass)"/><ellipse cx="60" cy="82" rx="32" ry="8" fill="#F0CF7C" stroke="#B8852D"/><ellipse cx="60" cy="82" rx="22" ry="4.5" fill="#B8852D" fill-opacity=".45"/><circle cx="60" cy="55" r="4.2" fill="url(#ima-brass)"/></g><g class="m-clash r"><path d="M110 82Q140 44 170 82Z" fill="url(#ima-brass)"/><ellipse cx="140" cy="82" rx="32" ry="8" fill="#F0CF7C" stroke="#B8852D"/><ellipse cx="140" cy="82" rx="22" ry="4.5" fill="#B8852D" fill-opacity=".45"/><circle cx="140" cy="55" r="4.2" fill="url(#ima-brass)"/></g><g class="m-spark"><path d="M100 64v-14M100 96v14M86 80h-12M114 80h12M90 70l-8-8M110 70l8-8M90 90l-8 8M110 90l8 8" stroke="#FFE6A8" stroke-width="1.6" stroke-linecap="round"/></g></svg>
       <canvas class="amb" aria-hidden="true"></canvas>
       <div class="page-inner split flip">
         <figure data-play="dholak" tabindex="0" role="button" aria-label="Play the dholak" data-hi-aria="ढोलक बजाएँ" class="art event-art reveal"><svg class="ill" viewBox="0 0 400 500" role="img" aria-label="Animated drawing: a hand being decorated with mehendi under swaying marigold garlands, with a dholak and music notes for the sangeet">
@@ -902,7 +984,7 @@
         <div class="event-info reveal">
           <div class="day-top">
             <div class="dcol"><span class="dnum" data-hi="२९">29</span><span class="dmon" data-hi="नवंबर">Nov</span><span class="ddow" data-hi="रविवार">Sunday</span></div>
-            <h2 class="ev-title" id="meh-h"><svg class="motif" viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 29c-5.8 0-9.5-3.9-9.5-8.6 0-6 5.3-8 8-11.3 1.6-2 1.8-4 1-5.6 4.8 1.8 9.5 7.4 9.5 13.9 0 6.8-3.5 11.6-9 11.6z"/><path d="M16 24c-2.6 0-4-1.7-4-3.7 0-2.6 2.6-4 4-5.8"/><circle cx="16.5" cy="20" r="1.2" fill="currentColor"/></svg><span data-hi="मेहंदी व संगीत">Mehendi <span class="amp">&amp;</span> Sangeet</span></h2>
+            <h2 class="ev-title" id="meh-h"><svg class="motif" viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 29c-5.8 0-9.5-3.9-9.5-8.6 0-6 5.3-8 8-11.3 1.6-2 1.8-4 1-5.6 4.8 1.8 9.5 7.4 9.5 13.9 0 6.8-3.5 11.6-9 11.6z"/><path d="M16 24c-2.6 0-4-1.7-4-3.7 0-2.6 2.6-4 4-5.8"/><circle cx="16.5" cy="20" r="1.2" fill="currentColor"/></svg><span class="magic" data-hi="मेहंदी व संगीत">Mehendi &amp; Sangeet</span></h2>
           </div>
           <p class="ev-line" data-hi="मेहंदी, गेंदे के फूल, ढोलक और नृत्य।">Henna, marigolds, dholak and dancing.</p>
           <div class="timings"><div class="timing"><b data-hi="सायं ५:००">5:00 PM</b><span data-hi="बजे से">Onwards</span></div></div>
@@ -913,12 +995,13 @@
       </div>
     </section>
 
-    <section class="page t-wed day wed" id="day-30" aria-labelledby="wed-h"
+    <section class="page has-art t-wed day wed" id="day-30" aria-labelledby="wed-h"
       data-start="20261130T190000" data-end="2026-11-30T23:59:00+05:30" data-end-ics="20261130T235900"
       data-title="Wedding · Shivanshi weds Shashwat"
       data-place="Grand Rishala Resort, Khirwa Rd, Kanker Khera Bypass, Meerut, Uttar Pradesh 250001"
       data-map="https://maps.app.goo.gl/9JJ7yEkKCTfctee86">
       <svg class="bg-mandala tr" viewBox="-100 -100 200 200" aria-hidden="true"></svg>
+      <svg class="ill inst" data-inst="bell" viewBox="0 0 160 250" role="button" tabindex="0" aria-label="Temple bell: tap to ring" data-hi-aria="घंटी: बजाने के लिए छुएँ"><defs><linearGradient id="ibe-brass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FCE7AA"/><stop offset=".45" stop-color="#E3B95E"/><stop offset="1" stop-color="#B8852D"/></linearGradient></defs><g class="m-swing"><ellipse cx="80" cy="4" rx="3" ry="5.5" fill="none" stroke="url(#ibe-brass)" stroke-width="1.6"/><ellipse cx="80" cy="13" rx="3" ry="5.5" fill="none" stroke="url(#ibe-brass)" stroke-width="1.6"/><ellipse cx="80" cy="22" rx="3" ry="5.5" fill="none" stroke="url(#ibe-brass)" stroke-width="1.6"/><ellipse cx="80" cy="31" rx="3" ry="5.5" fill="none" stroke="url(#ibe-brass)" stroke-width="1.6"/><ellipse cx="80" cy="40" rx="3" ry="5.5" fill="none" stroke="url(#ibe-brass)" stroke-width="1.6"/><ellipse cx="80" cy="49" rx="3" ry="5.5" fill="none" stroke="url(#ibe-brass)" stroke-width="1.6"/><ellipse cx="80" cy="58" rx="3" ry="5.5" fill="none" stroke="url(#ibe-brass)" stroke-width="1.6"/><circle cx="80" cy="64" r="5" fill="url(#ibe-brass)"/><path d="M50 150C50 100 60 72 80 70C100 72 110 100 110 150C118 156 124 160 128 166H32C36 160 42 156 50 150Z" fill="url(#ibe-brass)"/><path d="M53 112H107M50 140H110" stroke="#B8852D" stroke-width="1.6"/><path d="M60 92C68 86 92 86 100 92" fill="none" stroke="#FCE7AA" stroke-width="1.4"/><ellipse cx="80" cy="166" rx="48" ry="6" fill="#F0CF7C" stroke="#B8852D"/><g class="m-clapper"><path d="M80 150V168" stroke="url(#ibe-brass)" stroke-width="2"/><circle cx="80" cy="172" r="6" fill="url(#ibe-brass)"/></g></g><g class="m-wave"><path d="M22 128C10 150 10 178 22 200M138 128C150 150 150 178 138 200" fill="none" stroke="#FFE6A8" stroke-width="1.6" stroke-linecap="round"/></g></svg>
       <canvas class="amb" aria-hidden="true"></canvas>
       <div class="page-inner split">
         <figure data-play="fire" tabindex="0" role="button" aria-label="Tap the sacred fire" data-hi-aria="पवित्र अग्नि को छुएँ" class="art event-art wed-art reveal">
@@ -978,7 +1061,7 @@
 <g class="fadein" style="--d:2.8s"><g class="a-bob" style="--dur:5.5s;--ad:1s"><use href="#wd-lotus" x="302" y="418" width="80" height="50"/></g></g>
 </svg>
           <figcaption class="ov wed-ov">
-            <span class="script" data-hi="शिवांशी संग शाश्वत">Shivanshi <span class="amp">&amp;</span> Shashwat</span>
+            <span class="script magic" data-hi="शिवांशी संग शाश्वत">Shivanshi <span class="amp">&amp;</span> Shashwat</span>
             <span class="numdate" data-hi="३० · ११ · २०२६">30 · 11 · 2026</span>
           </figcaption>
           <span class="tap-hint" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0l1.8 6.2L16 8l-6.2 1.8L8 16l-1.8-6.2L0 8l6.2-1.8z" fill="currentColor"/></svg><span data-hi="पवित्र अग्नि को छुएँ">Tap the sacred fire</span></span>
@@ -986,7 +1069,7 @@
         <div class="event-info reveal">
           <div class="day-top">
             <div class="dcol"><span class="dnum" data-hi="३०">30</span><span class="dmon" data-hi="नवंबर">Nov</span><span class="ddow" data-hi="सोमवार">Monday</span></div>
-            <h2 class="ev-title" id="wed-h"><svg class="motif" viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 18.5h24c-1.4 5-6.2 8.5-12 8.5S5.4 23.5 4 18.5z"/><path d="M16 4c2.6 3.2 3.4 5.6 3.4 7.6a3.4 3.4 0 0 1-6.8 0c0-2 .8-4.4 3.4-7.6z"/><path d="M11 30h10"/></svg><span data-hi="शुभ विवाह">Wedding</span></h2>
+            <h2 class="ev-title" id="wed-h"><svg class="motif" viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 18.5h24c-1.4 5-6.2 8.5-12 8.5S5.4 23.5 4 18.5z"/><path d="M16 4c2.6 3.2 3.4 5.6 3.4 7.6a3.4 3.4 0 0 1-6.8 0c0-2 .8-4.4 3.4-7.6z"/><path d="M11 30h10"/></svg><span class="magic" data-hi="शुभ विवाह">Wedding</span></h2>
           </div>
           <p class="ev-line" data-hi="बारात का आगमन, और पवित्र अग्नि के सात फेरे।">The baraat arrives, and seven pheras around the sacred fire.</p>
           <div class="timings">
@@ -1002,10 +1085,11 @@
 
     <section class="page t-rsvp" id="rsvp" aria-labelledby="rsvp-h">
       <svg class="bg-mandala br" viewBox="-100 -100 200 200" aria-hidden="true"></svg>
+      <svg class="ill inst" data-inst="tanpura" viewBox="0 0 120 340" role="button" tabindex="0" aria-label="Tanpura: tap to play" data-hi-aria="तानपुरा: बजाने के लिए छुएँ"><defs><linearGradient id="ita-brass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FCE7AA"/><stop offset=".45" stop-color="#E3B95E"/><stop offset="1" stop-color="#B8852D"/></linearGradient></defs><circle cx="60" cy="272" r="54" fill="#7A3B1F"/><circle cx="60" cy="272" r="44" fill="none" stroke="url(#ita-brass)" stroke-width="1.4"/><circle cx="60" cy="272" r="36" fill="#94552B"/><path d="M24 250C40 236 80 236 96 250" fill="none" stroke="#F3D58A" stroke-width="1" stroke-dasharray="2 3"/><rect x="50" y="18" width="20" height="236" rx="6" fill="#8E4A26"/><rect x="40" y="30" width="10" height="4" rx="2" fill="url(#ita-brass)"/><rect x="70" y="42" width="10" height="4" rx="2" fill="url(#ita-brass)"/><rect x="40" y="56" width="10" height="4" rx="2" fill="url(#ita-brass)"/><rect x="70" y="68" width="10" height="4" rx="2" fill="url(#ita-brass)"/><path d="M60 18C60 8 66 2 72 4" fill="none" stroke="url(#ita-brass)" stroke-width="2.4" stroke-linecap="round"/><rect x="44" y="294" width="32" height="5" rx="1.5" fill="#F0CF7C"/><g class="m-strings"><path d="M54 26L50 296" stroke="#F6DFA0" stroke-width=".8"/><path d="M58 26L56.5 296" stroke="#F6DFA0" stroke-width=".8"/><path d="M62 26L63 296" stroke="#F6DFA0" stroke-width=".8"/><path d="M66 26L69.5 296" stroke="#F6DFA0" stroke-width=".8"/></g><rect class="draw" pathLength="1" style="--d:0.2s;--t:1.6s" x="50" y="18" width="20" height="236" rx="6" stroke="url(#ita-brass)" stroke-width="1.4"/><g class="m-note" style="--n:0"><ellipse cx="84" cy="230" rx="4.6" ry="3.4" transform="rotate(-20 84 230)" fill="#F3D58A"/><path d="M88 229v-19c3 2 6 4 6 9" fill="none" stroke="#F3D58A" stroke-width="1.5" stroke-linecap="round"/></g><g class="m-note" style="--n:1"><ellipse cx="98" cy="214" rx="4.6" ry="3.4" transform="rotate(-20 98 214)" fill="#F3D58A"/><path d="M102 213v-19c3 2 6 4 6 9" fill="none" stroke="#F3D58A" stroke-width="1.5" stroke-linecap="round"/></g><g class="m-note" style="--n:2"><ellipse cx="88" cy="200" rx="4.6" ry="3.4" transform="rotate(-20 88 200)" fill="#F3D58A"/><path d="M92 199v-19c3 2 6 4 6 9" fill="none" stroke="#F3D58A" stroke-width="1.5" stroke-linecap="round"/></g></svg>
       <canvas class="amb" aria-hidden="true"></canvas>
       <div class="page-inner">
         <div class="rsvp-head reveal">
-          <h2 id="rsvp-h" data-hi="कृपया उत्तर दें">R.S.V.P.</h2>
+          <h2 id="rsvp-h" class="magic" data-hi="कृपया उत्तर दें">R.S.V.P.</h2>
         </div>
         <div class="rsvp-layout reveal">
           <figure data-play="rangoli" tabindex="0" role="button" aria-label="Tap the rangoli" data-hi-aria="रंगोली को छुएँ" class="art rsvp-art">
@@ -1134,7 +1218,7 @@
 <g class="fadein" style="--d:1s"><g transform="translate(88 430)"><circle class="a-glow" style="--dur:3s" cy="-14" r="28" fill="url(#rv-glow)"/><path d="M-18 0C-16 12 16 12 18 0Z" fill="#C9773A" stroke="#F1D08A" stroke-width="1.2"/><ellipse rx="18" ry="3" fill="#8A4A22"/><path class="a-flicker" style="--dur:2s" d="M0-24C6-16 7-9 0-3C-7-9-6-16 0-24Z" fill="#F6B23C"/><path class="a-flicker" style="--dur:2s" d="M0-16C3-12 3-8 0-5C-3-8-3-12 0-16Z" fill="#FFF0B8"/></g></g>
 <g class="fadein" style="--d:1.2s"><g transform="translate(312 430)"><circle class="a-glow" style="--dur:3.3s" cy="-14" r="28" fill="url(#rv-glow)"/><path d="M-18 0C-16 12 16 12 18 0Z" fill="#C9773A" stroke="#F1D08A" stroke-width="1.2"/><ellipse rx="18" ry="3" fill="#8A4A22"/><path class="a-flicker" style="--dur:2.2s" d="M0-24C6-16 7-9 0-3C-7-9-6-16 0-24Z" fill="#F6B23C"/><path class="a-flicker" style="--dur:2.2s" d="M0-16C3-12 3-8 0-5C-3-8-3-12 0-16Z" fill="#FFF0B8"/></g></g>
 </svg>
-            <figcaption class="ov"><span class="script" data-hi="आपकी प्रतीक्षा है">We await you</span></figcaption>
+            <figcaption class="ov"><span class="script magic" data-hi="आपकी प्रतीक्षा है">We await you</span></figcaption>
             <span class="tap-hint" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0l1.8 6.2L16 8l-6.2 1.8L8 16l-1.8-6.2L0 8l6.2-1.8z" fill="currentColor"/></svg><span data-hi="रंगोली को छुएँ">Tap the rangoli</span></span>
           </figure>
           <div class="rsvp-main">
@@ -1227,7 +1311,7 @@
         </div>
         <footer class="closing">
           <div class="pre" data-hi="दर्शनाभिलाषी">With best compliments from</div>
-          <div class="sig" data-hi="त्यागी परिवार">Tyagi Family</div>
+          <div class="sig magic" data-hi="त्यागी परिवार">Tyagi Family</div>
           <button type="button" class="replay-btn pill"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 21V9a8 8 0 0 1 16 0v12M4 21h16M12 3v18"/><circle cx="10" cy="14" r=".9" fill="currentColor"/><circle cx="14" cy="14" r=".9" fill="currentColor"/></svg><span data-hi="स्वागत फिर देखें">Watch the welcome again</span></button>
         </footer>
       </div>
@@ -1314,6 +1398,8 @@
     updatePreview();
     renderReplied();
     if (doneState) showDone(doneState);
+    magicSplit();
+    if (animate) relight();
     root.classList.add("lang-ready");
   }
   document.addEventListener("click", function (e) {
@@ -1408,6 +1494,7 @@
     page.inert = false;
     setTimeout(function () {
       root.classList.remove("gate-hold");
+      light(document.getElementById("top"));
       document.querySelectorAll(".hero .ill").forEach(function (svg) { svg.classList.add("is-drawn"); setLive(svg, true); });
     }, 380);
     setTimeout(function () { showerPetals(); }, 600);
@@ -1844,6 +1931,13 @@
         else if (name === "peacock") { [0, 2, 4, 7, 9, 12, 14].forEach(function (s, k) { santoor(c, o, t + k * .07, hz(s, 2), .3, .2); }); }
         else if (name === "rangoli") { [12, 9, 7, 4, 2, 0].forEach(function (s, k) { santoor(c, o, t + k * .08, hz(s, 2), .3, .2); }); }
         else if (name === "seal") { bell(c, o, t, hz(12, 1), .6); bell(c, o, t + .02, hz(19, 1), .3); }
+        // the instruments on each page
+        else if (name === "shehnai") { melody(c, o, t, .3, [[7, 1], [9, .5], [11, .5], [12, 2.4]], shehnai, 1, .55); }
+        else if (name === "santoor") { [0, 2, 4, 7, 9, 12, 14, 12, 9, 7].forEach(function (s, k) { santoor(c, o, t + k * .085, hz(s, 1), .3, .3); }); }
+        else if (name === "bansuri") { melody(c, o, t, .34, [[4, .5], [5, .5], [7, 1], [9, 2.4]], flute, 1, .4); }
+        else if (name === "manjira") { [0, .29, .58, .72, .87].forEach(function (d) { manjira(c, o, t + d, 1.4); }); }
+        else if (name === "bell") { bell(c, o, t, hz(0, 1), .9); bell(c, o, t + .01, hz(7, 2), .3); }
+        else if (name === "tanpura") { [[7, -1], [0, 0], [0, 0], [0, -1]].forEach(function (n, k) { tanpura(c, o, t + k * .55, hz(n[0], n[1]), .3); }); }
       }
     };
   })();
@@ -1856,6 +1950,7 @@
   function setSound(onNow, remember) {
     if (onNow) Music.enable(); else Music.disable();
     soundBtn.setAttribute("aria-pressed", String(onNow));
+    root.classList.toggle("music-on", !!onNow);
     soundBtn.classList.remove("nudge");
     if (remember) { try { localStorage.setItem("ss-sound", onNow ? "on" : "off"); } catch (x) {} }
   }
@@ -2033,7 +2128,7 @@
         if (CONF[sec.id].stars) { sc.stars = []; for (var i = 0; i < CONF[sec.id].stars; i++) sc.stars.push({ x: Math.random(), y: Math.random() * .75, r: rnd(.5, 1.5), sp: rnd(.6, 2), ph: rnd(0, 6.28) }); }
         resize(sc); scenes[sec.id] = sc;
         sec.addEventListener("pointerdown", function (e) {
-          if (e.target.closest("a, button, input, textarea, label, summary, select, details, .art, .seal-wrap, .controls, .pager, form")) return;
+          if (e.target.closest("a, button, input, textarea, label, summary, select, details, .art, .seal-wrap, .inst, .controls, .pager, form")) return;
           var pt = local(sc, e.clientX, e.clientY); burstAt(sec.id, pt[0], pt[1]);
         });
         if (sec.id === "day-29") sec.addEventListener("pointermove", function (e) {
@@ -2079,11 +2174,68 @@
     var at = { rings: [.5, .5], dholak: [.86, .86], fire: [.5, .72], peacock: [.76, .84], rangoli: [.5, .64], seal: [.5, .5] }[kind];
     if (!reduceMotion) Amb.burstFrom(el, PLAY[kind], at[0], at[1]);
   }
-  document.addEventListener("click", function (e) { var el = e.target.closest("[data-play]"); if (el) playArt(el); });
-  document.addEventListener("keydown", function (e) {
-    var el = e.target.closest && e.target.closest("[data-play]");
-    if (el && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); playArt(el); }
+  // ---- Instruments: tap one to hear it ----
+  function playInst(el) {
+    el.classList.remove("strike"); void el.getBoundingClientRect(); el.classList.add("strike");
+    clearTimeout(el._strike); el._strike = setTimeout(function () { el.classList.remove("strike"); }, 1800);
+    soundFromGesture();
+    Music.sfx(el.dataset.inst);
+    if (!reduceMotion) Amb.burstFrom(el, [["note", 9, "gold"]], .5, .3);
+  }
+  document.addEventListener("click", function (e) {
+    var el = e.target.closest("[data-play]"); if (el) { playArt(el); return; }
+    var ins = e.target.closest("[data-inst]"); if (ins) playInst(ins);
   });
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    var el = e.target.closest && e.target.closest("[data-play], [data-inst]");
+    if (!el) return;
+    e.preventDefault();
+    if (el.dataset.play) playArt(el); else playInst(el);
+  });
+
+  // ---- Magical type: headings and names arrive letter by letter (Hindi word by word, so
+  // conjuncts stay joined). Screen readers get the plain words; the letters are hidden from them.
+  function magicSplit() {
+    if (reduceMotion) return;
+    document.querySelectorAll(".magic").forEach(function (el) {
+      var plain = el.querySelector(".chs") || el.classList.contains("unsplit") ? (el.dataset.plain || el.textContent) : el.textContent;
+      if (!plain.trim()) return;
+      el.dataset.plain = plain; el.classList.remove("unsplit");
+      var hindi = /[\u0900-\u097F]/.test(plain), k = 0, html = "";
+      function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+      // Words stay unbroken (letters are grouped per word); Hindi animates whole words
+      plain.split(/(\s+)/).forEach(function (word) {
+        if (!word) return;
+        if (/^\s+$/.test(word)) { html += word; return; }
+        if (hindi) { html += '<span class="ch" style="--k:' + (k++ * 2) + '">' + esc(word) + "</span>"; return; }
+        html += '<span class="w">' + Array.from(word).map(function (ch) { return '<span class="ch" style="--k:' + (k++) + '">' + esc(ch) + "</span>"; }).join("") + "</span>";
+        k++;
+      });
+      el.innerHTML = '<span class="sr">' + plain.replace(/&/g, "&amp;").replace(/</g, "&lt;") + '</span><span class="chs" aria-hidden="true">' + html + "</span>";
+    });
+  }
+  // The couple's names, once arrived, become plain text again so the gold foil can run across them
+  var shineTimer;
+  function shineNames() {
+    var names = document.getElementById("names");
+    clearTimeout(shineTimer); names.classList.remove("shine");
+    if (reduceMotion) return;
+    shineTimer = setTimeout(function () {
+      names.querySelectorAll(".magic").forEach(function (el) { el.textContent = el.dataset.plain; el.classList.add("unsplit"); });
+      names.classList.add("shine");
+    }, 2600);
+  }
+  function light(sec) {
+    if (!sec || sec.classList.contains("lit")) return;
+    sec.classList.add("lit");
+    if (sec.id === "top") shineNames();
+  }
+  function relight() {
+    document.querySelectorAll(".page.lit").forEach(function (sec) {
+      sec.classList.remove("lit"); void sec.offsetWidth; light(sec);
+    });
+  }
 
   // ---- Page dots: mark the page crossing the middle of the screen, and take on its ink colour ----
   var pagerLinks = document.querySelectorAll(".pager a");
@@ -2092,6 +2244,7 @@
       entries.forEach(function (en) {
         if (!en.isIntersecting) return;
         pagerLinks.forEach(function (a) { a.setAttribute("aria-current", String(a.dataset.for === en.target.id)); });
+        if (!(root.classList.contains("gate-hold") && en.target.id === "top")) light(en.target);
         Amb.setActive(en.target.id);
         Music.setTheme(en.target.id);
         root.style.setProperty("--pager-ink", getComputedStyle(en.target).getPropertyValue("--ink").trim());
