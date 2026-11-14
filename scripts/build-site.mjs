@@ -2,7 +2,7 @@
 // The source page (wedding-invitation/index.html) is written as a body fragment
 // so it can also be published as a Claude artifact; this wraps it in a full
 // HTML document with share-preview tags for WhatsApp and other apps.
-import { readFileSync, writeFileSync, mkdirSync, copyFileSync, cpSync, rmSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, copyFileSync, rmSync } from "node:fs";
 
 const SRC = "wedding-invitation";
 const OUT = "dist";
@@ -47,5 +47,4 @@ writeFileSync(`${OUT}/index.html`, head + body + "\n</body>\n</html>\n");
 for (const f of ["og.png", "monogram.jpg", "apple-touch-icon.png", "logo.jpg"]) {
   copyFileSync(`${SRC}/${f}`, `${OUT}/${f}`);
 }
-cpSync(`${SRC}/art`, `${OUT}/art`, { recursive: true });
 console.log(`Built ${OUT}/index.html${base ? ` for ${base}` : ""}`);
