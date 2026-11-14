@@ -17,6 +17,8 @@
     --font-script: "Pinyon Script", "Snell Roundhand", "Apple Chancery", cursive;
     --font-display: "Italiana", "Didot", "Bodoni 72", Georgia, serif;
     --font-body: "Jost", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+    /* Motion: strong ease-out for entrances and press feedback */
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
@@ -96,10 +98,17 @@
     margin-block: 10px 6px;
     letter-spacing: .1em;
   }
-  .names span { display: inline-block; animation: rise .9s cubic-bezier(.2,.7,.2,1) both; }
-  .names .amp { animation-delay: .15s; }
-  .names span:last-child { animation-delay: .3s; }
-  @keyframes rise { from { transform: translateY(14px); opacity: .25; } to { transform: none; opacity: 1; } }
+  .names span { display: inline-block; }
+
+  /* Hero entrance: seen once per visit, so it can run as a slow wave.
+     Lead (names) travels furthest; support rises less; decoration only fades.
+     Gaps shrink as the group goes on (0, 110, 220, 320, 400, 460ms). */
+  .in {
+    animation: rise var(--dur, 600ms) var(--ease-out) var(--d, 0ms) both;
+  }
+  .fade-in { animation: fade var(--dur, 700ms) ease var(--d, 0ms) both; }
+  @keyframes rise { from { opacity: 0; transform: translateY(var(--y, 8px)); } }
+  @keyframes fade { from { opacity: 0; } }
 
   .invite-line {
     max-width: 30ch;
@@ -166,11 +175,14 @@
     background: var(--ink);
     color: var(--card);
     cursor: pointer;
-    transition: background .2s, color .2s;
+    transition: transform 160ms var(--ease-out), background-color 200ms ease, color 200ms ease;
   }
-  .btn:hover { background: transparent; color: var(--ink); }
+  .btn:active { transform: scale(0.97); }
   .btn.ghost { background: transparent; color: var(--ink); }
-  .btn.ghost:hover { background: var(--ink); color: var(--card); }
+  @media (hover: hover) and (pointer: fine) {
+    .btn:hover { background: transparent; color: var(--ink); }
+    .btn.ghost:hover { background: var(--ink); color: var(--card); }
+  }
 
   /* ---------- Nav ---------- */
   nav.toc {
@@ -183,8 +195,10 @@
     letter-spacing: .22em;
     text-transform: uppercase;
   }
-  nav.toc a { text-decoration: none; color: var(--muted); padding: 4px 0; border-bottom: 1px solid transparent; }
-  nav.toc a:hover { color: var(--ink); border-color: var(--gold); }
+  nav.toc a { text-decoration: none; color: var(--muted); padding: 4px 0; border-bottom: 1px solid transparent; transition: color 150ms ease, border-color 150ms ease; }
+  @media (hover: hover) and (pointer: fine) {
+    nav.toc a:hover { color: var(--ink); border-color: var(--gold); }
+  }
 
   /* ---------- Sections ---------- */
   section.block {
@@ -299,15 +313,27 @@
     border: 1px solid var(--line);
     font-size: 15px;
     background: var(--paper);
-    transition: background .15s, border-color .15s;
+    transition: transform 160ms var(--ease-out), background-color 150ms ease, color 150ms ease, border-color 150ms ease;
   }
+  .choice input:active + span { transform: scale(0.97); }
   .choice input:checked + span { background: var(--ink); color: var(--card); border-color: var(--ink); }
   .choice input:focus-visible + span { outline: 2px solid var(--gold); outline-offset: 2px; }
-  .error { color: #A2412F; font-size: 14px; margin: 0; }
+  .error {
+    color: #A2412F; font-size: 14px; margin: 0;
+    transition: opacity 150ms ease;
+    @starting-style { opacity: 0; }
+  }
   :root[data-theme="dark"] .error { color: #E59A86; }
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .error { color: #E59A86; } }
 
-  .result { border-top: 1px solid var(--line); margin-top: 28px; padding-top: 24px; }
+  .result {
+    border-top: 1px solid var(--line); margin-top: 28px; padding-top: 24px;
+    transition: opacity 300ms var(--ease-out), transform 300ms var(--ease-out);
+    @starting-style { opacity: 0; transform: translateY(8px); }
+  }
+  /* Copy button label swap: a light blur hides the crossfade between the two words */
+  #r-copy { transition: transform 160ms var(--ease-out), background-color 200ms ease, color 200ms ease, filter 200ms ease, opacity 200ms ease; }
+  #r-copy.swapping { filter: blur(2px); opacity: .6; }
   .result h3 { font-family: var(--font-script); font-weight: 400; font-size: 44px; margin: 0; color: var(--gold); line-height: 1.1; }
   .result pre {
     white-space: pre-wrap;
@@ -333,7 +359,8 @@
     position: relative;
   }
   summary::-webkit-details-marker { display: none; }
-  summary::after { content: "+"; position: absolute; right: 4px; top: 14px; font-size: 26px; color: var(--gold); transition: transform .2s; }
+  summary::after { content: "+"; position: absolute; right: 4px; top: 14px; font-size: 26px; color: var(--gold); transition: transform 200ms var(--ease-out); }
+  details[open] p { animation: rise 250ms var(--ease-out) both; --y: 4px; }
   details[open] summary::after { transform: rotate(45deg); }
   details p { margin: 0 0 20px; max-width: 62ch; color: var(--muted); }
 
@@ -362,9 +389,12 @@
     .countdown b { font-size: 26px; }
     .countdown small { font-size: 9px; letter-spacing: .14em; }
   }
+  /* Reduced motion: collapse the choreography. No movement, no delays; keep a short fade. */
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
-    .names span { animation: none; }
+    .in, .fade-in, details[open] p { animation: fade 250ms ease both; animation-delay: 0ms; }
+    .btn:active, .choice input:active + span { transform: none; }
+    .result { @starting-style { opacity: 0; transform: none; } }
   }
 </style>
 
@@ -386,21 +416,21 @@
 
 <div class="wrap">
   <header class="hero" id="top">
-    <svg class="sprig tl" viewBox="0 0 200 200" aria-hidden="true"><use href="#sprig"/></svg>
-    <svg class="sprig br" viewBox="0 0 200 200" aria-hidden="true"><use href="#sprig"/></svg>
+    <svg class="sprig tl fade-in" style="--dur:1200ms" viewBox="0 0 200 200" aria-hidden="true"><use href="#sprig"/></svg>
+    <svg class="sprig br fade-in" style="--dur:1200ms" viewBox="0 0 200 200" aria-hidden="true"><use href="#sprig"/></svg>
 
-    <div class="eyebrow">Together with their families</div>
-    <h1 class="names"><span>Maya</span><span class="amp">&amp;</span><span>Arjun</span></h1>
-    <p class="invite-line">request the pleasure of your company as they celebrate their marriage</p>
+    <div class="eyebrow fade-in">Together with their families</div>
+    <h1 class="names"><span class="in" style="--y:16px;--dur:800ms">Maya</span><span class="amp fade-in" style="--d:60ms">&amp;</span><span class="in" style="--y:16px;--dur:800ms;--d:110ms">Arjun</span></h1>
+    <p class="invite-line in" style="--d:220ms">request the pleasure of your company as they celebrate their marriage</p>
 
-    <div class="when" aria-label="Saturday, 13 March 2027 at 4 pm">
+    <div class="when in" style="--d:320ms;--y:6px" aria-label="Saturday, 13 March 2027 at 4 pm">
       <div class="side">Saturday</div>
       <div><span class="day">13</span><span class="month">March</span></div>
       <div class="side">2027</div>
     </div>
-    <p class="where">Four o'clock in the afternoon · The Glasshouse, Willow Lake Estate · Sonoma, California</p>
+    <p class="where in" style="--d:320ms;--y:6px">Four o'clock in the afternoon · The Glasshouse, Willow Lake Estate · Sonoma, California</p>
 
-    <div class="countdown" id="countdown" aria-live="off">
+    <div class="countdown in" style="--d:400ms;--y:4px" id="countdown" aria-live="off">
       <div><b id="cd-d">--</b><small>Days</small></div>
       <div><b id="cd-h">--</b><small>Hours</small></div>
       <div><b id="cd-m">--</b><small>Minutes</small></div>
@@ -408,7 +438,7 @@
     </div>
     <p class="countdown-done" id="countdown-done" hidden>Just married</p>
 
-    <div class="actions">
+    <div class="actions in" style="--d:460ms;--y:4px">
       <a class="btn" href="#rsvp">RSVP by 1 February</a>
       <a class="btn ghost" id="cal-main" href="#schedule" target="_blank" rel="noopener">Add to calendar</a>
     </div>
@@ -701,6 +731,10 @@
   });
 
   var copyBtn = document.getElementById("r-copy");
+  function swapLabel(text) {
+    copyBtn.classList.add("swapping");
+    setTimeout(function () { copyBtn.textContent = text; copyBtn.classList.remove("swapping"); }, 120);
+  }
   copyBtn.addEventListener("click", function () {
     var pre = document.getElementById("r-text");
     function selectIt() {
@@ -710,8 +744,8 @@
     }
     try {
       navigator.clipboard.writeText(pre.textContent).then(function () {
-        copyBtn.textContent = "Copied";
-        setTimeout(function () { copyBtn.textContent = "Copy RSVP"; }, 2000);
+        swapLabel("Copied");
+        setTimeout(function () { swapLabel("Copy RSVP"); }, 2000);
       }, selectIt);
     } catch (x) { selectIt(); }
   });
