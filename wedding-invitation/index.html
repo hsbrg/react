@@ -1,35 +1,45 @@
-<title>Maya &amp; Arjun's Wedding</title>
+<title>Shivanshi weds Shashwat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Italiana&family=Jost:wght@300;400;500&family=Pinyon+Script&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Italiana&family=Jost:wght@300;400;500&family=Pinyon+Script&family=Tiro+Devanagari+Hindi&display=swap">
 <style>
-  /* Layout: a garden-paper invitation. Centered card-like hero, then left-aligned editorial sections on a 2-column grid that stacks on phones. */
+  /* Layout: a printed Indian wedding card. A maroon hero card under a marigold toran,
+     then ivory sections: the invitation, three functions by day, RSVP to Amit Tyagi. */
   :root {
-    --paper: #EDF0E7;
-    --card: #F8F9F3;
-    --ink: #1E3328;
-    --muted: #586B5F;
-    --gold: #94722F;
-    --blush: #E7CDC3;
-    --line: #C8D0C1;
-    --leaf: #7E9A84;
+    --paper: #FFF8EF;
+    --card: #FFFDF9;
+    --ink: #3E0B18;
+    --muted: #7A4C53;
+    --gold: #A97A22;
+    --marigold: #E8890C;
+    --leaf: #5C7A34;
+    --line: #EBD9C2;
+    --hero-bg: #5A1123;
+    --hero-fg: #FBEBD3;
+    --hero-muted: #E2C3A8;
+    --hero-gold: #E3B95E;
+    --error: #A2412F;
     --font-script: "Pinyon Script", "Snell Roundhand", "Apple Chancery", cursive;
     --font-display: "Italiana", "Didot", "Bodoni 72", Georgia, serif;
+    --font-deva: "Tiro Devanagari Hindi", "Noto Serif Devanagari", "Kohinoor Devanagari", serif;
     --font-body: "Jost", "Avenir Next", "Segoe UI", system-ui, sans-serif;
-    /* Motion: strong ease-out for entrances and press feedback */
     --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --paper: #111B16; --card: #19251F; --ink: #ECEADF; --muted: #A5B2A8;
-      --gold: #D5B46C; --blush: #4D3934; --line: #2C3B33; --leaf: #6E8B75;
+      --paper: #1B090E; --card: #261016; --ink: #F5E7D6; --muted: #C9A7A0;
+      --gold: #E0B55A; --marigold: #F29E2E; --leaf: #82A356; --line: #44232C;
+      --hero-bg: #3A0914; --hero-fg: #FBEBD3; --hero-muted: #D7B79C; --hero-gold: #E8C06A;
+      --error: #EE9C86;
       color-scheme: dark;
     }
   }
   :root[data-theme="dark"] {
-    --paper: #111B16; --card: #19251F; --ink: #ECEADF; --muted: #A5B2A8;
-    --gold: #D5B46C; --blush: #4D3934; --line: #2C3B33; --leaf: #6E8B75;
+    --paper: #1B090E; --card: #261016; --ink: #F5E7D6; --muted: #C9A7A0;
+    --gold: #E0B55A; --marigold: #F29E2E; --leaf: #82A356; --line: #44232C;
+    --hero-bg: #3A0914; --hero-fg: #FBEBD3; --hero-muted: #D7B79C; --hero-gold: #E8C06A;
+    --error: #EE9C86;
     color-scheme: dark;
   }
 
@@ -46,18 +56,16 @@
     padding-right: max(16px, env(safe-area-inset-right, 0px));
   }
   a { color: inherit; }
-  :focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 2px; }
+  :focus-visible { outline: 2px solid var(--marigold); outline-offset: 3px; border-radius: 2px; }
+  .wrap { max-width: 1000px; margin-inline: auto; }
+  .deva { font-family: var(--font-deva); }
 
-  .wrap { max-width: 1040px; margin-inline: auto; }
-
-  /* ---------- Hero ---------- */
+  /* ---------- Hero card ---------- */
   .hero {
     position: relative;
-    margin-block: 24px 0;
-    padding-block: 56px 48px;
-    padding-inline: 20px;
-    background: var(--card);
-    border: 1px solid var(--line);
+    margin-top: 20px;
+    background: var(--hero-bg);
+    color: var(--hero-fg);
     text-align: center;
     overflow: hidden;
     isolation: isolate;
@@ -65,88 +73,80 @@
   .hero::before {
     content: "";
     position: absolute;
-    inset: 12px;
-    border: 1px solid var(--gold);
-    opacity: .55;
+    inset: 46px 14px 14px;
+    border: 1px solid var(--hero-gold);
+    opacity: .6;
     pointer-events: none;
   }
-  .sprig { position: absolute; width: 170px; height: auto; color: var(--leaf); opacity: .7; z-index: -1; }
-  .sprig.tl { top: -6px; left: -10px; }
-  .sprig.br { bottom: -6px; right: -10px; transform: rotate(180deg); }
-
-  .eyebrow {
-    font-size: 13px;
-    letter-spacing: .28em;
-    text-transform: uppercase;
-    color: var(--muted);
-    font-weight: 400;
+  .hero::after {
+    content: "";
+    position: absolute;
+    inset: 52px 20px 20px;
+    border: 1px solid var(--hero-gold);
+    opacity: .3;
+    pointer-events: none;
   }
+  /* Toran: marigold strand with mango leaves hanging below */
+  .toran {
+    height: 40px;
+    background:
+      radial-gradient(circle at 50% 10px, var(--marigold) 0 7px, transparent 7.5px) 0 0 / 20px 40px repeat-x,
+      radial-gradient(circle at 50% 10px, #F6B23C 0 3px, transparent 3.5px) 0 0 / 20px 40px repeat-x,
+      radial-gradient(ellipse 5px 12px at 50% 26px, var(--leaf) 0 96%, transparent 100%) 10px 0 / 40px 40px repeat-x;
+  }
+  .hero-inner { padding: 34px 28px 52px; }
+
+  .ganesh { font-size: 20px; color: var(--hero-gold); letter-spacing: .04em; }
+  .shloka {
+    margin: 10px auto 0;
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--hero-muted);
+    text-wrap: balance;
+  }
+  .orn { display: block; margin: 22px auto 0; width: 120px; height: 14px; color: var(--hero-gold); }
+
   .names {
     font-family: var(--font-script);
     font-weight: 400;
-    font-size: clamp(64px, 14vw, 132px);
+    font-size: clamp(60px, 13vw, 124px);
     line-height: 1;
-    margin: 22px 0 8px;
-    color: var(--ink);
+    margin: 18px 0 0;
     text-wrap: balance;
-  }
-  .names .amp {
-    display: block;
-    font-family: var(--font-display);
-    font-size: .32em;
-    color: var(--gold);
-    margin-block: 10px 6px;
-    letter-spacing: .1em;
   }
   .names span { display: inline-block; }
-
-  /* Hero entrance: seen once per visit, so it can run as a slow wave.
-     Lead (names) travels furthest; support rises less; decoration only fades.
-     Gaps shrink as the group goes on (0, 110, 220, 320, 400, 460ms). */
-  .in {
-    animation: rise var(--dur, 600ms) var(--ease-out) var(--d, 0ms) both;
-  }
-  .fade-in { animation: fade var(--dur, 700ms) ease var(--d, 0ms) both; }
-  @keyframes rise { from { opacity: 0; transform: translateY(var(--y, 8px)); } }
-  @keyframes fade { from { opacity: 0; } }
-
-  .invite-line {
-    max-width: 30ch;
-    margin: 18px auto 0;
-    font-size: 18px;
-    color: var(--muted);
-    text-wrap: balance;
+  .names .weds {
+    display: block;
+    font-family: var(--font-display);
+    font-size: .2em;
+    letter-spacing: .4em;
+    text-transform: uppercase;
+    color: var(--hero-gold);
+    margin-block: 14px 10px;
+    padding-left: .4em;
   }
   .when {
-    margin-top: 28px;
+    margin: 30px auto 0;
     display: grid;
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
     gap: 18px;
-    max-width: 520px;
-    margin-inline: auto;
+    max-width: 480px;
     font-family: var(--font-display);
-    font-size: 20px;
-    letter-spacing: .12em;
+    font-size: 19px;
+    letter-spacing: .14em;
     text-transform: uppercase;
   }
-  .when .side { border-block: 1px solid var(--line); padding-block: 8px; }
-  .when .day { font-size: 64px; line-height: 1; color: var(--gold); letter-spacing: 0; }
-  .when .month { font-size: 14px; display: block; letter-spacing: .3em; }
-  .where { margin-top: 18px; font-size: 16px; color: var(--muted); }
+  .when .side { border-block: 1px solid color-mix(in srgb, var(--hero-gold) 55%, transparent); padding-block: 8px; }
+  .when .day { display: block; font-size: 62px; line-height: 1; color: var(--hero-gold); letter-spacing: 0; }
+  .when .month { display: block; font-size: 13px; letter-spacing: .3em; }
+  .place { margin: 16px 0 0; color: var(--hero-muted); font-size: 15px; letter-spacing: .08em; }
 
-  .countdown {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 32px;
-    flex-wrap: wrap;
-  }
+  .countdown { display: flex; justify-content: center; gap: 10px; margin-top: 30px; flex-wrap: wrap; }
   .countdown div {
     min-width: 76px;
     padding: 10px 8px 8px;
-    border: 1px solid var(--line);
-    background: var(--paper);
+    border: 1px solid color-mix(in srgb, var(--hero-gold) 45%, transparent);
   }
   .countdown b {
     display: block;
@@ -156,15 +156,14 @@
     line-height: 1.1;
     font-variant-numeric: tabular-nums;
   }
-  .countdown small { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
-  .countdown-done { margin-top: 28px; font-family: var(--font-script); font-size: 40px; color: var(--gold); }
+  .countdown small { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--hero-muted); }
+  .countdown-done { margin-top: 26px; font-family: var(--font-script); font-size: 40px; color: var(--hero-gold); }
 
-  .actions { display: flex; justify-content: center; gap: 12px; margin-top: 32px; flex-wrap: wrap; }
+  .actions { display: flex; justify-content: center; gap: 12px; margin-top: 30px; flex-wrap: wrap; }
   .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
     min-height: 46px;
     padding: 0 24px;
     font: 500 13px/1 var(--font-body);
@@ -175,14 +174,26 @@
     background: var(--ink);
     color: var(--card);
     cursor: pointer;
-    transition: transform 160ms var(--ease-out), background-color 200ms ease, color 200ms ease;
+    transition: transform 160ms var(--ease-out), background-color 200ms ease, color 200ms ease, border-color 200ms ease;
   }
   .btn:active { transform: scale(0.97); }
   .btn.ghost { background: transparent; color: var(--ink); }
+  .hero .btn { background: var(--hero-gold); border-color: var(--hero-gold); color: #3A0914; }
+  .hero .btn.ghost { background: transparent; color: var(--hero-fg); }
   @media (hover: hover) and (pointer: fine) {
     .btn:hover { background: transparent; color: var(--ink); }
     .btn.ghost:hover { background: var(--ink); color: var(--card); }
+    .hero .btn:hover { background: transparent; color: var(--hero-gold); }
+    .hero .btn.ghost:hover { background: var(--hero-fg); color: var(--hero-bg); border-color: var(--hero-fg); }
   }
+
+  /* ---------- Hero entrance (seen once per visit) ----------
+     Lead: the names travel furthest. Support rises a little less each step.
+     Decoration (toran, shloka, ornament) only fades. Gaps shrink: 0, 110, 220, 320, 400, 460ms. */
+  .in { animation: rise var(--dur, 600ms) var(--ease-out) var(--d, 0ms) both; }
+  .fade-in { animation: fade var(--dur, 700ms) ease var(--d, 0ms) both; }
+  @keyframes rise { from { opacity: 0; transform: translateY(var(--y, 8px)); } }
+  @keyframes fade { from { opacity: 0; } }
 
   /* ---------- Nav ---------- */
   nav.toc {
@@ -197,45 +208,44 @@
   }
   nav.toc a { text-decoration: none; color: var(--muted); padding: 4px 0; border-bottom: 1px solid transparent; transition: color 150ms ease, border-color 150ms ease; }
   @media (hover: hover) and (pointer: fine) {
-    nav.toc a:hover { color: var(--ink); border-color: var(--gold); }
+    nav.toc a:hover { color: var(--ink); border-color: var(--marigold); }
   }
 
   /* ---------- Sections ---------- */
-  section.block {
-    display: grid;
-    grid-template-columns: 220px minmax(0, 1fr);
-    gap: 24px 48px;
-    padding-block: 56px;
-    border-top: 1px solid var(--line);
-  }
-  .block > header h2 {
+  section.block { padding-block: 56px; border-top: 1px solid var(--line); }
+  .sec-head { text-align: center; margin-bottom: 36px; }
+  .sec-head h2 {
     font-family: var(--font-display);
     font-weight: 400;
     font-size: 40px;
     line-height: 1.1;
     margin: 0;
-    text-wrap: balance;
   }
-  .block > header p { margin: 10px 0 0; color: var(--muted); font-size: 15px; }
-  .block .body { min-width: 0; }
-  .lede { font-size: 20px; max-width: 60ch; margin: 0 0 20px; }
-  .two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; }
-  .two h3, .travel h3 {
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: 24px;
-    margin: 0 0 6px;
-    color: var(--gold);
-  }
-  .two p, .travel p { margin: 0; max-width: 60ch; }
+  .sec-head .deva { display: block; color: var(--gold); font-size: 18px; margin-bottom: 4px; }
 
-  /* Schedule */
-  .days { display: grid; gap: 36px; }
+  /* Invitation */
+  .invite { max-width: 680px; margin-inline: auto; text-align: center; }
+  .hosts { font-family: var(--font-display); font-size: 26px; line-height: 1.3; margin: 0; text-wrap: balance; }
+  .invite-text { margin: 14px auto 0; max-width: 54ch; color: var(--muted); font-size: 18px; text-wrap: balance; }
+  .couple {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 20px;
+    margin-top: 40px;
+  }
+  .person .nm { font-family: var(--font-script); font-size: 58px; line-height: 1.1; }
+  .person .rel { font-size: 15px; color: var(--muted); margin-top: 4px; text-wrap: balance; }
+  .couple .weds { font-family: var(--font-display); letter-spacing: .3em; text-transform: uppercase; font-size: 14px; color: var(--gold); }
+  .resi { margin-top: 34px; font-size: 14px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+
+  /* Functions */
+  .days { display: grid; gap: 40px; max-width: 860px; margin-inline: auto; }
   .day-head {
     display: flex;
     align-items: baseline;
     gap: 14px;
-    margin-bottom: 14px;
+    margin-bottom: 6px;
     font-size: 13px;
     letter-spacing: .24em;
     text-transform: uppercase;
@@ -244,53 +254,51 @@
   .day-head::after { content: ""; flex: 1; border-top: 1px solid var(--line); transform: translateY(-4px); }
   .event {
     display: grid;
-    grid-template-columns: 96px minmax(0, 1fr) auto;
-    gap: 6px 24px;
-    padding: 18px 0;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px 28px;
+    padding-block: 18px 6px;
     align-items: start;
   }
-  .event + .event { border-top: 1px dashed var(--line); }
-  .event .time {
-    font-family: var(--font-display);
-    font-size: 26px;
-    line-height: 1.1;
-    font-variant-numeric: tabular-nums;
-  }
-  .event .time small { display: block; font-family: var(--font-body); font-size: 12px; letter-spacing: .2em; color: var(--muted); }
-  .event h3 { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 26px; line-height: 1.15; }
-  .event p { margin: 4px 0 0; color: var(--muted); font-size: 15px; }
-  .event .dress {
-    display: inline-block;
-    margin-top: 10px;
-    padding: 3px 10px;
+  .event h3 { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 30px; line-height: 1.15; }
+  .event h3 .deva { font-size: 18px; color: var(--gold); margin-left: 10px; }
+  .timings { display: flex; flex-wrap: wrap; gap: 8px 28px; margin-top: 12px; }
+  .timing { display: flex; align-items: baseline; gap: 10px; }
+  .timing b { font-family: var(--font-display); font-weight: 400; font-size: 24px; font-variant-numeric: tabular-nums; }
+  .timing span { font-size: 13px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+  .venue { margin-top: 14px; padding-left: 14px; border-left: 2px solid var(--marigold); }
+  .venue strong { display: block; font-weight: 500; font-size: 17px; }
+  .venue span { color: var(--muted); font-size: 15px; }
+  .event .links { display: flex; flex-direction: column; gap: 10px; align-items: flex-end; padding-top: 6px; }
+  .link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 40px;
+    padding: 0 16px;
     font-size: 12px;
-    letter-spacing: .14em;
+    font-weight: 500;
+    letter-spacing: .16em;
     text-transform: uppercase;
-    background: var(--blush);
-    color: var(--ink);
+    text-decoration: none;
+    border: 1px solid var(--line);
+    background: var(--card);
+    white-space: nowrap;
+    transition: transform 160ms var(--ease-out), border-color 150ms ease;
   }
-  .event .links { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; }
-  .event .links a { text-decoration: none; border-bottom: 1px solid var(--gold); padding-bottom: 1px; white-space: nowrap; }
-  .event.main h3 { color: var(--gold); }
-
-  /* Travel */
-  .travel { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
-  .travel .code {
-    display: inline-block;
-    margin-top: 10px;
-    font-size: 13px;
-    letter-spacing: .14em;
-    padding: 4px 10px;
-    border: 1px solid var(--gold);
-    color: var(--ink);
-  }
+  .link-btn:active { transform: scale(0.97); }
+  .link-btn svg { width: 15px; height: 15px; flex: none; color: var(--marigold); }
+  @media (hover: hover) and (pointer: fine) { .link-btn:hover { border-color: var(--marigold); } }
+  .event.main h3 { color: var(--ink); }
+  .event.main { position: relative; }
 
   /* RSVP */
+  .rsvp-wrap { max-width: 720px; margin-inline: auto; }
+  .rsvp-contact { text-align: center; margin: -16px 0 28px; }
+  .rsvp-contact .who { font-family: var(--font-display); font-size: 30px; }
+  .rsvp-contact p { margin: 4px 0 0; color: var(--muted); }
   .rsvp-card { background: var(--card); border: 1px solid var(--line); padding: 32px; }
-  .rsvp-card .deadline { margin: 0 0 24px; color: var(--muted); }
-  .rsvp-card .deadline strong { color: var(--ink); font-weight: 500; }
   form { display: grid; gap: 22px; }
-  .row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+  .row { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 22px; }
   label, legend { display: block; font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; font-weight: 400; }
   fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
   input[type="text"], select, textarea {
@@ -303,37 +311,27 @@
     padding: 12px 14px;
   }
   textarea { min-height: 96px; resize: vertical; }
-  input[type="text"]:focus, select:focus, textarea:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold); }
+  input[type="text"]:focus, select:focus, textarea:focus { outline: none; border-color: var(--marigold); box-shadow: 0 0 0 1px var(--marigold); }
   .choices { display: flex; flex-wrap: wrap; gap: 10px; }
-  .choice { position: relative; }
+  .choice { position: relative; margin: 0; letter-spacing: normal; text-transform: none; color: var(--ink); font-size: 15px; }
   .choice input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
   .choice span {
     display: inline-block;
     padding: 10px 16px;
     border: 1px solid var(--line);
-    font-size: 15px;
     background: var(--paper);
     transition: transform 160ms var(--ease-out), background-color 150ms ease, color 150ms ease, border-color 150ms ease;
   }
   .choice input:active + span { transform: scale(0.97); }
   .choice input:checked + span { background: var(--ink); color: var(--card); border-color: var(--ink); }
-  .choice input:focus-visible + span { outline: 2px solid var(--gold); outline-offset: 2px; }
-  .error {
-    color: #A2412F; font-size: 14px; margin: 0;
-    transition: opacity 150ms ease;
-    @starting-style { opacity: 0; }
-  }
-  :root[data-theme="dark"] .error { color: #E59A86; }
-  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .error { color: #E59A86; } }
+  .choice input:focus-visible + span { outline: 2px solid var(--marigold); outline-offset: 2px; }
+  .error { color: var(--error); font-size: 14px; margin: 0; transition: opacity 150ms ease; @starting-style { opacity: 0; } }
 
   .result {
     border-top: 1px solid var(--line); margin-top: 28px; padding-top: 24px;
     transition: opacity 300ms var(--ease-out), transform 300ms var(--ease-out);
     @starting-style { opacity: 0; transform: translateY(8px); }
   }
-  /* Copy button label swap: a light blur hides the crossfade between the two words */
-  #r-copy { transition: transform 160ms var(--ease-out), background-color 200ms ease, color 200ms ease, filter 200ms ease, opacity 200ms ease; }
-  #r-copy.swapping { filter: blur(2px); opacity: .6; }
   .result h3 { font-family: var(--font-script); font-weight: 400; font-size: 44px; margin: 0; color: var(--gold); line-height: 1.1; }
   .result pre {
     white-space: pre-wrap;
@@ -346,302 +344,237 @@
   }
   .result .actions { justify-content: flex-start; margin-top: 0; }
   .result .note { color: var(--muted); font-size: 14px; margin: 14px 0 0; }
+  #r-copy { transition: transform 160ms var(--ease-out), background-color 200ms ease, color 200ms ease, filter 200ms ease, opacity 200ms ease; }
+  #r-copy.swapping { filter: blur(2px); opacity: .6; }
 
-  /* FAQ */
-  details { border-bottom: 1px solid var(--line); }
-  details:first-of-type { border-top: 1px solid var(--line); }
-  summary {
-    list-style: none;
-    cursor: pointer;
-    padding: 18px 36px 18px 0;
-    font-family: var(--font-display);
-    font-size: 22px;
-    position: relative;
-  }
-  summary::-webkit-details-marker { display: none; }
-  summary::after { content: "+"; position: absolute; right: 4px; top: 14px; font-size: 26px; color: var(--gold); transition: transform 200ms var(--ease-out); }
-  details[open] p { animation: rise 250ms var(--ease-out) both; --y: 4px; }
-  details[open] summary::after { transform: rotate(45deg); }
-  details p { margin: 0 0 20px; max-width: 62ch; color: var(--muted); }
+  footer { text-align: center; padding-block: 56px 72px; border-top: 1px solid var(--line); }
+  footer .pre { font-size: 13px; letter-spacing: .24em; text-transform: uppercase; color: var(--muted); }
+  footer .sig { font-family: var(--font-script); font-size: 52px; line-height: 1.2; margin-top: 6px; }
+  footer .deva { color: var(--gold); margin-top: 6px; }
 
-  footer {
-    text-align: center;
-    padding-block: 56px 72px;
-    border-top: 1px solid var(--line);
-  }
-  footer .sig { font-family: var(--font-script); font-size: 48px; line-height: 1.1; }
-  footer .tag { margin-top: 10px; letter-spacing: .2em; font-size: 13px; color: var(--gold); text-transform: uppercase; }
-
-  @media (max-width: 760px) {
+  @media (max-width: 720px) {
     body { font-size: 16px; }
-    .hero { padding-block: 44px 36px; }
-    .sprig { width: 120px; }
-    section.block { grid-template-columns: minmax(0, 1fr); padding-block: 44px; }
-    .block > header h2 { font-size: 34px; }
-    .two, .travel, .row { grid-template-columns: minmax(0, 1fr); }
-    .event { grid-template-columns: 78px minmax(0, 1fr); }
-    .event .links { grid-column: 2; flex-direction: row; align-items: center; gap: 18px; flex-wrap: wrap; }
-    .rsvp-card { padding: 22px 18px; }
-    .when { gap: 12px; font-size: 15px; }
+    .hero::before { inset: 46px 8px 8px; }
+    .hero::after { inset: 51px 13px 13px; }
+    .hero-inner { padding: 30px 18px 44px; }
+    .shloka { font-size: 15px; }
+    .when { gap: 12px; font-size: 14px; }
     .when .day { font-size: 52px; }
     .countdown { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; max-width: 320px; margin-inline: auto; }
     .countdown div { min-width: 0; padding-inline: 2px; }
     .countdown b { font-size: 26px; }
     .countdown small { font-size: 9px; letter-spacing: .14em; }
+    section.block { padding-block: 44px; }
+    .sec-head h2 { font-size: 34px; }
+    .hosts { font-size: 22px; }
+    .invite-text { font-size: 16px; }
+    .couple { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+    .person .nm { font-size: 52px; }
+    .event { grid-template-columns: minmax(0, 1fr); }
+    .event h3 { font-size: 26px; }
+    .event .links { flex-direction: row; align-items: center; flex-wrap: wrap; }
+    .row { grid-template-columns: minmax(0, 1fr); }
+    .rsvp-card { padding: 22px 18px; }
   }
-  /* Reduced motion: collapse the choreography. No movement, no delays; keep a short fade. */
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
-    .in, .fade-in, details[open] p { animation: fade 250ms ease both; animation-delay: 0ms; }
-    .btn:active, .choice input:active + span { transform: none; }
+    .in, .fade-in { animation: fade 250ms ease both; animation-delay: 0ms; }
+    .btn:active, .link-btn:active, .choice input:active + span { transform: none; }
     .result { @starting-style { opacity: 0; transform: none; } }
   }
 </style>
 
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <symbol id="sprig" viewBox="0 0 200 200">
-    <path d="M10 10 C 60 40, 110 70, 190 170" fill="none" stroke="currentColor" stroke-width="1.6"/>
-    <g fill="currentColor">
-      <ellipse cx="40" cy="30" rx="16" ry="6" transform="rotate(-20 40 30)"/>
-      <ellipse cx="52" cy="48" rx="16" ry="6" transform="rotate(60 52 48)"/>
-      <ellipse cx="78" cy="52" rx="18" ry="6.5" transform="rotate(-10 78 52)"/>
-      <ellipse cx="90" cy="74" rx="18" ry="6.5" transform="rotate(70 90 74)"/>
-      <ellipse cx="118" cy="82" rx="18" ry="6.5" transform="rotate(0 118 82)"/>
-      <ellipse cx="126" cy="106" rx="18" ry="6.5" transform="rotate(75 126 106)"/>
-      <ellipse cx="154" cy="118" rx="16" ry="6" transform="rotate(10 154 118)"/>
-      <ellipse cx="158" cy="142" rx="15" ry="5.5" transform="rotate(80 158 142)"/>
-    </g>
-  </symbol>
-</svg>
-
 <div class="wrap">
   <header class="hero" id="top">
-    <svg class="sprig tl fade-in" style="--dur:1200ms" viewBox="0 0 200 200" aria-hidden="true"><use href="#sprig"/></svg>
-    <svg class="sprig br fade-in" style="--dur:1200ms" viewBox="0 0 200 200" aria-hidden="true"><use href="#sprig"/></svg>
+    <div class="toran fade-in" aria-hidden="true"></div>
+    <div class="hero-inner">
+      <div class="ganesh deva fade-in" lang="hi">॥ श्री गणेशाय नमः ॥</div>
+      <p class="shloka deva fade-in" style="--d:60ms" lang="sa">वक्रतुण्ड महाकाय सूर्यकोटि समप्रभः।<br>निर्विघ्नं कुरु मे देव सर्वकार्येषु सर्वदा॥</p>
+      <svg class="orn fade-in" style="--d:60ms" viewBox="0 0 120 14" aria-hidden="true">
+        <path d="M0 7 H48 M72 7 H120" stroke="currentColor" stroke-width="1" fill="none"/>
+        <path d="M60 1 L66 7 L60 13 L54 7 Z" fill="currentColor"/>
+        <circle cx="50" cy="7" r="1.6" fill="currentColor"/><circle cx="70" cy="7" r="1.6" fill="currentColor"/>
+      </svg>
 
-    <div class="eyebrow fade-in">Together with their families</div>
-    <h1 class="names"><span class="in" style="--y:16px;--dur:800ms">Maya</span><span class="amp fade-in" style="--d:60ms">&amp;</span><span class="in" style="--y:16px;--dur:800ms;--d:110ms">Arjun</span></h1>
-    <p class="invite-line in" style="--d:220ms">request the pleasure of your company as they celebrate their marriage</p>
+      <h1 class="names">
+        <span class="in" style="--y:16px;--dur:800ms">Shivanshi</span>
+        <span class="weds fade-in" style="--d:60ms">weds</span>
+        <span class="in" style="--y:16px;--dur:800ms;--d:110ms">Shashwat</span>
+      </h1>
 
-    <div class="when in" style="--d:320ms;--y:6px" aria-label="Saturday, 13 March 2027 at 4 pm">
-      <div class="side">Saturday</div>
-      <div><span class="day">13</span><span class="month">March</span></div>
-      <div class="side">2027</div>
-    </div>
-    <p class="where in" style="--d:320ms;--y:6px">Four o'clock in the afternoon · The Glasshouse, Willow Lake Estate · Sonoma, California</p>
+      <div class="when in" style="--d:220ms;--y:6px" aria-label="Monday, 30 November 2026">
+        <div class="side">Monday</div>
+        <div><span class="day">30</span><span class="month">November</span></div>
+        <div class="side">2026</div>
+      </div>
+      <p class="place in" style="--d:220ms;--y:6px">Meerut, Uttar Pradesh</p>
 
-    <div class="countdown in" style="--d:400ms;--y:4px" id="countdown" aria-live="off">
-      <div><b id="cd-d">--</b><small>Days</small></div>
-      <div><b id="cd-h">--</b><small>Hours</small></div>
-      <div><b id="cd-m">--</b><small>Minutes</small></div>
-      <div><b id="cd-s">--</b><small>Seconds</small></div>
-    </div>
-    <p class="countdown-done" id="countdown-done" hidden>Just married</p>
+      <div class="countdown in" style="--d:320ms;--y:4px" id="countdown" aria-label="Time until the wedding">
+        <div><b id="cd-d">--</b><small>Days</small></div>
+        <div><b id="cd-h">--</b><small>Hours</small></div>
+        <div><b id="cd-m">--</b><small>Minutes</small></div>
+        <div><b id="cd-s">--</b><small>Seconds</small></div>
+      </div>
+      <p class="countdown-done" id="countdown-done" hidden>Shubh Vivah</p>
 
-    <div class="actions in" style="--d:460ms;--y:4px">
-      <a class="btn" href="#rsvp">RSVP by 1 February</a>
-      <a class="btn ghost" id="cal-main" href="#schedule" target="_blank" rel="noopener">Add to calendar</a>
+      <div class="actions in" style="--d:400ms;--y:4px">
+        <a class="btn" href="#rsvp">R.S.V.P.</a>
+        <a class="btn ghost" href="#functions">See the functions</a>
+      </div>
     </div>
   </header>
 
   <nav class="toc" aria-label="Sections">
-    <a href="#story">Our story</a>
-    <a href="#schedule">Schedule</a>
-    <a href="#travel">Travel &amp; stay</a>
-    <a href="#rsvp">RSVP</a>
-    <a href="#faq">Questions</a>
+    <a href="#invitation">Invitation</a>
+    <a href="#functions">Functions</a>
+    <a href="#rsvp">R.S.V.P.</a>
   </nav>
 
-  <section class="block" id="story">
-    <header><h2>Our story</h2><p>Seven years, two cities, one very patient dog.</p></header>
-    <div class="body">
-      <p class="lede">We met in the queue for the last train out of the city on a rainy Tuesday. The train was cancelled. We shared a taxi, then a coffee, and then most of the next seven years.</p>
-      <div class="two">
-        <div>
-          <h3>How we met</h3>
-          <p>Arjun lent Maya his umbrella and never got it back. She still says it was a fair trade for the directions she gave him to the wrong platform.</p>
+  <section class="block" id="invitation">
+    <div class="sec-head"><span class="deva" lang="hi">निमंत्रण</span><h2>Invitation</h2></div>
+    <div class="invite">
+      <p class="hosts">Mrs. Kusum Lata Tyagi &amp; Lt. Mr. Mahendra Singh Tyagi</p>
+      <p class="invite-text">feel immense pleasure in requesting your presence and blessings on the auspicious occasion of the marriage ceremony of their beloved granddaughter</p>
+
+      <div class="couple">
+        <div class="person">
+          <div class="nm">Shivanshi</div>
+          <div class="rel">D/o Mrs. Sarita Tyagi &amp; Mr. Sudhir Tyagi</div>
         </div>
-        <div>
-          <h3>The proposal</h3>
-          <p>On a cold morning at Willow Lake, during a walk that Arjun insisted had to start at 6 a.m. Maya said yes before he finished the question.</p>
+        <div class="weds">weds</div>
+        <div class="person">
+          <div class="nm">Shashwat</div>
+          <div class="rel">S/o Mrs. Abha Tyagi &amp; Mr. Bhupendra Tyagi</div>
         </div>
       </div>
+      <div class="resi">Resi.: Meerut (U.P.)</div>
     </div>
   </section>
 
-  <section class="block" id="schedule">
-    <header><h2>The weekend</h2><p>All events are at Willow Lake Estate unless noted. Times are local (Pacific).</p></header>
-    <div class="body days">
+  <section class="block" id="functions">
+    <div class="sec-head"><span class="deva" lang="hi">कार्यक्रम</span><h2>Functions</h2></div>
+    <div class="days">
       <div>
-        <div class="day-head">Friday · 12 March</div>
-        <article class="event" data-cal="20270312T183000/20270312T220000" data-title="Welcome evening · Maya &amp; Arjun" data-place="Lakeside Terrace, Willow Lake Estate, Sonoma CA">
-          <div class="time">6:30<small>PM</small></div>
+        <div class="day-head">Saturday · 28 November 2026</div>
+        <article class="event" data-start="20261128T190000" data-end="20261128T230000"
+          data-title="Engagement · Shivanshi &amp; Shashwat"
+          data-place="The Bhutani Heritage, NH-58, Kanker Khera, Meerut, Uttar Pradesh">
           <div>
-            <h3>Welcome evening</h3>
-            <p>Drinks and small plates on the Lakeside Terrace. Come say hello before the big day.</p>
-            <span class="dress">Smart casual</span>
+            <h3>Engagement <span class="deva" lang="hi">सगाई</span></h3>
+            <div class="timings"><div class="timing"><b>7:00 PM</b><span>Onwards</span></div></div>
+            <div class="venue"><strong>The Bhutani Heritage</strong><span>NH-58, Kanker Khera, Meerut</span></div>
           </div>
-          <div class="links"><a class="cal" href="#">Calendar</a><a class="map" href="#">Map</a></div>
+          <div class="links"></div>
         </article>
       </div>
 
       <div>
-        <div class="day-head">Saturday · 13 March</div>
-        <article class="event main" data-cal="20270313T160000/20270313T170000" data-title="Wedding ceremony · Maya &amp; Arjun" data-place="The Glasshouse, Willow Lake Estate, Sonoma CA">
-          <div class="time">4:00<small>PM</small></div>
+        <div class="day-head">Sunday · 29 November 2026</div>
+        <article class="event" data-start="20261129T170000" data-end="20261129T230000"
+          data-title="Mehendi &amp; Sangeet · Shivanshi &amp; Shashwat"
+          data-place="Novah, Modipuram, Meerut, Uttar Pradesh">
           <div>
-            <h3>Ceremony</h3>
-            <p>In The Glasshouse. Please be seated by 3:45 PM.</p>
-            <span class="dress">Formal · garden colours welcome</span>
+            <h3>Mehendi &amp; Sangeet <span class="deva" lang="hi">मेहंदी व संगीत</span></h3>
+            <div class="timings"><div class="timing"><b>5:00 PM</b><span>Onwards</span></div></div>
+            <div class="venue"><strong>Novah</strong><span>Modipuram, Meerut</span></div>
           </div>
-          <div class="links"><a class="cal" href="#">Calendar</a><a class="map" href="#">Map</a></div>
-        </article>
-        <article class="event" data-cal="20270313T180000/20270313T233000" data-title="Wedding reception · Maya &amp; Arjun" data-place="The Orchard Barn, Willow Lake Estate, Sonoma CA">
-          <div class="time">6:00<small>PM</small></div>
-          <div>
-            <h3>Dinner &amp; dancing</h3>
-            <p>Cocktail hour on the lawn, then dinner and dancing in The Orchard Barn until late.</p>
-            <span class="dress">Formal</span>
-          </div>
-          <div class="links"><a class="cal" href="#">Calendar</a><a class="map" href="#">Map</a></div>
+          <div class="links"></div>
         </article>
       </div>
 
       <div>
-        <div class="day-head">Sunday · 14 March</div>
-        <article class="event" data-cal="20270314T110000/20270314T133000" data-title="Farewell brunch · Maya &amp; Arjun" data-place="Willow Lake Estate Main House, Sonoma CA">
-          <div class="time">11:00<small>AM</small></div>
+        <div class="day-head">Monday · 30 November 2026</div>
+        <article class="event main" data-start="20261130T190000" data-end="20261130T235900"
+          data-title="Wedding · Shivanshi weds Shashwat"
+          data-place="Grand Rishala, NH-58, Kanker Khera, Meerut, Uttar Pradesh">
           <div>
-            <h3>Farewell brunch</h3>
-            <p>Coffee, pastries and one last goodbye at the Main House before everyone heads home.</p>
-            <span class="dress">Relaxed</span>
+            <h3>Wedding <span class="deva" lang="hi">शुभ विवाह</span></h3>
+            <div class="timings">
+              <div class="timing"><b>7:00 PM</b><span>Baraat Swagat</span></div>
+              <div class="timing"><b>8:00 PM</b><span>Dinner</span></div>
+            </div>
+            <div class="venue"><strong>Grand Rishala</strong><span>NH-58, Kanker Khera, Meerut</span></div>
           </div>
-          <div class="links"><a class="cal" href="#">Calendar</a><a class="map" href="#">Map</a></div>
+          <div class="links"></div>
         </article>
-      </div>
-    </div>
-  </section>
-
-  <section class="block" id="travel">
-    <header><h2>Travel &amp; stay</h2><p>Sonoma is about an hour's drive north of San Francisco.</p></header>
-    <div class="body travel">
-      <div>
-        <h3>Flying in</h3>
-        <p>San Francisco (SFO) and Oakland (OAK) are both about 75 minutes away. Sonoma County Airport (STS) is 30 minutes away with direct flights from several West Coast cities.</p>
-      </div>
-      <div>
-        <h3>Where to stay</h3>
-        <p>We've reserved a block of rooms at The Vineyard Inn, ten minutes from the estate. Book by 10 February for the group rate.</p>
-        <span class="code">Group code MAYAARJUN</span>
-      </div>
-      <div>
-        <h3>Getting around</h3>
-        <p>A shuttle runs between The Vineyard Inn and the estate before and after every event, so nobody needs to drive after the toasts.</p>
       </div>
     </div>
   </section>
 
   <section class="block" id="rsvp">
-    <header><h2>RSVP</h2><p>One reply per invitation, please.</p></header>
-    <div class="body">
+    <div class="sec-head"><span class="deva" lang="hi">कृपया उत्तर दें</span><h2>R.S.V.P.</h2></div>
+    <div class="rsvp-wrap">
+      <div class="rsvp-contact">
+        <div class="who">Amit Tyagi</div>
+        <p>Let us know who is coming and to which functions.</p>
+      </div>
       <div class="rsvp-card">
-        <p class="deadline">Kindly reply by <strong>Monday, 1 February 2027</strong>.</p>
         <form id="rsvp-form" novalidate>
           <div class="row">
             <div>
-              <label for="r-name">Your name(s)</label>
-              <input type="text" id="r-name" name="name" autocomplete="name" placeholder="e.g. Priya and Sam Okafor">
+              <label for="r-name">Your name / family</label>
+              <input type="text" id="r-name" name="name" autocomplete="name" placeholder="e.g. Rakesh Sharma &amp; family">
             </div>
             <div>
               <label for="r-count">Number of guests</label>
               <select id="r-count" name="count">
-                <option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option>
+                <option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option>
               </select>
             </div>
           </div>
 
           <fieldset>
-            <legend>Will you be joining us?</legend>
+            <legend>Will you attend?</legend>
             <div class="choices">
-              <label class="choice"><input type="radio" name="attending" id="r-yes" value="yes"><span>Joyfully accepts</span></label>
-              <label class="choice"><input type="radio" name="attending" id="r-no" value="no"><span>Regretfully declines</span></label>
+              <label class="choice"><input type="radio" name="attending" id="r-yes" value="yes"><span>Yes, we will be there</span></label>
+              <label class="choice"><input type="radio" name="attending" id="r-no" value="no"><span>Sorry, we can't make it</span></label>
             </div>
           </fieldset>
 
           <fieldset id="r-events-wrap">
-            <legend>Which events?</legend>
+            <legend>Which functions?</legend>
             <div class="choices">
-              <label class="choice"><input type="checkbox" name="events" id="r-ev1" value="Welcome evening (Fri)"><span>Welcome evening</span></label>
-              <label class="choice"><input type="checkbox" name="events" id="r-ev2" value="Ceremony (Sat)" checked><span>Ceremony</span></label>
-              <label class="choice"><input type="checkbox" name="events" id="r-ev3" value="Dinner &amp; dancing (Sat)" checked><span>Dinner &amp; dancing</span></label>
-              <label class="choice"><input type="checkbox" name="events" id="r-ev4" value="Farewell brunch (Sun)"><span>Farewell brunch</span></label>
+              <label class="choice"><input type="checkbox" name="events" id="r-ev1" value="Engagement (28 Nov)" checked><span>Engagement · 28 Nov</span></label>
+              <label class="choice"><input type="checkbox" name="events" id="r-ev2" value="Mehendi & Sangeet (29 Nov)" checked><span>Mehendi &amp; Sangeet · 29 Nov</span></label>
+              <label class="choice"><input type="checkbox" name="events" id="r-ev3" value="Wedding (30 Nov)" checked><span>Wedding · 30 Nov</span></label>
             </div>
           </fieldset>
 
           <div>
-            <label for="r-diet">Dietary needs</label>
-            <input type="text" id="r-diet" name="diet" placeholder="Vegetarian, nut allergy, none…">
-          </div>
-          <div>
-            <label for="r-note">A note for the couple</label>
+            <label for="r-note">Blessings for the couple</label>
             <textarea id="r-note" name="note" placeholder="Optional"></textarea>
           </div>
 
           <p class="error" id="r-error" hidden></p>
-          <div><button class="btn" type="submit">Prepare my RSVP</button></div>
+          <div><button class="btn" type="submit">Prepare my reply</button></div>
         </form>
 
         <div class="result" id="r-result" hidden>
-          <h3 id="r-thanks">Thank you</h3>
+          <h3 id="r-thanks">Dhanyavaad</h3>
           <pre id="r-text"></pre>
           <div class="actions">
             <a class="btn" id="r-wa" href="#" target="_blank" rel="noopener">Send on WhatsApp</a>
-            <button class="btn ghost" type="button" id="r-copy">Copy RSVP</button>
+            <button class="btn ghost" type="button" id="r-copy">Copy reply</button>
           </div>
-          <p class="note">Your reply is sent from your own phone. You can also text it to Maya on <span style="user-select:all">+1 312 555 0142</span>.</p>
+          <p class="note" id="r-note-send">WhatsApp opens with your reply typed out. Choose Amit Tyagi and press send.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="block" id="faq">
-    <header><h2>Questions</h2><p>Anything else, just ask us.</p></header>
-    <div class="body">
-      <details>
-        <summary>Can I bring a plus-one?</summary>
-        <p>Your invitation lists everyone we've saved a seat for. If you'd like to bring someone, please ask us first and we'll do our best.</p>
-      </details>
-      <details>
-        <summary>Are children welcome?</summary>
-        <p>We love your little ones. Children are welcome at the welcome evening and the brunch. The ceremony and reception are adults only.</p>
-      </details>
-      <details>
-        <summary>What will the weather be like?</summary>
-        <p>Sonoma in March is mild during the day, around 18°C (65°F), and cool in the evenings. The ceremony is indoors in The Glasshouse; bring a layer for the lawn.</p>
-      </details>
-      <details>
-        <summary>Do you have a gift registry?</summary>
-        <p>Your presence is the gift. If you'd like to give something, a contribution to our honeymoon fund will be at the welcome evening.</p>
-      </details>
-      <details>
-        <summary>Can I take photos during the ceremony?</summary>
-        <p>We're having an unplugged ceremony, so please keep phones away until we've walked back down the aisle. Snap away at the reception.</p>
-      </details>
-    </div>
-  </section>
-
   <footer>
-    <div class="sig">With love, Maya &amp; Arjun</div>
-    <div class="tag">#MayaAndArjun2027</div>
+    <div class="pre">With best compliments from</div>
+    <div class="sig">Tyagi Family</div>
+    <div class="deva" lang="hi">त्यागी परिवार</div>
   </footer>
 </div>
 
 <script>
 (function () {
   // ---- Details you can change ----
-  var WEDDING = new Date(2027, 2, 13, 16, 0, 0); // 13 March 2027, 4:00 PM (viewer's local clock)
-  var WHATSAPP_NUMBER = "13125550142";          // digits only, with country code
-  var COUPLE = "Maya & Arjun";
+  var WEDDING = new Date("2026-11-30T19:00:00+05:30"); // Baraat Swagat, India time
+  var RSVP_WHATSAPP = "";   // Amit Tyagi's number with country code, digits only, e.g. "9198XXXXXXXX". Empty = guest picks the contact.
+  var COUPLE = "Shivanshi & Shashwat";
 
   // ---- Countdown ----
   var cd = document.getElementById("countdown");
@@ -652,35 +585,37 @@
     var diff = WEDDING - new Date();
     if (diff <= 0) { cd.hidden = true; done.hidden = false; return; }
     var s = Math.floor(diff / 1000);
-    var vals = [Math.floor(s / 86400), Math.floor(s % 86400 / 3600), Math.floor(s % 3600 / 60), s % 60];
-    els[0].textContent = vals[0];
-    for (var i = 1; i < 4; i++) els[i].textContent = pad(vals[i]);
+    var v = [Math.floor(s / 86400), Math.floor(s % 86400 / 3600), Math.floor(s % 3600 / 60), s % 60];
+    els[0].textContent = v[0];
+    for (var i = 1; i < 4; i++) els[i].textContent = pad(v[i]);
   }
   tick();
   setInterval(tick, 1000);
 
-  // ---- Calendar & map links ----
-  function calUrl(title, dates, place) {
+  // ---- Map & calendar links ----
+  var PIN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"/></svg>';
+  var CAL = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 2h2v2h6V2h2v2h3a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3V2Zm12 8H5v9h14v-9Z"/></svg>';
+  function mapUrl(place) { return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(place); }
+  function calUrl(title, start, end, place) {
     return "https://calendar.google.com/calendar/render?action=TEMPLATE" +
       "&text=" + encodeURIComponent(title) +
-      "&dates=" + encodeURIComponent(dates) +
-      "&ctz=America/Los_Angeles" +
+      "&dates=" + start + "/" + end +
+      "&ctz=Asia/Kolkata" +
       "&location=" + encodeURIComponent(place) +
-      "&details=" + encodeURIComponent("Celebrating " + COUPLE + ". Details and RSVP on the wedding website.");
-  }
-  function mapUrl(place) {
-    return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(place);
+      "&details=" + encodeURIComponent("Shivanshi weds Shashwat. With best compliments from the Tyagi Family.");
   }
   document.querySelectorAll(".event").forEach(function (ev) {
-    var t = ev.dataset.title, d = ev.dataset.cal, p = ev.dataset.place;
-    var c = ev.querySelector("a.cal"), m = ev.querySelector("a.map");
-    c.href = calUrl(t, d, p); c.target = "_blank"; c.rel = "noopener";
-    m.href = mapUrl(p); m.target = "_blank"; m.rel = "noopener";
-    c.setAttribute("aria-label", "Add " + t + " to Google Calendar");
-    m.setAttribute("aria-label", "Open map for " + t);
+    var d = ev.dataset, box = ev.querySelector(".links");
+    var m = document.createElement("a");
+    m.className = "link-btn"; m.href = mapUrl(d.place); m.target = "_blank"; m.rel = "noopener";
+    m.innerHTML = PIN + "<span>Location</span>";
+    m.setAttribute("aria-label", "Open " + d.place.split(",")[0] + " in Google Maps");
+    var c = document.createElement("a");
+    c.className = "link-btn"; c.href = calUrl(d.title, d.start, d.end, d.place); c.target = "_blank"; c.rel = "noopener";
+    c.innerHTML = CAL + "<span>Save the date</span>";
+    c.setAttribute("aria-label", "Add " + d.title + " to Google Calendar");
+    box.append(m, c);
   });
-  var main = document.querySelector(".event.main");
-  document.getElementById("cal-main").href = calUrl(main.dataset.title, main.dataset.cal, main.dataset.place);
 
   // ---- RSVP ----
   var form = document.getElementById("rsvp-form");
@@ -688,12 +623,10 @@
   var result = document.getElementById("r-result");
   var eventsWrap = document.getElementById("r-events-wrap");
   var countSel = document.getElementById("r-count");
+  if (RSVP_WHATSAPP) document.getElementById("r-note-send").textContent = "WhatsApp opens a chat with Amit Tyagi with your reply typed out. Press send.";
 
   form.addEventListener("change", function (e) {
-    if (e.target.name === "attending") {
-      var no = e.target.value === "no";
-      eventsWrap.hidden = no;
-    }
+    if (e.target.name === "attending") eventsWrap.hidden = e.target.value === "no";
   });
 
   form.addEventListener("submit", function (e) {
@@ -701,51 +634,49 @@
     var name = document.getElementById("r-name").value.trim();
     var att = form.querySelector('input[name="attending"]:checked');
     var events = Array.prototype.map.call(form.querySelectorAll('input[name="events"]:checked'), function (x) { return x.value; });
-    var diet = document.getElementById("r-diet").value.trim();
     var note = document.getElementById("r-note").value.trim();
 
-    var problem = !name ? "Please add your name so we know who's replying."
-      : !att ? "Please let us know whether you can come."
-      : (att.value === "yes" && !events.length) ? "Please pick at least one event you'll attend."
+    var problem = !name ? "Please add your name so the family knows who is replying."
+      : !att ? "Please choose whether you will attend."
+      : (att.value === "yes" && !events.length) ? "Please pick at least one function."
       : "";
     if (problem) { err.textContent = problem; err.hidden = false; result.hidden = true; return; }
     err.hidden = true;
 
     var yes = att.value === "yes";
-    var lines = ["RSVP for " + COUPLE + "'s wedding", "", "Name: " + name];
+    var lines = ["R.S.V.P. — " + COUPLE + " wedding", "", "Name: " + name];
     if (yes) {
-      lines.push("Attending: Yes, " + countSel.value + (countSel.value === "1" ? " guest" : " guests"));
-      lines.push("Events: " + events.join(", "));
-      if (diet) lines.push("Dietary needs: " + diet);
+      lines.push("Attending: Yes, " + countSel.value + (countSel.value === "1" ? " person" : " people"));
+      lines.push("Functions: " + events.join(", "));
     } else {
-      lines.push("Attending: Sadly, no");
+      lines.push("Attending: Sorry, we can't make it");
     }
-    if (note) lines.push("", "Note: " + note);
+    if (note) lines.push("", "Blessings: " + note);
     var text = lines.join("\n");
 
-    document.getElementById("r-thanks").textContent = yes ? "We can't wait to see you" : "You'll be missed";
+    document.getElementById("r-thanks").textContent = yes ? "Dhanyavaad! See you there" : "Thank you for letting us know";
     document.getElementById("r-text").textContent = text;
-    document.getElementById("r-wa").href = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(text);
+    document.getElementById("r-wa").href = "https://wa.me/" + RSVP_WHATSAPP + "?text=" + encodeURIComponent(text);
     result.hidden = false;
     result.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "nearest" });
   });
 
   var copyBtn = document.getElementById("r-copy");
-  function swapLabel(text) {
+  function swapLabel(t) {
     copyBtn.classList.add("swapping");
-    setTimeout(function () { copyBtn.textContent = text; copyBtn.classList.remove("swapping"); }, 120);
+    setTimeout(function () { copyBtn.textContent = t; copyBtn.classList.remove("swapping"); }, 120);
   }
   copyBtn.addEventListener("click", function () {
     var pre = document.getElementById("r-text");
     function selectIt() {
       var r = document.createRange(); r.selectNodeContents(pre);
       var s = getSelection(); s.removeAllRanges(); s.addRange(r);
-      copyBtn.textContent = "Selected, press copy";
+      swapLabel("Selected, press copy");
     }
     try {
       navigator.clipboard.writeText(pre.textContent).then(function () {
         swapLabel("Copied");
-        setTimeout(function () { swapLabel("Copy RSVP"); }, 2000);
+        setTimeout(function () { swapLabel("Copy reply"); }, 2000);
       }, selectIt);
     } catch (x) { selectIt(); }
   });
