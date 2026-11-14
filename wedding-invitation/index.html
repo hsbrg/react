@@ -436,7 +436,7 @@
   #top .inst { top: 54%; height: min(48svh, 380px); width: auto; }
   #top .inst.sh-l { left: 6%; translate: 0 -50%; rotate: -14deg; }
   #top .inst.sh-r { right: 6%; translate: 0 -50%; rotate: 14deg; scale: -1 1; }
-  #invitation .inst { right: 2%; bottom: 2%; width: clamp(150px, 15vw, 220px); }
+  #invitation .inst { left: 2%; bottom: 3%; width: clamp(150px, 15vw, 220px); }
   #day-28 .inst { right: 2%; bottom: 7%; width: clamp(220px, 23vw, 340px); }
   #day-29 .inst { left: 4%; bottom: 6%; width: clamp(140px, 13vw, 200px); }
   #day-30 .inst { right: 17%; top: 0; height: min(36svh, 280px); width: auto; }
@@ -503,7 +503,7 @@
   .ill.is-drawn .couple-rise { transform: none; transition: opacity 1200ms ease var(--d, 0s), transform 1600ms var(--ease-out) var(--d, 0s); }
   .invite-art .ov { top: 17%; color: #3E0B18; text-shadow: 0 0 14px rgb(255 255 255 / .95), 0 0 4px rgb(255 255 255 / .8); }
   .invite-art .ov .small { color: #6E4B0E; }
-  .invite-text-col { text-align: center; display: grid; gap: 14px; justify-items: center; }
+  .invite-text-col { text-align: center; display: grid; gap: 14px; justify-items: center; position: relative; z-index: 3; }
   .invite-text-col h2 { font-size: clamp(34px, 5svh, 48px); color: var(--acc); }
   .invite-text-col h2[lang="hi"] { font-family: var(--font-deva-script); font-weight: 400; font-size: clamp(30px, 4.4svh, 40px); line-height: 1.4; }
   .hosts { font-size: 20px; font-weight: 500; line-height: 1.45; margin: 0; text-wrap: balance; }
@@ -514,6 +514,28 @@
   .parents .rel { font-size: 14.5px; color: var(--muted); text-wrap: balance; }
   .parents .weds { font-family: var(--font-display); letter-spacing: .3em; text-transform: uppercase; font-size: 13px; color: var(--gold); }
   .parents .weds[lang="hi"] { font-family: var(--font-deva-script); font-weight: 400; font-size: 20px; }
+  /* Our song: the official YouTube player, kept visible (YouTube asks for at least 200×200) */
+  .our-song { margin: 6px 0 0; width: min(100%, 356px); display: grid; gap: 10px; justify-items: center; position: relative; z-index: 3; }
+  @media (min-width: 761px) and (max-height: 820px) {
+    .invite-text-col { gap: 9px; }
+    .invite-text-col h2 { font-size: clamp(30px, 4.6svh, 40px); }
+    .our-song { margin-top: 2px; gap: 6px; }
+  }
+  .our-song figcaption { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center; column-gap: 10px; row-gap: 2px; }
+  .song-cap { font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+  .song-cap[lang="hi"] { letter-spacing: 0; font-size: 14px; }
+  .song-t { font-family: var(--font-display); font-style: italic; font-size: 22px; color: var(--acc); }
+  .song-t[lang="hi"] { font-family: var(--font-deva-script); font-style: normal; font-size: 21px; }
+  .song-meta { font-size: 13px; color: var(--muted); }
+  .song-frame { width: 100%; aspect-ratio: 16 / 9; min-height: 200px; border-radius: 10px; overflow: hidden; background: #2A0A12;
+    box-shadow: 0 0 0 1px rgba(122, 26, 44, .18), 0 14px 30px -18px rgba(62, 11, 24, .55); transition: box-shadow 400ms ease; }
+  .song-frame iframe { display: block; width: 100%; height: 100%; border: 0; }
+  .our-song.song-playing .song-frame { box-shadow: 0 0 0 2px #E3B95E, 0 14px 34px -14px rgba(176, 120, 30, .6); }
+  .song-link { display: none; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 999px; background: #3E0B18; color: #FFFDF9; text-decoration: none; font-size: 15px; }
+  .song-link svg { width: 14px; height: 14px; }
+  .song-link:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+  .our-song.song-off .song-frame { display: none; }
+  .our-song.song-off .song-link { display: inline-flex; }
   .resi { font-size: 13px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
 
   /* ---------- Event pages ---------- */
@@ -703,7 +725,7 @@
     .replay-btn .replay-label, .music-btn .music-label { display: none; }
     .music-btn { padding: 0 12px; }
     #top .inst { display: none; }
-    #invitation .inst { right: 4px; bottom: auto; top: calc(min(100vw, 520px) * .98); width: 92px; }
+    #invitation .inst { left: auto; right: 4px; bottom: auto; top: calc(min(100vw, 520px) * .98); width: 92px; }
     #day-28 .inst { right: 0; bottom: auto; top: calc(min(100vw, 520px) * 1.0); width: 120px; }
     #day-29 .inst { left: auto; right: 6px; bottom: auto; top: calc(min(100vw, 520px) * 1.0); width: 80px; }
     #day-30 .inst { right: 6px; top: calc(44px + env(safe-area-inset-top, 0px)); height: 104px; }
@@ -856,6 +878,15 @@
             <div><div class="nm magic" data-hi="शाश्वत">Shashwat</div><div class="rel" data-hi="सुपुत्र श्रीमती आभा त्यागी एवं श्री भूपेंद्र त्यागी">S/o Mrs. Abha Tyagi &amp; Mr. Bhupendra Tyagi</div></div>
           </div>
           <div class="resi" data-hi="निवास: मेरठ (उ.प्र.)">Resi.: Meerut (U.P.)</div>
+          <figure class="our-song" id="our-song" aria-labelledby="song-t">
+            <figcaption>
+              <span class="song-cap" data-hi="हमारा गीत">Our song</span>
+              <span class="song-t" id="song-t" data-hi="गहरा हुआ">Gehra Hua</span>
+              <span class="song-meta" data-hi="धुरंधर · अरिजीत सिंह">Dhurandhar · Arijit Singh</span>
+            </figcaption>
+            <div class="song-frame"><div id="yt-song"></div></div>
+            <a class="song-link" href="https://www.youtube.com/watch?v=0KYJPoGJcMc" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9.5-5.5z" fill="currentColor"/></svg><span data-hi="YouTube पर सुनें">Listen on YouTube</span></a>
+          </figure>
         </div>
       </div>
     </section>
@@ -1788,7 +1819,7 @@
   // guest moves between pages. Sound only starts after a tap (browser rule).
   // =====================================================================
   var Music = (function () {
-    var ctx = null, master, bus, gains = {}, current = null, nextBar = 0, barIdx = 0, timer = 0, on = false;
+    var ctx = null, master, bus, gains = {}, current = null, nextBar = 0, barIdx = 0, timer = 0, on = false, bedOn = true;
     var ROOT = 146.83; // D3: Sa
     function hz(semi, oct) { return ROOT * Math.pow(2, (semi + 12 * (oct || 0)) / 12); }
     function noise(c) {
@@ -1932,7 +1963,7 @@
       return true;
     }
     function tick() {
-      if (!on || !current) return;
+      if (!on || !current || !bedOn) return;
       while (nextBar < ctx.currentTime + 0.35) { nextBar += scheduleBar(ctx, gains[current], current, nextBar, barIdx); barIdx++; }
     }
     function fadeTo(id) {
@@ -1944,18 +1975,26 @@
     }
     return {
       PIECES: PIECES, scheduleBar: scheduleBar,
-      get on() { return on; },
+      get on() { return on; }, get bedOn() { return bedOn; },
       setTheme: function (id) {
         if (!PIECES[id] || id === current) return;
         current = id; barIdx = 0;
-        if (ctx && on) { fadeTo(id); nextBar = ctx.currentTime + 0.1; }
+        if (ctx && on && bedOn) { fadeTo(id); nextBar = ctx.currentTime + 0.1; }
       },
       enable: function () {
         if (!ctx && !init()) return;
         ctx.resume(); on = true;
         var t = ctx.currentTime; master.gain.cancelScheduledValues(t); master.gain.setValueAtTime(master.gain.value, t); master.gain.linearRampToValueAtTime(.85, t + 1.2);
-        if (current) { fadeTo(current); nextBar = t + 0.1; }
+        if (current && bedOn) { fadeTo(current); nextBar = t + 0.1; }
         clearInterval(timer); timer = setInterval(tick, 60);
+      },
+      // The page tunes are the "bed"; they step aside while the film song plays (taps keep their sounds)
+      bed: function (b) {
+        if (b === bedOn) return;
+        bedOn = b;
+        if (!ctx || !on) return;
+        if (b && current) { barIdx = 0; nextBar = ctx.currentTime + 0.1; fadeTo(current); }
+        if (!b) fadeTo(null);
       },
       disable: function () {
         on = false;
@@ -1988,8 +2027,67 @@
   // ---- Sound button ----
   var soundBtn = document.querySelector(".music-btn");
   function soundPref() { try { return localStorage.getItem("ss-sound"); } catch (x) { return null; } }
+  // ---- Our song: "Gehra Hua" (Dhurandhar), played from Saregama's official YouTube upload ----
+  // The player sits, visible, in the "Our song" card on the Invitation page. It starts with the
+  // first deliberate tap (the doors), so phones allow sound. Wherever YouTube can't load (offline,
+  // blocked, the artifact viewer), the card offers a link instead and the page tunes play as before.
+  var Song = (function () {
+    var ID = "0KYJPoGJcMc", card = document.getElementById("our-song"), player = null;
+    var ready = false, want = false, playing = false, guard = 0;
+    function off() { if (ready) return; card.classList.add("song-off"); if (Music.on) Music.bed(true); }
+    function load() {
+      if (!card) return;
+      if (!/^https?:$/.test(location.protocol)) { off(); return; }
+      window.onYouTubeIframeAPIReady = function () {
+        try {
+          player = new YT.Player("yt-song", {
+            videoId: ID, width: "100%", height: "100%",
+            playerVars: { playsinline: 1, rel: 0, loop: 1, playlist: ID },
+            events: {
+              onReady: function () {
+                ready = true; card.classList.remove("song-off"); card.classList.add("song-ready");
+                player.setVolume(75);
+                if (want) start();
+              },
+              onStateChange: state,
+              onError: function () { ready = false; off(); }
+            }
+          });
+        } catch (x) { off(); }
+      };
+      var s = document.createElement("script");
+      s.src = "https://www.youtube.com/iframe_api"; s.async = true; s.onerror = off;
+      document.head.appendChild(s);
+      setTimeout(off, 15000);
+    }
+    function state(e) {
+      if (e.data === 1) {                                   // playing
+        playing = true; clearTimeout(guard); Music.bed(false); card.classList.add("song-playing");
+        if (!Music.on) { want = true; setSound(true, true); }   // started from the player itself
+      } else if (e.data === 2) {                            // paused
+        playing = false; card.classList.remove("song-playing");
+        if (want) setSound(false, true);                    // paused from the player itself
+      } else if (e.data === 0 && want) player.playVideo();  // ended: go round again
+    }
+    function start() {
+      want = true;
+      if (!ready) return;                                   // the page tunes play until it's ready
+      Music.bed(false);
+      try { player.unMute(); player.playVideo(); } catch (x) {}
+      clearTimeout(guard);
+      // If the browser holds the song back, don't leave the guest in silence
+      guard = setTimeout(function () { if (want && !playing) Music.bed(true); }, 3500);
+    }
+    function stop() {
+      want = false; clearTimeout(guard);
+      if (ready && playing) { try { player.pauseVideo(); } catch (x) {} }
+    }
+    load();
+    return { start: start, stop: stop };
+  })();
+
   function setSound(onNow, remember) {
-    if (onNow) Music.enable(); else Music.disable();
+    if (onNow) { Music.enable(); Song.start(); } else { Song.stop(); Music.disable(); }
     soundBtn.setAttribute("aria-pressed", String(onNow));
     root.classList.toggle("music-on", !!onNow);
     soundBtn.classList.remove("nudge");
