@@ -44,7 +44,7 @@ ${base ? `<meta property="og:url" content="${base}/">\n` : ""}<meta name="twitte
 rmSync(OUT, { recursive: true, force: true });
 mkdirSync(OUT, { recursive: true });
 writeFileSync(`${OUT}/index.html`, head + body + "\n</body>\n</html>\n");
-for (const f of ["og.png", "monogram.jpg", "apple-touch-icon.png", "logo.jpg"]) {
+for (const f of ["og.png", "apple-touch-icon.png"]) {
   copyFileSync(`${SRC}/${f}`, `${OUT}/${f}`);
 }
 console.log(`Built ${OUT}/index.html${base ? ` for ${base}` : ""}`);
