@@ -90,7 +90,17 @@
   }
   .page::before { content: ""; position: absolute; inset: 0; z-index: -1; background-image: var(--motif); background-size: auto; pointer-events: none; }
   .t-rsvp::before { background-size: 22px 22px; }
-  .page-inner { width: 100%; max-width: 1060px; margin-inline: auto; }
+  .page-inner { position: relative; z-index: 1; width: 100%; max-width: 1120px; margin-inline: auto; }
+  /* Each page's living backdrop (petals, embers, lanterns, birds...) */
+  .amb { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+  .bg-mandala {
+    position: absolute; z-index: 0; width: min(92vmax, 1100px); height: auto; aspect-ratio: 1; pointer-events: none;
+    color: var(--gold); opacity: .11; animation: spin 240s linear infinite;
+  }
+  .bg-mandala.br { right: -26%; bottom: -38%; }
+  .bg-mandala.bl { left: -26%; bottom: -38%; animation-direction: reverse; }
+  .bg-mandala.tr { right: -28%; top: -40%; animation-direction: reverse; }
+  .t-invite .bg-mandala, .t-engage .bg-mandala { opacity: .14; color: var(--acc); }
   .page h2 { font-family: var(--font-display); font-weight: 400; margin: 0; text-wrap: balance; }
 
   /* ---------- Fixed controls ---------- */
@@ -114,6 +124,23 @@
   }
   .replay-btn svg { width: 20px; height: 20px; color: #8A6216; flex: none; }
   .replay-btn [lang="hi"] { font-size: 16px; }
+  .control-group { display: flex; gap: 8px; }
+  .music-btn {
+    display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px 0 11px;
+    font: 500 14px/1 var(--font-body); color: #3E0B18; cursor: pointer; transition: background-color 160ms ease, color 160ms ease;
+  }
+  .music-btn [lang="hi"] { font-size: 16px; }
+  .music-btn .ico { width: 18px; height: 18px; flex: none; color: #8A6216; }
+  .music-btn .eq { display: none; align-items: flex-end; gap: 2px; width: 18px; height: 16px; }
+  .music-btn .eq i { flex: 1; height: 100%; background: currentColor; transform-origin: bottom; animation: eq 900ms ease-in-out infinite; }
+  .music-btn .eq i:nth-child(2) { animation-delay: -300ms; animation-duration: 700ms; }
+  .music-btn .eq i:nth-child(3) { animation-delay: -600ms; animation-duration: 1100ms; }
+  .music-btn[aria-pressed="true"] { background: #3E0B18; color: #FFFDF9; }
+  .music-btn[aria-pressed="true"] .ico { display: none; }
+  .music-btn[aria-pressed="true"] .eq { display: inline-flex; }
+  .music-btn.nudge { animation: nudge 1.6s ease-in-out infinite; }
+  @keyframes eq { 0%, 100% { transform: scaleY(.3); } 50% { transform: scaleY(1); } }
+  @keyframes nudge { 50% { box-shadow: 0 0 0 7px rgb(232 192 106 / .55), 0 6px 18px -8px rgb(0 0 0 / .45); } }
   .lang-switch { display: inline-flex; }
   .lang-switch button {
     min-height: 44px; min-width: 64px; padding: 0 14px; border: 0; background: transparent; color: #3E0B18;
@@ -147,7 +174,7 @@
     inset: calc(48px + env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px)) max(12px, env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px));
     border: 1px solid rgb(227 185 94 / .55); box-shadow: inset 0 0 0 6px var(--paper), inset 0 0 0 7px rgb(227 185 94 / .25);
   }
-  .hero > .toran { position: absolute; top: 0; left: 0; right: 0; }
+  .hero > .toran { position: absolute; z-index: 1; top: 0; left: 0; right: 0; }
   .toran {
     height: 40px;
     background:
@@ -298,6 +325,28 @@
   @keyframes ill-spin { to { transform: rotate(360deg); } }
   @keyframes ill-ripple { to { stroke-dashoffset: -48; } }
 
+  /* Drawings you can play with: a tap makes each one do its thing */
+  .art[data-play], .seal-wrap[data-play] { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .art[data-play]:focus-visible, .seal-wrap[data-play]:focus-visible { outline: 2px solid var(--focus); outline-offset: 5px; }
+  .tap-hint {
+    position: absolute; z-index: 2; left: 50%; bottom: 20px; translate: -50% 0;
+    display: inline-flex; align-items: center; gap: 7px; padding: 7px 13px;
+    background: rgb(24 8 14 / .66); color: #FFF4DE; font-size: 12.5px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; white-space: nowrap;
+    opacity: 0; transition: opacity 500ms ease; pointer-events: none;
+  }
+  .tap-hint svg { width: 14px; height: 14px; flex: none; animation: hint-pulse 1.8s ease-in-out infinite; }
+  .tap-hint [lang="hi"] { font-size: 14px; }
+  .art:has(.ill.is-drawn) .tap-hint { opacity: 1; transition-delay: 3s; }
+  .art.played .tap-hint { opacity: 0; transition-delay: 0s; }
+  @keyframes hint-pulse { 50% { transform: scale(1.3); } }
+  .art.poke .ill { animation: poke 750ms var(--ease-out); }
+  @keyframes poke { 35% { transform: scale(1.025); filter: brightness(1.16) saturate(1.12); } }
+  .art.poke .a-flicker, .art.poke .a-glow { --dur: .45s !important; }
+  .art.poke .a-tail { --dur: .4s !important; }
+  .art.poke .a-sway { --dur: 1.1s !important; }
+  .seal-wrap.poke .mono { animation: seal-poke 900ms var(--ease-out); }
+  @keyframes seal-poke { 40% { transform: scale(1.06) rotate(-5deg); filter: brightness(1.2); } }
+
   /* Illustration frame: the card's gold double rule inside the edge */
   .art { position: relative; margin: 0; overflow: hidden; container-type: inline-size; box-shadow: 0 0 0 1px color-mix(in srgb, var(--gold) 60%, transparent), 0 22px 44px -22px rgb(0 0 0 / .55); }
   .art::after { content: ""; position: absolute; inset: 8px; border: 1px solid rgb(255 250 240 / .75); box-shadow: inset 0 0 0 4px rgb(255 250 240 / .16); pointer-events: none; }
@@ -317,7 +366,7 @@
   /* ---------- Invitation page ---------- */
   .split { display: grid; grid-template-columns: minmax(0, auto) minmax(0, 1fr); gap: clamp(24px, 5vw, 64px); align-items: center; }
   .split.flip > .art { order: 2; }
-  .invite-art, .event-art, .rsvp-art { width: clamp(220px, calc((100svh - 190px) * .8), 420px); justify-self: center; }
+  .invite-art, .event-art { width: clamp(240px, calc((100svh - 130px) * .8), 580px); justify-self: center; }
   .invite-art .ov { top: 17%; color: #3E0B18; text-shadow: 0 0 14px rgb(255 255 255 / .95), 0 0 4px rgb(255 255 255 / .8); }
   .invite-art .ov .small { color: #6E4B0E; }
   .invite-text-col { text-align: center; display: grid; gap: 14px; justify-items: center; }
@@ -390,8 +439,8 @@
   .rsvp-head { text-align: center; display: grid; gap: 4px; justify-items: center; margin-bottom: 22px; }
   .rsvp-head h2 { font-size: clamp(34px, 5svh, 46px); color: var(--gold); }
   .rsvp-head h2[lang="hi"] { font-family: var(--font-deva-script); font-weight: 700; font-size: clamp(28px, 4.2svh, 38px); line-height: 1.4; }
-  .rsvp-layout { display: grid; grid-template-columns: minmax(0, 320px) minmax(0, 1fr); gap: 40px; align-items: start; }
-  .rsvp-art { width: min(100%, 320px); position: sticky; top: 90px; }
+  .rsvp-layout { display: grid; grid-template-columns: minmax(0, 380px) minmax(0, 1fr); gap: 44px; align-items: start; }
+  .rsvp-art { width: min(100%, 380px); justify-self: center; position: sticky; top: 90px; }
   .rsvp-art .ov { top: 5%; color: #FBEBD3; text-shadow: 0 2px 10px rgb(0 0 0 / .4); }
   .rsvp-art .ov .script { font-size: 13cqw; }
   .rsvp-art .ov .script[lang="hi"] { font-size: 9.5cqw; }
@@ -509,7 +558,11 @@
     .rsvp-layout { grid-template-columns: minmax(0, 1fr); gap: 18px; }
     .rsvp-art { position: relative; top: 0; width: min(100%, 220px); justify-self: center; }
     .rsvp-card { padding: 22px 16px; }
-    .replay-btn .replay-label { display: none; }
+    .replay-btn .replay-label, .music-btn .music-label { display: none; }
+    .music-btn { padding: 0 12px; }
+    .tap-hint { left: auto; right: 12px; bottom: 12px; translate: none; padding: 7px; border-radius: 50%; }
+    .tap-hint > span { display: none; }
+    .tap-hint svg { width: 16px; height: 16px; }
     .replay-btn { padding: 0 12px; }
   }
   @media (max-width: 360px) {
@@ -519,9 +572,10 @@
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     .in, .fade-in { animation: fade 250ms ease both; animation-delay: 0ms; }
-    .mandala { animation: none; }
+    .mandala, .bg-mandala { animation: none; }
     .glint { display: none; }
-    .scroll-cue svg { animation: none; }
+    .scroll-cue svg, .tap-hint svg, .music-btn .eq i, .music-btn.nudge { animation: none; }
+    .art.poke .ill, .seal-wrap.poke .mono { animation: none; }
     .ill .draw, .ill .pop, .ill .fadein, .ill .draw-text { transition: none !important; }
     .door { transition: opacity 450ms ease; }
     .gate.opening .door.l, .gate.opening .door.r { transform: none; opacity: 0; }
@@ -558,10 +612,17 @@
 
 <div id="page">
   <div class="controls">
+    <div class="control-group">
     <button type="button" class="replay-btn pill" aria-label="Watch the welcome again" data-hi-aria="स्वागत फिर देखें">
       <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 21V9a8 8 0 0 1 16 0v12M4 21h16M12 3v18"/><circle cx="10" cy="14" r=".9" fill="currentColor"/><circle cx="14" cy="14" r=".9" fill="currentColor"/></svg>
       <span class="replay-label" data-hi="स्वागत">Welcome</span>
     </button>
+    <button type="button" class="music-btn pill" aria-pressed="false" aria-label="Music" data-hi-aria="संगीत">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>
+      <span class="eq" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="music-label" data-hi="संगीत">Music</span>
+    </button>
+    </div>
     <div class="lang-switch pill" role="group" aria-label="Language / भाषा">
       <button type="button" data-set="en" lang="en" aria-pressed="true">English</button>
       <button type="button" data-set="hi" lang="hi" aria-pressed="false">हिंदी</button>
@@ -578,11 +639,12 @@
   </nav>
 
   <header class="page t-welcome hero" id="top">
+    <canvas class="amb" aria-hidden="true"></canvas>
     <div class="toran fade-in" aria-hidden="true"></div>
     <div class="page-inner hero-inner">
       <div class="ganesh deva fade-in" lang="hi">॥ श्री गणेशाय नमः ॥</div>
       <p class="shloka deva fade-in" style="--d:60ms" lang="sa">वक्रतुण्ड महाकाय सूर्यकोटि समप्रभः।<br>निर्विघ्नं कुरु मे देव सर्वकार्येषु सर्वदा॥</p>
-      <div class="seal-wrap">
+      <div class="seal-wrap" data-play="seal" tabindex="0" role="button" aria-label="Tap the monogram" data-hi-aria="मोनोग्राम को छुएँ">
         <svg class="mandala" id="mandala" viewBox="-100 -100 200 200" aria-hidden="true"></svg>
         <svg class="ill mono hero-mono" viewBox="-100 -100 200 200" role="img" aria-label="Monogram of Shivanshi and Shashwat: the letters श and S interlaced in gold, crowned by a lotus, framed by vines"><defs><linearGradient id="moh-gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FBE9B4"/><stop offset=".22" stop-color="#E9C46F"/><stop offset=".5" stop-color="#B8852D"/><stop offset=".72" stop-color="#F3D78F"/><stop offset="1" stop-color="#C49434"/></linearGradient><radialGradient id="moh-disc" cx="50%" cy="40%" r="64%"><stop offset="0" stop-color="#7D2337"/><stop offset=".7" stop-color="#561022"/><stop offset="1" stop-color="#3E0918"/></radialGradient></defs><circle r="99.5" fill="url(#moh-disc)"/><circle r="97" fill="none" stroke="#000" stroke-opacity=".18" stroke-width="3"/><circle class="draw" pathLength="1" style="--d:0s;--t:1.6s" r="95" stroke="url(#moh-gold)" stroke-width=".8"/><path class="draw" pathLength="1" style="--d:0.15s;--t:1.5s" d="M32.43 -84.49A90.5 90.5 0 0 1 20.36 88.18" stroke="url(#moh-gold)" stroke-width="2.2" stroke-linecap="round"/><circle class="pop" style="--d:1.2s" cx="32.43" cy="-84.49" r="1.7" fill="url(#moh-gold)"/><circle class="pop" style="--d:1.2s" cx="20.36" cy="88.18" r="1.7" fill="url(#moh-gold)"/><path class="draw" pathLength="1" style="--d:0.15s;--t:1.5s" d="M-32.43 -84.49A90.5 90.5 0 0 0 -20.36 88.18" stroke="url(#moh-gold)" stroke-width="2.2" stroke-linecap="round"/><circle class="pop" style="--d:1.2s" cx="-32.43" cy="-84.49" r="1.7" fill="url(#moh-gold)"/><circle class="pop" style="--d:1.2s" cx="-20.36" cy="88.18" r="1.7" fill="url(#moh-gold)"/><g class="fadein" style="--d:0.9s" fill="url(#moh-gold)"><circle cx="38.82" cy="-76.18" r=".95"/><circle cx="46.57" cy="-71.71" r=".95"/><circle cx="53.81" cy="-66.45" r=".95"/><circle cx="60.46" cy="-60.46" r=".95"/><circle cx="66.45" cy="-53.81" r=".95"/><circle cx="71.71" cy="-46.57" r=".95"/><circle cx="76.18" cy="-38.82" r=".95"/><circle cx="79.82" cy="-30.64" r=".95"/><circle cx="82.59" cy="-22.13" r=".95"/><circle cx="84.45" cy="-13.38" r=".95"/><circle cx="85.38" cy="-4.47" r=".95"/><circle cx="85.38" cy="4.47" r=".95"/><circle cx="84.45" cy="13.38" r=".95"/><circle cx="82.59" cy="22.13" r=".95"/><circle cx="79.82" cy="30.64" r=".95"/><circle cx="76.18" cy="38.82" r=".95"/><circle cx="71.71" cy="46.57" r=".95"/><circle cx="66.45" cy="53.81" r=".95"/><circle cx="60.46" cy="60.46" r=".95"/><circle cx="53.81" cy="66.45" r=".95"/><circle cx="46.57" cy="71.71" r=".95"/><circle cx="38.82" cy="76.18" r=".95"/><circle cx="30.64" cy="79.82" r=".95"/><circle cx="-30.64" cy="79.82" r=".95"/><circle cx="-38.82" cy="76.18" r=".95"/><circle cx="-46.57" cy="71.71" r=".95"/><circle cx="-53.81" cy="66.45" r=".95"/><circle cx="-60.46" cy="60.46" r=".95"/><circle cx="-66.45" cy="53.81" r=".95"/><circle cx="-71.71" cy="46.57" r=".95"/><circle cx="-76.18" cy="38.82" r=".95"/><circle cx="-79.82" cy="30.64" r=".95"/><circle cx="-82.59" cy="22.13" r=".95"/><circle cx="-84.45" cy="13.38" r=".95"/><circle cx="-85.38" cy="4.47" r=".95"/><circle cx="-85.38" cy="-4.47" r=".95"/><circle cx="-84.45" cy="-13.38" r=".95"/><circle cx="-82.59" cy="-22.13" r=".95"/><circle cx="-79.82" cy="-30.64" r=".95"/><circle cx="-76.18" cy="-38.82" r=".95"/><circle cx="-71.71" cy="-46.57" r=".95"/><circle cx="-66.45" cy="-53.81" r=".95"/><circle cx="-60.46" cy="-60.46" r=".95"/><circle cx="-53.81" cy="-66.45" r=".95"/><circle cx="-46.57" cy="-71.71" r=".95"/><circle cx="-38.82" cy="-76.18" r=".95"/></g><g class="pop" style="--d:1.5s" fill="url(#moh-gold)"><path d="M0-79C-3.2-84-3.6-91 0-98C3.6-91 3.2-84 0-79Z"/><path d="M-1-79C-6-81-9.5-86-10-92C-5.5-90-2-85.5-1-79Z"/><path d="M1-79C6-81 9.5-86 10-92C5.5-90 2-85.5 1-79Z"/><path d="M-2-79C-8-79-13-82-16-86C-10-87-5-84-2-79Z"/><path d="M2-79C8-79 13-82 16-86C10-87 5-84 2-79Z"/><path d="M-13-77.6Q0-71.5 13-77.6" fill="none" stroke="url(#moh-gold)" stroke-width="1.3" stroke-linecap="round"/><circle cx="-15.6" cy="-78.4" r="1.2"/><circle cx="15.6" cy="-78.4" r="1.2"/></g><path class="pop" style="--d:1.7s" d="M0-93.5V-82M-5.6-88.5L-2-84.5M5.6-88.5L2-84.5" stroke="#4F0E1F" stroke-width=".55" fill="none"/><g class="pop" style="--d:1.6s" fill="url(#moh-gold)"><path d="M0 82C3 86.5 4.2 89.5 4.2 91.5A4.2 4.2 0 0 1-4.2 91.5C-4.2 89.5-3 86.5 0 82Z"/><circle cx="-9.5" cy="90" r="1.5"/><circle cx="9.5" cy="90" r="1.5"/><path d="M-6 96c-4 1.5-8 .5-9.5-2M6 96c4 1.5 8 .5 9.5-2" fill="none" stroke="url(#moh-gold)" stroke-width=".9" stroke-linecap="round"/></g><path class="draw" pathLength="1" style="--d:0.55s;--t:1.5s" d="M-50 64C-76 40 -80 -10 -58 -52" stroke="url(#moh-gold)" stroke-width="1.15" stroke-linecap="round"/><g class="pop" style="--d:1s"><path transform="translate(-60.77 50.62) rotate(-68.95)" d="M0 0C3.15 -3.36 7.35 -3.36 10.5 0C7.35 3.36 3.15 3.36 0 0Z" fill="url(#moh-gold)"/><path transform="translate(-60.77 50.62) rotate(-68.95)" d="M1 0H8.5" stroke="#4F0E1F" stroke-width=".5"/></g><g class="pop" style="--d:1.1s"><path transform="translate(-67.35 36.3) rotate(-160.8)" d="M0 0C2.97 -3.17 6.93 -3.17 9.9 0C6.93 3.17 2.97 3.17 0 0Z" fill="url(#moh-gold)"/><path transform="translate(-67.35 36.3) rotate(-160.8)" d="M1 0H7.9" stroke="#4F0E1F" stroke-width=".5"/></g><g class="pop" style="--d:1.2s"><path transform="translate(-71.2 20.12) rotate(-46.28)" d="M0 0C2.79 -2.98 6.51 -2.98 9.3 0C6.51 2.98 2.79 2.98 0 0Z" fill="url(#moh-gold)"/><path transform="translate(-71.2 20.12) rotate(-46.28)" d="M1 0H7.3" stroke="#4F0E1F" stroke-width=".5"/></g><g class="pop" style="--d:1.3s"><path transform="translate(-72.26 2.63) rotate(-140.84)" d="M0 0C2.61 -2.78 6.09 -2.78 8.7 0C6.09 2.78 2.61 2.78 0 0Z" fill="url(#moh-gold)"/><path transform="translate(-72.26 2.63) rotate(-140.84)" d="M1 0H6.7" stroke="#4F0E1F" stroke-width=".5"/></g><g class="pop" style="--d:1.4s"><path transform="translate(-70.45 -15.58) rotate(-27.96)" d="M0 0C2.43 -2.59 5.67 -2.59 8.1 0C5.67 2.59 2.43 2.59 0 0Z" fill="url(#moh-gold)"/><path transform="translate(-70.45 -15.58) rotate(-27.96)" d="M1 0H6.1" stroke="#4F0E1F" stroke-width=".5"/></g><g class="pop" style="--d:1.5s"><path transform="translate(-66.16 -32.67) rotate(-123.87)" d="M0 0C2.25 -2.4 5.25 -2.4 7.5 0C5.25 2.4 2.25 2.4 0 0Z" fill="url(#moh-gold)"/><path transform="translate(-66.16 -32.67) rotate(-123.87)" d="M1 0H5.5" stroke="#4F0E1F" stroke-width=".5"/></g><g class="pop" style="--d:1.8s" fill="url(#moh-gold)"><path d="M-58 -52c-2.4-3.4-1.6-7 0-9c1.6 2 2.4 5.6 0 9z" transform="rotate(35 -58 -52)"/></g><g class="pop" style="--d:1.9s" fill="url(#moh-gold)"><ellipse cx="-50" cy="61.8" rx="2.3" ry="4.4" transform="rotate(0 -50 66)"/><ellipse cx="-50" cy="61.8" rx="2.3" ry="4.4" transform="rotate(72 -50 66)"/><ellipse cx="-50" cy="61.8" rx="2.3" ry="4.4" transform="rotate(144 -50 66)"/><ellipse cx="-50" cy="61.8" rx="2.3" ry="4.4" transform="rotate(216 -50 66)"/><ellipse cx="-50" cy="61.8" rx="2.3" ry="4.4" transform="rotate(288 -50 66)"/><circle cx="-50" cy="66" r="1.8" fill="#4F0E1F"/></g><path class="draw" pathLength="1" style="--d:0.55s;--t:1.5s" d="M50 64C76 40 80 -10 58 -52" stroke="url(#moh-gold)" stroke-width="1.15" stroke-linecap="round"/><g class="pop" style="--d:1s"><path transform="translate(60.77 50.62) rotate(-7.05)" d="M0 0C3.15 -3.36 7.35 -3.36 10.5 0C7.35 3.36 3.15 3.36 0 0Z" fill="url(#moh-gold)"/><path transform="translate(60.77 50.62) rotate(-7.05)" d="M1 0H8.5" stroke="#4F0E1F" stroke-width=".5"/></g><g class="pop" style="--d:1.1s"><path transform="translate(67.35 36.3) rotate(-123.2)" d="M0 0C2.97 -3.17 6.93 -3.17 9.9 0C6.93 3.17 2.97 3.17 0 0Z" fill="url(#moh-gold)"/><path transform="translate(67.35 36.3) rotate(-123.2)" d="M1 0H7.9" stroke="#4F0E1F" stroke-width=".5"/></g><g class="pop" style="--d:1.2s"><path transform="translate(71.2 20.12) rotate(-29.72)" d="M0 0C2.79 -2.98 6.51 -2.98 9.3 0C6.51 2.98 2.79 2.98 0 0Z" fill="url(#moh-gold)"/><path transform="translate(71.2 20.12) rotate(-29.72)" d="M1 0H7.3" stroke="#4F0E1F" stroke-width=".5"/></g><g class="pop" style="--d:1.3s"><path transform="translate(72.26 2.63) rotate(-143.16)" d="M0 0C2.61 -2.78 6.09 -2.78 8.7 0C6.09 2.78 2.61 2.78 0 0Z" fill="url(#moh-gold)"/><path transform="translate(72.26 2.63) rotate(-143.16)" d="M1 0H6.7" stroke="#4F0E1F" stroke-width=".5"/></g><g class="pop" style="--d:1.4s"><path transform="translate(70.45 -15.58) rotate(-48.04)" d="M0 0C2.43 -2.59 5.67 -2.59 8.1 0C5.67 2.59 2.43 2.59 0 0Z" fill="url(#moh-gold)"/><path transform="translate(70.45 -15.58) rotate(-48.04)" d="M1 0H6.1" stroke="#4F0E1F" stroke-width=".5"/></g><g class="pop" style="--d:1.5s"><path transform="translate(66.16 -32.67) rotate(-160.13)" d="M0 0C2.25 -2.4 5.25 -2.4 7.5 0C5.25 2.4 2.25 2.4 0 0Z" fill="url(#moh-gold)"/><path transform="translate(66.16 -32.67) rotate(-160.13)" d="M1 0H5.5" stroke="#4F0E1F" stroke-width=".5"/></g><g class="pop" style="--d:1.8s" fill="url(#moh-gold)"><path d="M58 -52c-2.4-3.4-1.6-7 0-9c1.6 2 2.4 5.6 0 9z" transform="rotate(-35 58 -52)"/></g><g class="pop" style="--d:1.9s" fill="url(#moh-gold)"><ellipse cx="50" cy="61.8" rx="2.3" ry="4.4" transform="rotate(0 50 66)"/><ellipse cx="50" cy="61.8" rx="2.3" ry="4.4" transform="rotate(72 50 66)"/><ellipse cx="50" cy="61.8" rx="2.3" ry="4.4" transform="rotate(144 50 66)"/><ellipse cx="50" cy="61.8" rx="2.3" ry="4.4" transform="rotate(216 50 66)"/><ellipse cx="50" cy="61.8" rx="2.3" ry="4.4" transform="rotate(288 50 66)"/><circle cx="50" cy="66" r="1.8" fill="#4F0E1F"/></g><g transform="translate(0 3) scale(.9) translate(-8 -14)"><text x="-12" y="26" text-anchor="middle" font-family="'Rozha One', 'Tiro Devanagari Hindi', serif" font-size="98" class="draw-text" style="--d:0.5s;--t:2.2s" fill="url(#moh-gold)" stroke="url(#moh-gold)" stroke-width=".8">श</text><text x="10" y="52" text-anchor="middle" font-family="'Great Vibes', cursive" font-size="104" class="fadein" style="--d:1.6s" fill="none" stroke="#4F0E1F" stroke-width="4.6" stroke-linejoin="round">S</text><text x="10" y="52" text-anchor="middle" font-family="'Great Vibes', cursive" font-size="104" class="draw-text" style="--d:0.9s;--t:2.2s" fill="url(#moh-gold)" stroke="url(#moh-gold)" stroke-width=".8">S</text></g></svg>
         <span class="glint" aria-hidden="true"></span>
@@ -613,8 +675,10 @@
 
   <main>
     <section class="page t-invite" id="invitation" aria-labelledby="inv-h">
+      <svg class="bg-mandala br" viewBox="-100 -100 200 200" aria-hidden="true"></svg>
+      <canvas class="amb" aria-hidden="true"></canvas>
       <div class="page-inner split">
-        <figure class="art invite-art reveal">
+        <figure data-play="peacock" tabindex="0" role="button" aria-label="Tap the peacock" data-hi-aria="मोर को छुएँ" class="art invite-art reveal">
           <svg class="ill" viewBox="0 0 400 500" role="img" aria-label="Animated drawing: a carved sandstone arch opening onto a sunrise over a lotus pond, with birds in flight and a peacock on the bank">
 <defs>
 <linearGradient id="iv-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F7D9C4"/><stop offset=".7" stop-color="#FCEEE2"/></linearGradient>
@@ -659,6 +723,7 @@
             <span class="script" data-hi="शाश्वत">Shashwat</span>
             <span class="numdate" data-hi="३० · ११ · २०२६">30 · 11 · 2026</span>
           </figcaption>
+          <span class="tap-hint" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0l1.8 6.2L16 8l-6.2 1.8L8 16l-1.8-6.2L0 8l6.2-1.8z" fill="currentColor"/></svg><span data-hi="मोर को छुएँ">Tap the peacock</span></span>
         </figure>
         <div class="invite-text-col reveal">
           <h2 id="inv-h" data-hi="निमंत्रण">Invitation</h2>
@@ -679,8 +744,10 @@
       data-title="Engagement · Shivanshi & Shashwat"
       data-place="The Bhutani Heritage, Vill. Jatholi, NH-58 Bypass, Delhi-Haridwar Rd, Kanker Khera, Meerut, Uttar Pradesh 250001"
       data-map="https://maps.app.goo.gl/DYucdS2oPKSbjW4UA">
+      <svg class="bg-mandala br" viewBox="-100 -100 200 200" aria-hidden="true"></svg>
+      <canvas class="amb" aria-hidden="true"></canvas>
       <div class="page-inner split">
-        <figure class="art event-art reveal"><svg class="ill" viewBox="0 0 400 500" role="img" aria-label="Animated drawing: two engagement rings with a diamond under an arch of roses, with candles glowing and petals drifting down">
+        <figure data-play="rings" tabindex="0" role="button" aria-label="Tap the rings" data-hi-aria="अंगूठियों को छुएँ" class="art event-art reveal"><svg class="ill" viewBox="0 0 400 500" role="img" aria-label="Animated drawing: two engagement rings with a diamond under an arch of roses, with candles glowing and petals drifting down">
 <defs>
 <radialGradient id="eg-bg" cx="50%" cy="56%" r="70%"><stop offset="0" stop-color="#FFF7F1"/><stop offset="1" stop-color="#F2D3D0"/></radialGradient>
 <radialGradient id="eg-fg"><stop offset="0" stop-color="#FFD98A" stop-opacity=".8"/><stop offset="1" stop-color="#FFD98A" stop-opacity="0"/></radialGradient>
@@ -735,7 +802,7 @@
 <g class="fadein" style="--d:2.6s"><g class="a-fall" style="--dur:13s;--ad:7.5s"><use href="#eg-petal" x="232" y="-14" width="12" height="8"/></g></g>
 <g class="fadein" style="--d:2.6s"><g class="a-fall" style="--dur:15s;--ad:2s"><use href="#eg-petal" x="300" y="-14" width="12" height="8"/></g></g>
 <g class="fadein" style="--d:2.6s"><g class="a-fall" style="--dur:17s;--ad:10s"><use href="#eg-petal" x="346" y="-14" width="12" height="8"/></g></g>
-</svg></figure>
+</svg><span class="tap-hint" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0l1.8 6.2L16 8l-6.2 1.8L8 16l-1.8-6.2L0 8l6.2-1.8z" fill="currentColor"/></svg><span data-hi="अंगूठियों को छुएँ">Tap the rings</span></span></figure>
         <div class="event-info reveal">
           <div class="day-top">
             <div class="dcol"><span class="dnum" data-hi="२८">28</span><span class="dmon" data-hi="नवंबर">Nov</span><span class="ddow" data-hi="शनिवार">Saturday</span></div>
@@ -755,8 +822,10 @@
       data-title="Mehendi & Sangeet · Shivanshi & Shashwat"
       data-place="NOVAH Rooftop, 3rd floor, opposite DMA School, Pallavpuram, Meerut, Uttar Pradesh 250110"
       data-map="https://maps.app.goo.gl/44NuDkuCya3pmmgX7">
+      <svg class="bg-mandala bl" viewBox="-100 -100 200 200" aria-hidden="true"></svg>
+      <canvas class="amb" aria-hidden="true"></canvas>
       <div class="page-inner split flip">
-        <figure class="art event-art reveal"><svg class="ill" viewBox="0 0 400 500" role="img" aria-label="Animated drawing: a hand being decorated with mehendi under swaying marigold garlands, with a dholak and music notes for the sangeet">
+        <figure data-play="dholak" tabindex="0" role="button" aria-label="Play the dholak" data-hi-aria="ढोलक बजाएँ" class="art event-art reveal"><svg class="ill" viewBox="0 0 400 500" role="img" aria-label="Animated drawing: a hand being decorated with mehendi under swaying marigold garlands, with a dholak and music notes for the sangeet">
 <defs>
 <radialGradient id="mh-bg" cx="50%" cy="48%" r="72%"><stop offset="0" stop-color="#2C5440"/><stop offset="1" stop-color="#17301F"/></radialGradient>
 <symbol id="mh-mari" viewBox="-8 -8 16 16" overflow="visible"><circle r="7" fill="#F29E2E"/><circle r="4.2" fill="#F7B53F"/><circle r="1.6" fill="#C9661A"/></symbol>
@@ -829,7 +898,7 @@
 <g class="fadein" style="--d:2.8s"><g class="a-rise" style="--dur:7.5s;--ad:2.4s"><use href="#mh-note" x="348" y="372" width="22" height="32"/></g></g>
 <g class="fadein" style="--d:2.8s"><g class="a-rise" style="--dur:6.5s;--ad:4.6s"><use href="#mh-note" x="364" y="378" width="22" height="32"/></g></g>
 <g class="fadein" style="--d:1.4s"><path d="M22 452C38 480 98 480 114 452Z" fill="#C99A3B" stroke="#F1D08A" stroke-width="1.2"/><use href="#mh-mari" x="34" y="440" width="16" height="16"/><use href="#mh-mari" x="56" y="436" width="16" height="16"/><use href="#mh-mari" x="80" y="440" width="16" height="16"/><path d="M100 446c6-8 14-8 16-4c-5 6-12 8-16 4z" fill="#5E8F4A"/></g>
-</svg></figure>
+</svg><span class="tap-hint" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0l1.8 6.2L16 8l-6.2 1.8L8 16l-1.8-6.2L0 8l6.2-1.8z" fill="currentColor"/></svg><span data-hi="ढोलक बजाएँ">Play the dholak</span></span></figure>
         <div class="event-info reveal">
           <div class="day-top">
             <div class="dcol"><span class="dnum" data-hi="२९">29</span><span class="dmon" data-hi="नवंबर">Nov</span><span class="ddow" data-hi="रविवार">Sunday</span></div>
@@ -849,8 +918,10 @@
       data-title="Wedding · Shivanshi weds Shashwat"
       data-place="Grand Rishala Resort, Khirwa Rd, Kanker Khera Bypass, Meerut, Uttar Pradesh 250001"
       data-map="https://maps.app.goo.gl/9JJ7yEkKCTfctee86">
+      <svg class="bg-mandala tr" viewBox="-100 -100 200 200" aria-hidden="true"></svg>
+      <canvas class="amb" aria-hidden="true"></canvas>
       <div class="page-inner split">
-        <figure class="art event-art wed-art reveal">
+        <figure data-play="fire" tabindex="0" role="button" aria-label="Tap the sacred fire" data-hi-aria="पवित्र अग्नि को छुएँ" class="art event-art wed-art reveal">
           <svg class="ill" viewBox="0 0 400 500" role="img" aria-label="Animated drawing: the sacred fire under a mandap arch with hanging lanterns and lotuses, as the couple circles it for the pheras">
 <defs>
 <linearGradient id="wd-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1B3462"/><stop offset="1" stop-color="#0D1C38"/></linearGradient>
@@ -910,6 +981,7 @@
             <span class="script" data-hi="शिवांशी संग शाश्वत">Shivanshi <span class="amp">&amp;</span> Shashwat</span>
             <span class="numdate" data-hi="३० · ११ · २०२६">30 · 11 · 2026</span>
           </figcaption>
+          <span class="tap-hint" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0l1.8 6.2L16 8l-6.2 1.8L8 16l-1.8-6.2L0 8l6.2-1.8z" fill="currentColor"/></svg><span data-hi="पवित्र अग्नि को छुएँ">Tap the sacred fire</span></span>
         </figure>
         <div class="event-info reveal">
           <div class="day-top">
@@ -929,12 +1001,14 @@
     </section>
 
     <section class="page t-rsvp" id="rsvp" aria-labelledby="rsvp-h">
+      <svg class="bg-mandala br" viewBox="-100 -100 200 200" aria-hidden="true"></svg>
+      <canvas class="amb" aria-hidden="true"></canvas>
       <div class="page-inner">
         <div class="rsvp-head reveal">
           <h2 id="rsvp-h" data-hi="कृपया उत्तर दें">R.S.V.P.</h2>
         </div>
         <div class="rsvp-layout reveal">
-          <figure class="art rsvp-art">
+          <figure data-play="rangoli" tabindex="0" role="button" aria-label="Tap the rangoli" data-hi-aria="रंगोली को छुएँ" class="art rsvp-art">
             <svg class="ill" viewBox="0 0 400 500" role="img" aria-label="Animated drawing: a rangoli of marigold and rose petals drawing itself, with four diyas glowing around it">
 <defs>
 <radialGradient id="rv-bg" cx="50%" cy="58%" r="70%"><stop offset="0" stop-color="#6E1A2E"/><stop offset="1" stop-color="#46091A"/></radialGradient>
@@ -1061,6 +1135,7 @@
 <g class="fadein" style="--d:1.2s"><g transform="translate(312 430)"><circle class="a-glow" style="--dur:3.3s" cy="-14" r="28" fill="url(#rv-glow)"/><path d="M-18 0C-16 12 16 12 18 0Z" fill="#C9773A" stroke="#F1D08A" stroke-width="1.2"/><ellipse rx="18" ry="3" fill="#8A4A22"/><path class="a-flicker" style="--dur:2.2s" d="M0-24C6-16 7-9 0-3C-7-9-6-16 0-24Z" fill="#F6B23C"/><path class="a-flicker" style="--dur:2.2s" d="M0-16C3-12 3-8 0-5C-3-8-3-12 0-16Z" fill="#FFF0B8"/></g></g>
 </svg>
             <figcaption class="ov"><span class="script" data-hi="आपकी प्रतीक्षा है">We await you</span></figcaption>
+            <span class="tap-hint" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0l1.8 6.2L16 8l-6.2 1.8L8 16l-1.8-6.2L0 8l6.2-1.8z" fill="currentColor"/></svg><span data-hi="रंगोली को छुएँ">Tap the rangoli</span></span>
           </figure>
           <div class="rsvp-main">
             <div class="rsvp-contact">
@@ -1323,8 +1398,10 @@
   var gate = document.getElementById("gate");
   var page = document.getElementById("page");
   var autoOpen, langSwap;
-  function openGate() {
+  function openGate(byUser) {
     if (gate.classList.contains("opening")) return;
+    // Opening the doors by hand is the tap that lets the music start; opening by itself just offers it
+    if (byUser) soundFromGesture(); else nudgeSound();
     var hadFocus = document.activeElement === gate;
     clearTimeout(autoOpen); clearTimeout(langSwap);
     gate.classList.add("opening");
@@ -1346,11 +1423,11 @@
       var gc = document.querySelector(".gate-center");
       if (gc) gc.dataset.show = lang === "hi" ? "en" : "hi";
     }, 3200);
-    autoOpen = setTimeout(openGate, 5400);
+    autoOpen = setTimeout(function () { openGate(false); }, 5400);
   }
   gate.addEventListener("click", openGate);
   gate.addEventListener("keydown", function (e) {
-    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openGate(); }
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openGate(true); }
   });
   if (root.classList.contains("has-gate")) startGate();
 
@@ -1577,6 +1654,437 @@
     ills.forEach(function (svg) { io.observe(svg); });
   }
 
+  // =====================================================================
+  // ---- Music: original pieces synthesised in the browser, one per page ----
+  // Each page has its own raga, instruments and tempo. Pieces crossfade as the
+  // guest moves between pages. Sound only starts after a tap (browser rule).
+  // =====================================================================
+  var Music = (function () {
+    var ctx = null, master, bus, gains = {}, current = null, nextBar = 0, barIdx = 0, timer = 0, on = false;
+    var ROOT = 146.83; // D3: Sa
+    function hz(semi, oct) { return ROOT * Math.pow(2, (semi + 12 * (oct || 0)) / 12); }
+    function noise(c) {
+      if (c._nb) return c._nb;
+      var b = c.createBuffer(1, c.sampleRate, c.sampleRate), d = b.getChannelData(0);
+      for (var i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+      return (c._nb = b);
+    }
+    function noiseHit(c, out, t, type, freq, q, peak, dec) {
+      var s = c.createBufferSource(); s.buffer = noise(c);
+      var f = c.createBiquadFilter(); f.type = type; f.frequency.value = freq; f.Q.value = q;
+      var g = c.createGain(); g.gain.setValueAtTime(peak, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dec);
+      s.connect(f); f.connect(g); g.connect(out); s.start(t); s.stop(t + dec + 0.05);
+    }
+    function tone(c, out, t, type, f0, f1, glide, peak, attack, dec) {
+      var o = c.createOscillator(); o.type = type;
+      o.frequency.setValueAtTime(f0, t); if (f1 !== f0) o.frequency.exponentialRampToValueAtTime(f1, t + glide);
+      var g = c.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + attack); g.gain.exponentialRampToValueAtTime(0.0001, t + dec);
+      o.connect(g); g.connect(out); o.start(t); o.stop(t + dec + 0.05);
+    }
+
+    // ---- Instruments ----
+    function santoor(c, out, t, f, dur, v) {           // struck strings: bright, quick bloom, long ring
+      [1, 2, 3.01, 4.2].forEach(function (r, i) {
+        tone(c, out, t, "sine", f * r, f * r, 0, [1, .45, .2, .09][i] * v, 0.004, 1.9 / (1 + i * .7));
+      });
+      tone(c, out, t + 0.011, "sine", f * 1.002, f * 1.002, 0, .35 * v, 0.004, 1.2);   // second hammer
+    }
+    function shehnai(c, out, t, f, dur, v, from) {     // double-reed: nasal, with meend (glide) and vibrato
+      var o1 = c.createOscillator(), o2 = c.createOscillator(), g2 = c.createGain(); o1.type = "sawtooth"; o2.type = "square"; g2.gain.value = .3;
+      var s = from || f;
+      [o1, o2].forEach(function (o) { o.frequency.setValueAtTime(s, t); o.frequency.exponentialRampToValueAtTime(f, t + 0.08); });
+      var l = c.createOscillator(), lg = c.createGain(); l.frequency.value = 5.3;
+      lg.gain.setValueAtTime(0, t); lg.gain.linearRampToValueAtTime(f * 0.008, t + Math.min(dur * .7, .55));
+      l.connect(lg); lg.connect(o1.frequency); lg.connect(o2.frequency);
+      var bp = c.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = 1450; bp.Q.value = .8;
+      var lp = c.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 4200;
+      var g = c.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(v, t + 0.07);
+      g.gain.setValueAtTime(v, Math.max(t + 0.08, t + dur - 0.06)); g.gain.exponentialRampToValueAtTime(0.0001, t + dur + 0.14);
+      o1.connect(bp); o2.connect(g2); g2.connect(bp); bp.connect(lp); lp.connect(g); g.connect(out);
+      [o1, o2, l].forEach(function (o) { o.start(t); o.stop(t + dur + 0.2); });
+    }
+    function flute(c, out, t, f, dur, v, from) {       // bansuri: breathy, soft vibrato
+      var o = c.createOscillator(), o2 = c.createOscillator(), g2 = c.createGain(); o.type = "sine"; o2.type = "triangle"; g2.gain.value = .18;
+      var s = from || f;
+      [o, o2].forEach(function (x) { x.frequency.setValueAtTime(s, t); x.frequency.exponentialRampToValueAtTime(f, t + 0.06); });
+      var l = c.createOscillator(), lg = c.createGain(); l.frequency.value = 4.8;
+      lg.gain.setValueAtTime(0, t); lg.gain.linearRampToValueAtTime(f * 0.006, t + Math.min(dur * .8, .6));
+      l.connect(lg); lg.connect(o.frequency); lg.connect(o2.frequency);
+      var g = c.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(v, t + 0.08);
+      g.gain.setValueAtTime(v * .9, Math.max(t + 0.09, t + dur - 0.05)); g.gain.exponentialRampToValueAtTime(0.0001, t + dur + 0.18);
+      o.connect(g); o2.connect(g2); g2.connect(g); g.connect(out);
+      [o, o2, l].forEach(function (x) { x.start(t); x.stop(t + dur + 0.25); });
+      var s2 = c.createBufferSource(); s2.buffer = noise(c);
+      var bp = c.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = f * 2; bp.Q.value = .9;
+      var ng = c.createGain(); ng.gain.setValueAtTime(0.0001, t); ng.gain.exponentialRampToValueAtTime(v * .16, t + 0.05); ng.gain.exponentialRampToValueAtTime(0.0001, t + Math.min(dur, .5));
+      s2.connect(bp); bp.connect(ng); ng.connect(out); s2.start(t); s2.stop(t + dur + 0.1);
+    }
+    function tanpura(c, out, t, f, v) {                // drone pluck with a buzzing, slowly closing filter
+      [1, 1.0025].forEach(function (d) {
+        var o = c.createOscillator(); o.type = "sawtooth"; o.frequency.value = f * d;
+        var lp = c.createBiquadFilter(); lp.type = "lowpass"; lp.Q.value = 3;
+        lp.frequency.setValueAtTime(2600, t); lp.frequency.exponentialRampToValueAtTime(520, t + 2.6);
+        var g = c.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(v, t + 0.015); g.gain.exponentialRampToValueAtTime(0.0001, t + 3.4);
+        o.connect(lp); lp.connect(g); g.connect(out); o.start(t); o.stop(t + 3.5);
+      });
+    }
+    var DRUM = {
+      dha: function (c, o, t, v) { tone(c, o, t, "sine", 120, 62, .18, .9 * v, .003, .42); tone(c, o, t, "sine", 410, 395, .1, .35 * v, .002, .16); noiseHit(c, o, t, "bandpass", 1800, 1, .25 * v, .05); },
+      ge:  function (c, o, t, v) { tone(c, o, t, "sine", 92, 55, .22, .8 * v, .003, .38); },
+      na:  function (c, o, t, v) { tone(c, o, t, "sine", 420, 402, .1, .45 * v, .002, .15); noiseHit(c, o, t, "bandpass", 3000, 1.2, .3 * v, .05); },
+      tin: function (c, o, t, v) { tone(c, o, t, "sine", 610, 600, .05, .22 * v, .002, .08); noiseHit(c, o, t, "bandpass", 4200, 1.5, .22 * v, .04); }
+    };
+    function manjira(c, o, t, v) { tone(c, o, t, "sine", 2690, 2690, 0, .07 * v, .002, .7); tone(c, o, t, "sine", 4040, 4040, 0, .05 * v, .002, .5); noiseHit(c, o, t, "highpass", 7000, .7, .06 * v, .04); }
+    function bell(c, o, t, f, v) { [1, 2.76, 5.4, 8.93].forEach(function (r, i) { tone(c, o, t, "sine", f * r, f * r, 0, [.5, .25, .12, .06][i] * v, .003, [4, 2.6, 1.4, .8][i]); }); }
+
+    function melody(c, out, t0, beat, phrase, instr, oct, v) {
+      var t = t0, prev = null;
+      phrase.forEach(function (n) {
+        if (n[0] !== null) { var f = hz(n[0], oct); instr(c, out, t, f, n[1] * beat * .96, v, prev); prev = f; }
+        t += n[1] * beat;
+      });
+    }
+    var KEHERWA = ["dha", "ge", "na", "tin", "na", "tin", "dha", "na"];
+    function keherwa(c, out, t0, beat, v) {
+      KEHERWA.forEach(function (b, k) { DRUM[b](c, out, t0 + k * beat / 2, (k === 0 || k === 6 ? 1 : .7) * v); });
+    }
+
+    // ---- Pieces (phrases are [semitones above Sa, beats]; null = rest) ----
+    var YAMAN_A = [[[-1, .5], [2, .5], [4, 1], [2, .5], [4, .5], [6, 1]], [[7, 1.5], [6, .5], [4, 1], [2, 1]],
+                   [[4, .5], [6, .5], [9, 1], [11, .5], [12, 1.5]], [[12, 1], [11, .5], [9, .5], [7, 1], [6, .5], [4, .5]],
+                   [[-1, .5], [2, .5], [4, 1], [2, .5], [4, .5], [6, 1]], [[7, 1.5], [6, .5], [4, 1], [2, 1]], [[2, 1], [0, 3]], [[null, 4]]];
+    var YAMAN_W = [[[0, 1], [2, .5], [4, .5], [6, 1], [7, 1]], [[9, 1.5], [7, .5], [6, 1], [4, 1]],
+                   [[7, .5], [9, .5], [11, 1], [12, 2]], [[11, .5], [9, .5], [7, 1], [6, .5], [4, .5], [2, 1]], [[4, 1], [2, 1], [0, 2]], [[null, 4]]];
+    var BHUPALI_ARP = [[0, 4, 7, 12, 9, 7, 4, 2], [2, 7, 9, 14, 12, 9, 7, 4], [4, 9, 12, 16, 14, 12, 9, 7], [7, 4, 2, 0, 2, 4, 7, null]];
+    var KHAMAJ = [[[4, 1], [5, .5], [7, .5], [9, 2]], [[10, .5], [9, .5], [7, 1], [5, .5], [4, 1.5]], [[2, .5], [4, .5], [5, 1], [4, .5], [2, .5], [0, 1]], [[0, 1], [4, 1], [7, 2]]];
+    var FOLK = [[[7, .5], [9, .5], [12, 1], [9, .5], [7, .5], [4, 1]], [[4, .5], [7, .5], [9, .5], [7, .5], [4, 1], [2, 1]],
+                [[0, .5], [2, .5], [4, .5], [7, .5], [9, 1], [7, 1]], [[null, 4]]];
+    var BHAIRAVI = [[[7, 1], [8, .5], [7, .5], [5, 1], [3, 1]], [[3, .5], [5, .5], [7, 1], [8, 1], [10, 1]], [[12, 1.5], [10, .5], [8, 1], [7, 1]], [[5, .5], [3, .5], [1, 1], [0, 2]]];
+    var PIECES = {
+      top:        { tempo: 66,  drone: .055, bar: function (c, o, t, i, b) { melody(c, o, t, b, YAMAN_A[i % YAMAN_A.length], shehnai, 1, .5); if (i % 8 === 0) bell(c, o, t, hz(12, 1), .5); } },
+      invitation: { tempo: 84,  drone: .05,  bar: function (c, o, t, i, b) { BHUPALI_ARP[i % 4].forEach(function (s, k) { if (s !== null) santoor(c, o, t + k * b / 2, hz(s, 1), b, k % 2 ? .22 : .34); }); } },
+      "day-28":   { tempo: 70,  drone: .05,  bar: function (c, o, t, i, b) { melody(c, o, t, b, KHAMAJ[i % 4], flute, 1, .3); [0, 7, 12, 7].forEach(function (s, k) { santoor(c, o, t + k * b, hz(s, 0), b, .16); }); } },
+      "day-29":   { tempo: 104, drone: 0,    bar: function (c, o, t, i, b) {
+                      keherwa(c, o, t, b, .55);
+                      for (var k = 0; k < 8; k++) manjira(c, o, t + k * b / 2, k % 4 === 0 ? 1 : .35);
+                      melody(c, o, t, b, FOLK[i % 4], flute, 1, .3);
+                      [1, 3].forEach(function (k) { santoor(c, o, t + k * b, hz(k === 1 ? 7 : 0, 0), b, .12); });
+                    } },
+      "day-30":   { tempo: 58,  drone: .06,  bar: function (c, o, t, i, b) { melody(c, o, t, b, YAMAN_W[i % YAMAN_W.length], shehnai, 1, .5); if (i >= 2) keherwa(c, o, t, b, .3); if (i % 4 === 0) { bell(c, o, t, hz(12, 1), .45); bell(c, o, t + 2 * b, hz(19, 1), .25); } } },
+      rsvp:       { tempo: 60,  drone: .05,  bar: function (c, o, t, i, b) { melody(c, o, t, b, BHAIRAVI[i % 4], flute, 1, .3); santoor(c, o, t, hz(0, 0), b, .14); } }
+    };
+    function droneBar(c, o, t, barDur, v) {      // Pa, Sa, Sa, low Sa
+      [[7, -1], [0, 0], [0, 0], [0, -1]].forEach(function (n, k) { tanpura(c, o, t + k * barDur / 4, hz(n[0], n[1]), v); });
+    }
+    function scheduleBar(c, out, id, t, i) {
+      var p = PIECES[id], beat = 60 / p.tempo;
+      p.bar(c, out, t, i, beat);
+      if (p.drone) droneBar(c, out, t, beat * 4, p.drone);
+      return beat * 4;
+    }
+
+    function init() {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return false;
+      ctx = new AC();
+      var comp = ctx.createDynamicsCompressor(); comp.threshold.value = -16; comp.ratio.value = 3;
+      master = ctx.createGain(); master.gain.value = 0;
+      bus = ctx.createGain();
+      var verb = ctx.createConvolver(), len = Math.floor(ctx.sampleRate * 2.4), ir = ctx.createBuffer(2, len, ctx.sampleRate);
+      for (var ch = 0; ch < 2; ch++) { var d = ir.getChannelData(ch); for (var i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.6); }
+      verb.buffer = ir;
+      var wet = ctx.createGain(); wet.gain.value = .3;
+      bus.connect(master); bus.connect(verb); verb.connect(wet); wet.connect(master);
+      master.connect(comp); comp.connect(ctx.destination);
+      Object.keys(PIECES).forEach(function (id) { var g = ctx.createGain(); g.gain.value = 0; g.connect(bus); gains[id] = g; });
+      document.addEventListener("visibilitychange", function () {
+        if (!ctx) return;
+        if (document.hidden) ctx.suspend(); else if (on) ctx.resume();
+      });
+      return true;
+    }
+    function tick() {
+      if (!on || !current) return;
+      while (nextBar < ctx.currentTime + 0.35) { nextBar += scheduleBar(ctx, gains[current], current, nextBar, barIdx); barIdx++; }
+    }
+    function fadeTo(id) {
+      var t = ctx.currentTime;
+      Object.keys(gains).forEach(function (k) {
+        var g = gains[k].gain; g.cancelScheduledValues(t); g.setValueAtTime(g.value, t);
+        g.linearRampToValueAtTime(k === id ? 1 : 0, t + 1.4);
+      });
+    }
+    return {
+      PIECES: PIECES, scheduleBar: scheduleBar,
+      get on() { return on; },
+      setTheme: function (id) {
+        if (!PIECES[id] || id === current) return;
+        current = id; barIdx = 0;
+        if (ctx && on) { fadeTo(id); nextBar = ctx.currentTime + 0.1; }
+      },
+      enable: function () {
+        if (!ctx && !init()) return;
+        ctx.resume(); on = true;
+        var t = ctx.currentTime; master.gain.cancelScheduledValues(t); master.gain.setValueAtTime(master.gain.value, t); master.gain.linearRampToValueAtTime(.85, t + 1.2);
+        if (current) { fadeTo(current); nextBar = t + 0.1; }
+        clearInterval(timer); timer = setInterval(tick, 60);
+      },
+      disable: function () {
+        on = false;
+        if (!ctx) return;
+        var t = ctx.currentTime; master.gain.cancelScheduledValues(t); master.gain.setValueAtTime(master.gain.value, t); master.gain.linearRampToValueAtTime(0, t + .4);
+        setTimeout(function () { if (!on) { clearInterval(timer); ctx.suspend(); } }, 500);
+      },
+      sfx: function (name) {
+        if (!on || !ctx) return;
+        var c = ctx, o = bus, t = c.currentTime + 0.01;
+        if (name === "rings") { bell(c, o, t, 1760, .35); bell(c, o, t + .09, 2349, .28); [12, 16, 19, 24].forEach(function (s, k) { santoor(c, o, t + .25 + k * .09, hz(s, 1), .3, .2); }); }
+        else if (name === "dholak") { var b = .14; ["dha", "na", "tin", "na", "dha", "dha", "na", "dha"].forEach(function (d, k) { DRUM[d](c, o, t + k * b, 1); }); manjira(c, o, t, 1); manjira(c, o, t + 4 * b, 1); }
+        else if (name === "fire") { noiseHit(c, o, t, "bandpass", 600, .6, .5, .9); bell(c, o, t + .1, hz(12, 1), .5); bell(c, o, t + .5, hz(19, 1), .3); }
+        else if (name === "peacock") { [0, 2, 4, 7, 9, 12, 14].forEach(function (s, k) { santoor(c, o, t + k * .07, hz(s, 2), .3, .2); }); }
+        else if (name === "rangoli") { [12, 9, 7, 4, 2, 0].forEach(function (s, k) { santoor(c, o, t + k * .08, hz(s, 2), .3, .2); }); }
+        else if (name === "seal") { bell(c, o, t, hz(12, 1), .6); bell(c, o, t + .02, hz(19, 1), .3); }
+      }
+    };
+  })();
+
+  window.ssMusic = Music; // lets the pieces be rendered offline for checking
+
+  // ---- Sound button ----
+  var soundBtn = document.querySelector(".music-btn");
+  function soundPref() { try { return localStorage.getItem("ss-sound"); } catch (x) { return null; } }
+  function setSound(onNow, remember) {
+    if (onNow) Music.enable(); else Music.disable();
+    soundBtn.setAttribute("aria-pressed", String(onNow));
+    soundBtn.classList.remove("nudge");
+    if (remember) { try { localStorage.setItem("ss-sound", onNow ? "on" : "off"); } catch (x) {} }
+  }
+  soundBtn.addEventListener("click", function () { setSound(!Music.on, true); });
+  // A deliberate tap (the doors, a drawing) starts the music unless the guest switched it off before
+  function soundFromGesture() { if (!Music.on && soundPref() !== "off") setSound(true, false); }
+  function nudgeSound() { if (!Music.on && soundPref() !== "off") soundBtn.classList.add("nudge"); }
+
+  // =====================================================================
+  // ---- Ambient motion: each page has its own living backdrop ----
+  // One canvas per page; only the page on screen animates. Taps on empty space
+  // send up that page's particles; on the Mehendi page the mouse paints henna.
+  // =====================================================================
+  var Amb = (function () {
+    var PAL = {
+      marigold: ["#E8890C", "#F29E2E", "#F6B23C", "#FFC94D", "#C8264B", "#D94468"],
+      rose: ["#C24D68", "#D9667F", "#B5536A", "#E07A93", "#A8344F"],
+      peach: ["#F3B9A0", "#EFA58C", "#F6D2B8", "#E58BAA", "#F9E0C8"],
+      gold: ["#F3D58A", "#E8C06A", "#FFE6A8"],
+      confetti: ["#F4A53A", "#F49AB9", "#E9C46A", "#9BC46B", "#F06292", "#FFD27A"]
+    };
+    var CONF = {
+      top:        { emit: [["petal", .9, 18, "marigold"], ["mote", 2.4, 36, "gold"]], tap: [["petal", 14, "marigold"], ["mote", 10, "gold"]] },
+      invitation: { emit: [["petal", .9, 18, "peach"], ["mote", 1.6, 28, "gold"], ["flock", .14, 1, null]], tap: [["petal", 12, "peach"], ["flock", 1, null]] },
+      "day-28":   { emit: [["petal", 1.6, 30, "rose"], ["bokeh", .8, 14, "gold"], ["heart", .6, 10, "rose"]], tap: [["heart", 12, "rose"], ["petal", 10, "rose"]] },
+      "day-29":   { emit: [["confetti", 2.4, 44, "confetti"], ["note", 1.1, 14, "gold"], ["petal", .9, 14, "marigold"]], tap: [["confetti", 18, "confetti"], ["note", 6, "gold"]] },
+      "day-30":   { emit: [["ember", 7, 80, null], ["lantern", .3, 9, null]], stars: 80, tap: [["ember", 26, null], ["lantern", 1, null]] },
+      rsvp:       { emit: [["bokeh", .8, 12, "gold"], ["petal", 1.1, 20, "marigold"], ["mote", 1.8, 30, "gold"]], tap: [["petal", 14, "marigold"], ["mote", 10, "gold"]] }
+    };
+    var scenes = {}, active = null, raf = 0, last = 0;
+    function rnd(a, b) { return a + Math.random() * (b - a); }
+    function pick(arr) { return arr[(Math.random() * arr.length) | 0]; }
+
+    function make(sc, kind, pal, x, y, burst) {
+      var W = sc.W, H = sc.H, p = { kind: kind, age: 0, phase: rnd(0, 6.28) };
+      var col = pal ? pick(PAL[pal]) : null;
+      if (kind === "petal" || kind === "confetti") {
+        p.x = x != null ? x : rnd(0, W); p.y = y != null ? y : -20;
+        p.vx = rnd(-12, 12); p.vy = kind === "confetti" ? rnd(45, 90) : rnd(28, 62);
+        p.sway = rnd(10, 30); p.ss = rnd(.7, 1.8); p.rot = rnd(0, 6.28); p.vr = rnd(-2, 2) * (kind === "confetti" ? 2.4 : 1);
+        p.flip = rnd(0, 6.28); p.vf = rnd(2, 4.5); p.w = kind === "confetti" ? rnd(3, 5) : rnd(4, 7.5); p.h = kind === "confetti" ? rnd(7, 11) : rnd(7, 12);
+        p.col = col; p.life = 40;
+      } else if (kind === "mote") {
+        p.x = x != null ? x : rnd(0, W); p.y = y != null ? y : H + 10; p.vx = rnd(-4, 4); p.vy = rnd(-24, -8);
+        p.r = rnd(.9, 2.2); p.col = col; p.life = rnd(7, 13); p.sway = rnd(4, 12); p.ss = rnd(.4, 1);
+      } else if (kind === "bokeh") {
+        p.x = x != null ? x : rnd(0, W); p.y = y != null ? y : rnd(0, H); p.vx = rnd(-6, 6); p.vy = rnd(-8, 4);
+        p.r = rnd(18, 48); p.col = col; p.life = rnd(6, 11); p.peak = rnd(.12, .26);
+      } else if (kind === "heart") {
+        p.x = x != null ? x : rnd(0, W); p.y = y != null ? y : H + 12; p.vx = rnd(-6, 6); p.vy = rnd(-38, -20);
+        p.s = rnd(5, 9); p.col = col; p.life = rnd(7, 12); p.sway = rnd(8, 20); p.ss = rnd(.8, 1.6);
+      } else if (kind === "note") {
+        p.x = x != null ? x : rnd(W * .08, W * .92); p.y = y != null ? y : H + 14; p.vx = rnd(-8, 8); p.vy = rnd(-42, -24);
+        p.s = rnd(9, 14); p.col = Math.random() < .5 ? "#E9C46A" : "#F49AB9"; p.life = rnd(7, 11); p.sway = rnd(10, 22); p.ss = rnd(.8, 1.5); p.rot = rnd(-.3, .3);
+      } else if (kind === "ember") {
+        p.x = x != null ? x : rnd(W * .15, W * .85); p.y = y != null ? y : H + 6; p.vx = rnd(-8, 8); p.vy = rnd(-95, -40);
+        p.r = rnd(.9, 2.4); p.life = rnd(2.6, 5.5); p.sway = rnd(6, 18); p.ss = rnd(1, 2.4);
+      } else if (kind === "lantern") {
+        p.x = x != null ? x : rnd(W * .06, W * .94); p.y = y != null ? y : H + 40; p.vx = rnd(-4, 4); p.vy = rnd(-24, -12);
+        p.s = rnd(13, 22); p.life = 80; p.sway = rnd(6, 14); p.ss = rnd(.3, .7);
+      } else if (kind === "bird") {
+        p.x = x; p.y = y; p.vx = burst; p.vy = rnd(-4, 4); p.s = rnd(7, 11); p.life = 60; p.flap = rnd(5, 8);
+      } else if (kind === "henna") {
+        p.x = x; p.y = y; p.vx = 0; p.vy = 0; p.r = rnd(1.6, 2.8); p.life = 2.6; p.col = pick(["#E9C46A", "#F4A53A", "#F6EBCB"]);
+      }
+      if (burst && kind !== "bird") { var a = rnd(0, 6.28), sp = rnd(60, 190); p.vx = Math.cos(a) * sp; p.vy = Math.sin(a) * sp - 40; p.burst = true; }
+      sc.parts.push(p);
+      return p;
+    }
+    function flock(sc, x, y) {
+      var dir = Math.random() < .5 ? 1 : -1, sx = x != null ? x : (dir > 0 ? -40 : sc.W + 40), sy = y != null ? y : rnd(sc.H * .12, sc.H * .42);
+      var v = rnd(45, 75) * dir;
+      [[0, 0], [-22, -10], [-22, 12], [-44, -20], [-44, 22]].forEach(function (o) { make(sc, "bird", null, sx + o[0] * dir, sy + o[1], v * rnd(.95, 1.05)); });
+    }
+
+    function draw(ctx, p, t) {
+      var life = p.age / p.life, fade = Math.min(1, p.age / .6) * Math.min(1, (p.life - p.age) / 1.2);
+      ctx.save();
+      if (p.kind === "petal" || p.kind === "confetti") {
+        ctx.translate(p.x, p.y); ctx.rotate(p.rot); ctx.scale(1, Math.max(.15, Math.abs(Math.cos(p.flip))));
+        ctx.globalAlpha = .9 * fade; ctx.fillStyle = p.col;
+        if (p.kind === "confetti") ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        else { ctx.beginPath(); ctx.ellipse(0, 0, p.w, p.h, 0, 0, 6.283); ctx.fill(); ctx.globalAlpha = .22 * fade; ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.ellipse(-p.w * .3, -p.h * .2, p.w * .35, p.h * .5, 0, 0, 6.283); ctx.fill(); }
+      } else if (p.kind === "mote") {
+        ctx.globalAlpha = fade * (.45 + .45 * Math.sin(t * 3 + p.phase)); ctx.fillStyle = p.col;
+        ctx.shadowColor = p.col; ctx.shadowBlur = 8; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283); ctx.fill();
+      } else if (p.kind === "bokeh") {
+        var g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
+        g.addColorStop(0, p.col); g.addColorStop(1, "rgba(255,255,255,0)");
+        ctx.globalAlpha = p.peak * Math.sin(Math.PI * Math.min(1, life)); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283); ctx.fill();
+      } else if (p.kind === "heart") {
+        var s = p.s; ctx.translate(p.x, p.y); ctx.globalAlpha = .85 * fade; ctx.fillStyle = p.col; ctx.beginPath();
+        ctx.moveTo(0, s * .35); ctx.bezierCurveTo(-s * 1.1, -s * .4, -s * .45, -s * 1.1, 0, -s * .45); ctx.bezierCurveTo(s * .45, -s * 1.1, s * 1.1, -s * .4, 0, s * .35); ctx.fill();
+      } else if (p.kind === "note") {
+        var n = p.s; ctx.translate(p.x, p.y); ctx.rotate(p.rot); ctx.globalAlpha = .9 * fade; ctx.fillStyle = p.col; ctx.strokeStyle = p.col; ctx.lineWidth = n * .12;
+        ctx.beginPath(); ctx.ellipse(0, 0, n * .42, n * .3, -.35, 0, 6.283); ctx.fill();
+        ctx.beginPath(); ctx.moveTo(n * .38, -n * .1); ctx.lineTo(n * .38, -n * 1.5); ctx.quadraticCurveTo(n * .95, -n * 1.2, n * .85, -n * .7); ctx.stroke();
+      } else if (p.kind === "ember") {
+        ctx.globalAlpha = fade * (1 - life * .6); var hue = 30 + life * 20;
+        ctx.fillStyle = "hsl(" + hue + ",100%," + (62 + life * 15) + "%)"; ctx.shadowColor = "#FF9A3C"; ctx.shadowBlur = 10;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283); ctx.fill();
+      } else if (p.kind === "lantern") {
+        var L = p.s, fl = .85 + .15 * Math.sin(t * 6 + p.phase);
+        ctx.translate(p.x, p.y); ctx.globalAlpha = Math.min(1, p.age / 2) * Math.min(1, Math.max(0, (p.y + 20) / 120));
+        var lg = ctx.createRadialGradient(0, 0, 0, 0, 0, L * 2.4); lg.addColorStop(0, "rgba(255,190,90," + (.35 * fl) + ")"); lg.addColorStop(1, "rgba(255,190,90,0)");
+        ctx.fillStyle = lg; ctx.beginPath(); ctx.arc(0, 0, L * 2.4, 0, 6.283); ctx.fill();
+        ctx.fillStyle = "rgba(246,170,70," + (.92 * fl) + ")"; ctx.beginPath();
+        ctx.moveTo(-L * .55, -L * .7); ctx.lineTo(L * .55, -L * .7); ctx.lineTo(L * .4, L * .6); ctx.quadraticCurveTo(0, L * .75, -L * .4, L * .6); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = "rgba(255,236,170," + (.9 * fl) + ")"; ctx.beginPath(); ctx.ellipse(0, L * .45, L * .22, L * .12, 0, 0, 6.283); ctx.fill();
+      } else if (p.kind === "bird") {
+        var wing = Math.sin(t * p.flap + p.phase) * p.s * .55, dir = p.vx > 0 ? 1 : -1;
+        ctx.translate(p.x, p.y); ctx.scale(dir, 1); ctx.globalAlpha = Math.min(1, p.age); ctx.strokeStyle = "#6E3A44"; ctx.lineWidth = 1.6; ctx.lineCap = "round";
+        ctx.beginPath(); ctx.moveTo(-p.s, -wing); ctx.quadraticCurveTo(-p.s * .4, -wing * .2 - 2, 0, 0); ctx.quadraticCurveTo(p.s * .4, -wing * .2 - 2, p.s, -wing); ctx.stroke();
+      } else if (p.kind === "henna") {
+        ctx.globalAlpha = 1 - life; ctx.fillStyle = p.col; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283); ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    function step(sc, dt, t, quiet) {
+      var conf = CONF[sc.id];
+      conf.emit.forEach(function (e) {
+        var kind = e[0], rate = e[1], max = e[2], pal = e[3];
+        sc.acc[kind] = (sc.acc[kind] || 0) + rate * dt;
+        var count = 0; for (var i = 0; i < sc.parts.length; i++) if (sc.parts[i].kind === (kind === "flock" ? "bird" : kind)) count++;
+        while (sc.acc[kind] >= 1) {
+          sc.acc[kind] -= 1;
+          if (kind === "flock") { if (count === 0) flock(sc); }
+          else if (count < max) { make(sc, kind, pal); count++; }
+        }
+      });
+      var ctx = sc.ctx; if (!quiet) ctx.clearRect(0, 0, sc.W, sc.H);
+      if (sc.stars && !quiet) sc.stars.forEach(function (s) {
+        ctx.globalAlpha = .25 + .55 * (0.5 + 0.5 * Math.sin(t * s.sp + s.ph)); ctx.fillStyle = "#F8E3A8";
+        ctx.beginPath(); ctx.arc(s.x * sc.W, s.y * sc.H, s.r, 0, 6.283); ctx.fill();
+      });
+      ctx.globalAlpha = 1;
+      sc.parts = sc.parts.filter(function (p) {
+        p.age += dt;
+        if (p.burst) { p.vx *= Math.pow(.25, dt); p.vy = p.vy * Math.pow(.25, dt) + (p.kind === "petal" || p.kind === "confetti" ? 50 : -20) * dt; if (p.age > 1.2) p.burst = false; }
+        p.x += (p.vx + (p.sway ? Math.cos(t * p.ss + p.phase) * p.sway : 0)) * dt;
+        p.y += p.vy * dt;
+        if (p.rot != null && p.vr) p.rot += p.vr * dt;
+        if (p.flip != null) p.flip += p.vf * dt;
+        var out = p.y > sc.H + 40 || p.y < -80 || p.x < -90 || p.x > sc.W + 90 || p.age > p.life;
+        if (!out && !quiet) draw(ctx, p, t);
+        return !out;
+      });
+    }
+    function loop(now) {
+      raf = 0;
+      if (!active || document.hidden) return;
+      var dt = Math.min(.05, (now - last) / 1000 || .016); last = now;
+      step(scenes[active], dt, now / 1000);
+      raf = requestAnimationFrame(loop);
+    }
+    function resize(sc) {
+      var r = sc.canvas.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2);
+      sc.W = r.width; sc.H = r.height; sc.canvas.width = Math.round(r.width * dpr); sc.canvas.height = Math.round(r.height * dpr);
+      sc.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    function local(sc, clientX, clientY) { var r = sc.canvas.getBoundingClientRect(); return [clientX - r.left, clientY - r.top]; }
+    function burstAt(id, x, y, list) {
+      var sc = scenes[id]; if (!sc) return;
+      (list || CONF[id].tap).forEach(function (e) {
+        if (e[0] === "flock") flock(sc, x - 30, y);
+        else for (var k = 0; k < e[1]; k++) make(sc, e[0], e[2], x, y, true);
+      });
+    }
+    function setup() {
+      if (reduceMotion) return;
+      document.querySelectorAll(".page").forEach(function (sec) {
+        var cv = sec.querySelector(".amb"); if (!cv || !CONF[sec.id]) return;
+        var sc = { id: sec.id, canvas: cv, ctx: cv.getContext("2d"), parts: [], acc: {}, W: 0, H: 0 };
+        if (CONF[sec.id].stars) { sc.stars = []; for (var i = 0; i < CONF[sec.id].stars; i++) sc.stars.push({ x: Math.random(), y: Math.random() * .75, r: rnd(.5, 1.5), sp: rnd(.6, 2), ph: rnd(0, 6.28) }); }
+        resize(sc); scenes[sec.id] = sc;
+        sec.addEventListener("pointerdown", function (e) {
+          if (e.target.closest("a, button, input, textarea, label, summary, select, details, .art, .seal-wrap, .controls, .pager, form")) return;
+          var pt = local(sc, e.clientX, e.clientY); burstAt(sec.id, pt[0], pt[1]);
+        });
+        if (sec.id === "day-29") sec.addEventListener("pointermove", function (e) {
+          if (e.pointerType !== "mouse" || !(e.buttons & 1)) return;
+          var pt = local(sc, e.clientX, e.clientY); make(sc, "henna", null, pt[0], pt[1]); make(sc, "henna", null, pt[0] + rnd(-4, 4), pt[1] + rnd(-4, 4));
+        });
+      });
+      window.addEventListener("resize", function () { Object.keys(scenes).forEach(function (k) { resize(scenes[k]); }); });
+      document.addEventListener("visibilitychange", function () { if (!document.hidden && active && !raf) { last = performance.now(); raf = requestAnimationFrame(loop); } });
+    }
+    return {
+      setup: setup, burstAt: burstAt,
+      setActive: function (id) {
+        active = scenes[id] ? id : null;
+        if (active && !scenes[id].warm) { scenes[id].warm = true; for (var k = 0; k < 400; k++) step(scenes[id], .05, k * .05, true); }
+        if (active && !raf) { last = performance.now(); raf = requestAnimationFrame(loop); }
+      },
+      burstFrom: function (el, list, fx, fy) {
+        var sec = el.closest(".page"); if (!sec || !scenes[sec.id]) return;
+        var r = el.getBoundingClientRect(), pt = local(scenes[sec.id], r.left + r.width * (fx == null ? .5 : fx), r.top + r.height * (fy == null ? .45 : fy));
+        burstAt(sec.id, pt[0], pt[1], list);
+      }
+    };
+  })();
+  Amb.setup();
+  document.querySelectorAll(".bg-mandala").forEach(function (svg) { svg.innerHTML = document.getElementById("mandala").innerHTML; });
+
+  // ---- Playful drawings: tap one to make it do its thing ----
+  var PLAY = {
+    rings:   [["heart", 14, "rose"], ["petal", 10, "rose"]],
+    dholak:  [["note", 10, "gold"], ["confetti", 16, "confetti"]],
+    fire:    [["ember", 40, null], ["lantern", 2, null]],
+    peacock: [["flock", 1, null], ["petal", 12, "peach"]],
+    rangoli: [["petal", 22, "marigold"], ["mote", 12, "gold"]],
+    seal:    [["petal", 16, "marigold"], ["mote", 14, "gold"]]
+  };
+  function playArt(el) {
+    var kind = el.dataset.play;
+    el.classList.remove("poke"); void el.offsetWidth; el.classList.add("poke", "played");
+    clearTimeout(el._poke); el._poke = setTimeout(function () { el.classList.remove("poke"); }, 2400);
+    soundFromGesture();
+    Music.sfx(kind);
+    var at = { rings: [.5, .5], dholak: [.86, .86], fire: [.5, .72], peacock: [.76, .84], rangoli: [.5, .64], seal: [.5, .5] }[kind];
+    if (!reduceMotion) Amb.burstFrom(el, PLAY[kind], at[0], at[1]);
+  }
+  document.addEventListener("click", function (e) { var el = e.target.closest("[data-play]"); if (el) playArt(el); });
+  document.addEventListener("keydown", function (e) {
+    var el = e.target.closest && e.target.closest("[data-play]");
+    if (el && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); playArt(el); }
+  });
+
   // ---- Page dots: mark the page crossing the middle of the screen, and take on its ink colour ----
   var pagerLinks = document.querySelectorAll(".pager a");
   if ("IntersectionObserver" in window) {
@@ -1584,6 +2092,8 @@
       entries.forEach(function (en) {
         if (!en.isIntersecting) return;
         pagerLinks.forEach(function (a) { a.setAttribute("aria-current", String(a.dataset.for === en.target.id)); });
+        Amb.setActive(en.target.id);
+        Music.setTheme(en.target.id);
         root.style.setProperty("--pager-ink", getComputedStyle(en.target).getPropertyValue("--ink").trim());
       });
     }, { rootMargin: "-50% 0px -50% 0px", threshold: 0 });
