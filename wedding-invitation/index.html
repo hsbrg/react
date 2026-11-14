@@ -5,21 +5,27 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Italiana&family=Jost:wght@300;400;500&family=Great+Vibes&family=Amita:wght@700&family=Tiro+Devanagari+Hindi&display=swap">
 <style>
   /* Layout: a printed Indian wedding card. A maroon hero card under a marigold toran,
-     then ivory sections: the invitation, three functions by day, RSVP to Amit Tyagi. */
+     then ivory sections: the invitation, three functions (each with its own colour), RSVP to Amit Tyagi.
+     Every guest-facing string exists in English and Hindi; the guest picks one with the switch. */
   :root {
     --paper: #FFF8EF;
     --card: #FFFDF9;
     --ink: #3E0B18;
     --muted: #7A4C53;
-    --gold: #A97A22;
+    --gold: #8A6216;
     --marigold: #E8890C;
     --leaf: #5C7A34;
     --line: #EBD9C2;
+    --field: #9E8366;
+    --focus: #3E0B18;
     --hero-bg: #5A1123;
     --hero-fg: #FBEBD3;
     --hero-muted: #E2C3A8;
     --hero-gold: #E3B95E;
     --error: #A2412F;
+    --acc-engage: #9C3D55;
+    --acc-mehendi: #4F6B1E;
+    --acc-wed: #A11D33;
     --font-script: "Great Vibes", "Snell Roundhand", "Apple Chancery", cursive;
     --font-deva-script: "Amita", "Tiro Devanagari Hindi", "Noto Serif Devanagari", serif;
     --font-display: "Italiana", "Didot", "Bodoni 72", Georgia, serif;
@@ -31,16 +37,20 @@
     :root:not([data-theme="light"]) {
       --paper: #1B090E; --card: #261016; --ink: #F5E7D6; --muted: #C9A7A0;
       --gold: #E0B55A; --marigold: #F29E2E; --leaf: #82A356; --line: #44232C;
+      --field: #8A6A62; --focus: #F29E2E;
       --hero-bg: #3A0914; --hero-fg: #FBEBD3; --hero-muted: #D7B79C; --hero-gold: #E8C06A;
       --error: #EE9C86;
+      --acc-engage: #EFA3B5; --acc-mehendi: #B5D37A; --acc-wed: #F58A9A;
       color-scheme: dark;
     }
   }
   :root[data-theme="dark"] {
     --paper: #1B090E; --card: #261016; --ink: #F5E7D6; --muted: #C9A7A0;
     --gold: #E0B55A; --marigold: #F29E2E; --leaf: #82A356; --line: #44232C;
+    --field: #8A6A62; --focus: #F29E2E;
     --hero-bg: #3A0914; --hero-fg: #FBEBD3; --hero-muted: #D7B79C; --hero-gold: #E8C06A;
     --error: #EE9C86;
+    --acc-engage: #EFA3B5; --acc-mehendi: #B5D37A; --acc-wed: #F58A9A;
     color-scheme: dark;
   }
 
@@ -50,43 +60,64 @@
     background: var(--paper);
     color: var(--ink);
     font-family: var(--font-body);
-    font-weight: 300;
+    font-weight: 400;
     font-size: 17px;
     line-height: 1.65;
     padding-left: max(16px, env(safe-area-inset-left, 0px));
     padding-right: max(16px, env(safe-area-inset-right, 0px));
   }
-  a { color: inherit; }
-  :focus-visible { outline: 2px solid var(--marigold); outline-offset: 3px; border-radius: 2px; }
+  ::selection { background: color-mix(in srgb, var(--marigold) 35%, transparent); color: var(--ink); }
+  a { color: inherit; text-underline-offset: 3px; }
+  :focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 2px; }
+  .hero :focus-visible, .gate:focus-visible { outline-color: var(--hero-gold); }
   .wrap { max-width: 1000px; margin-inline: auto; }
-  .deva { font-family: var(--font-deva); }
+  .deva, [lang="hi"], [lang="sa"] { font-family: var(--font-deva); }
+  /* Devanagari is never letter-spaced: spacing breaks conjuncts and the shirorekha */
+  [lang="hi"], [lang="sa"], [lang="hi"] *, .deva { letter-spacing: 0 !important; text-transform: none !important; }
+  .amp { font-family: var(--font-body); font-weight: 300; }
+  /* Hindi users: hold translated text until it has been swapped in, so English never flashes */
+  html[data-lang="hi"]:not(.lang-ready) [data-hi] { visibility: hidden; }
+  .swapped { animation: fade 260ms ease both; }
+
+  /* ---------- Language switch ---------- */
+  .topbar { display: flex; justify-content: flex-end; padding-block: 12px; }
+  .lang-switch {
+    display: inline-flex;
+    background: var(--card);
+    border: 1px solid var(--field);
+  }
+  footer .lang-switch { margin-top: 28px; }
+  .lang-switch button {
+    min-height: 44px;
+    min-width: 64px;
+    padding: 0 14px;
+    border: 0;
+    background: transparent;
+    color: var(--ink);
+    font: 500 14px/1 var(--font-body);
+    cursor: pointer;
+    transition: background-color 160ms ease, color 160ms ease;
+  }
+  .lang-switch button[lang="hi"] { font-family: var(--font-deva); font-size: 16px; font-weight: 400; }
+  .lang-switch button[aria-pressed="true"] { background: var(--ink); color: var(--card); }
 
   /* ---------- Hero card ---------- */
   .hero {
     position: relative;
-    margin-top: 20px;
     background: var(--hero-bg);
     color: var(--hero-fg);
     text-align: center;
     overflow: hidden;
     isolation: isolate;
   }
-  .hero::before {
+  .hero::before, .hero::after {
     content: "";
     position: absolute;
-    inset: 46px 14px 14px;
     border: 1px solid var(--hero-gold);
-    opacity: .6;
     pointer-events: none;
   }
-  .hero::after {
-    content: "";
-    position: absolute;
-    inset: 52px 20px 20px;
-    border: 1px solid var(--hero-gold);
-    opacity: .3;
-    pointer-events: none;
-  }
+  .hero::before { inset: 46px 14px 14px; opacity: .6; }
+  .hero::after { inset: 52px 20px 20px; opacity: .3; }
   /* Toran: marigold strand with mango leaves hanging below */
   .toran {
     height: 40px;
@@ -98,21 +129,15 @@
   .hero-inner { padding: 34px 28px 52px; }
 
   .ganesh { font-size: 20px; color: var(--hero-gold); letter-spacing: .04em; }
-  .shloka {
-    margin: 10px auto 0;
-    font-size: 16px;
-    line-height: 1.8;
-    color: var(--hero-muted);
-    text-wrap: balance;
-  }
-  /* The couple's monogram, set as a round seal on the maroon card */
+  .shloka { margin: 10px auto 0; font-size: 16px; line-height: 1.8; color: var(--hero-muted); text-wrap: balance; }
+
+  /* The couple's monogram, set as a round seal; a slowly turning mandala behind it and a gold glint across it */
   .seal {
     display: block;
-    width: clamp(150px, 26vw, 210px);
+    width: 100%;
     max-width: 100%;
     height: auto;
     aspect-ratio: 1;
-    margin: 26px auto 0;
     border-radius: 50%;
     object-fit: cover;
     background: #F3EBDA;
@@ -124,15 +149,7 @@
     animation: seal 700ms var(--ease-out) 40ms both;
   }
   @keyframes seal { from { opacity: 0; transform: scale(0.96); } }
-
-  /* Seal setting: a slowly turning mandala behind it and a gold glint across it */
-  .seal-wrap {
-    position: relative;
-    isolation: isolate;
-    width: clamp(150px, 26vw, 210px);
-    margin: 26px auto 0;
-  }
-  .seal-wrap .seal { width: 100%; margin: 0; }
+  .seal-wrap { position: relative; isolation: isolate; width: clamp(140px, 24vw, 200px); margin: 26px auto 0; }
   .mandala {
     position: absolute;
     left: 50%;
@@ -148,19 +165,158 @@
     animation: fade 1400ms ease 300ms both, spin 140s linear infinite;
   }
   @keyframes spin { to { rotate: 360deg; } }
-  .glint {
+  .glint { position: absolute; inset: 0; border-radius: 50%; overflow: hidden; pointer-events: none; }
+  .glint::before {
+    content: "";
     position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    pointer-events: none;
-    background: linear-gradient(115deg, transparent 38%, rgb(255 246 220 / .75) 50%, transparent 62%) no-repeat;
-    background-size: 300% 100%;
-    background-position: 150% 0;
+    inset: 0 -100%;
+    background: linear-gradient(115deg, transparent 44%, rgb(255 246 220 / .7) 50%, transparent 56%);
     mix-blend-mode: screen;
+    transform: translateX(-34%);
     animation: glint 9s ease-in-out 1500ms infinite;
   }
   /* The sweep takes the first ~1.3s, then rests for the remainder of each cycle */
-  @keyframes glint { 0% { background-position: 150% 0; } 15%, 100% { background-position: -50% 0; } }
+  @keyframes glint { 0% { transform: translateX(-34%); } 15%, 100% { transform: translateX(34%); } }
+
+  .names {
+    font-family: var(--font-script);
+    font-weight: 400;
+    font-size: clamp(56px, 13vw, 124px);
+    line-height: 1.05;
+    margin: 16px 0 0;
+    text-shadow: 0 2px 18px rgb(0 0 0 / .25);
+    text-wrap: balance;
+    outline: none;
+  }
+  .names > span { display: inline-block; }
+  .names .weds {
+    display: block;
+    font-family: var(--font-display);
+    font-size: .2em;
+    letter-spacing: .4em;
+    text-transform: uppercase;
+    color: var(--hero-gold);
+    margin-block: 12px 8px;
+    padding-left: .4em;
+  }
+
+  /* Bilingual stack: English and Hindi share one grid cell and cross-fade with a soft blur when the
+     language changes. --i staggers the change so the card switches as one wave, top to bottom.
+     The hidden language is visibility:hidden, so screen readers only read the one on screen. */
+  .bi { display: inline-grid; }
+  .bi > span {
+    grid-area: 1 / 1;
+    justify-self: center;
+    align-self: center;
+    transition:
+      opacity 420ms ease calc(var(--i, 0) * 60ms),
+      filter 420ms ease calc(var(--i, 0) * 60ms),
+      transform 600ms var(--ease-out) calc(var(--i, 0) * 60ms),
+      visibility 0s linear calc(var(--i, 0) * 60ms);
+  }
+  .bi > .hi,
+  html[data-lang="hi"] .bi > .en,
+  .gate-center[data-show="hi"] .bi > .en,
+  .gate-center[data-show="en"] .bi > .hi {
+    opacity: 0;
+    filter: blur(6px);
+    transform: translateY(8px);
+    visibility: hidden;
+    transition:
+      opacity 420ms ease calc(var(--i, 0) * 60ms),
+      filter 420ms ease calc(var(--i, 0) * 60ms),
+      transform 600ms var(--ease-out) calc(var(--i, 0) * 60ms),
+      visibility 0s linear calc(var(--i, 0) * 60ms + 420ms);
+  }
+  html[data-lang="hi"] .bi > .hi,
+  .gate-center[data-show="hi"] .bi > .hi,
+  .gate-center[data-show="en"] .bi > .en { opacity: 1; filter: none; transform: none; visibility: visible; }
+  .names .hi { font-family: var(--font-deva-script); font-weight: 700; font-size: .6em; line-height: 1.5; }
+  .names .weds .hi { font-family: var(--font-deva-script); font-size: 1.9em; line-height: 1; }
+
+  /* Three functions at a glance, each a link to its details */
+  .dates {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    max-width: 540px;
+    margin: 26px auto 0;
+    border-block: 1px solid color-mix(in srgb, var(--hero-gold) 55%, transparent);
+  }
+  .date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 12px 6px 14px;
+    color: var(--hero-fg);
+    text-decoration: none;
+    transition: background-color 160ms ease, transform 160ms var(--ease-out);
+  }
+  .date + .date { border-left: 1px solid color-mix(in srgb, var(--hero-gold) 35%, transparent); }
+  .date:active { transform: scale(0.97); }
+  .date .dow { font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--hero-muted); }
+  .date .num { font-family: var(--font-display); font-size: 46px; line-height: 1; font-variant-numeric: lining-nums; }
+  .date .fn { font-size: 14px; line-height: 1.3; text-wrap: balance; }
+  .date.wed .num { color: var(--hero-gold); font-size: 60px; }
+  .date .dow[lang="hi"] { font-size: 14px; }
+  .date .num[lang="hi"] { font-family: var(--font-deva); font-size: 40px; }
+  .date.wed .num[lang="hi"] { font-size: 52px; }
+  @media (hover: hover) and (pointer: fine) { .date:hover { background: rgb(251 235 211 / .07); } }
+  .month-line { margin: 12px 0 0; font-family: var(--font-display); font-size: 15px; letter-spacing: .3em; text-transform: uppercase; color: var(--hero-gold); }
+  .month-line[lang="hi"] { font-family: var(--font-deva); font-size: 17px; }
+  .place { margin: 6px 0 0; color: var(--hero-muted); font-size: 15px; letter-spacing: .06em; }
+
+  .actions { display: flex; justify-content: center; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
+  .actions .btn { flex: 0 1 220px; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 48px;
+    padding: 0 24px;
+    font: 500 14px/1.2 var(--font-body);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    text-decoration: none;
+    text-align: center;
+    border: 1px solid var(--ink);
+    background: var(--ink);
+    color: var(--card);
+    cursor: pointer;
+    transition: transform 160ms var(--ease-out), background-color 200ms ease, color 200ms ease, border-color 200ms ease;
+  }
+  .btn[lang="hi"], .btn [lang="hi"] { letter-spacing: 0; font-size: 16px; }
+  .btn:active { transform: scale(0.97); }
+  .btn.ghost { background: transparent; color: var(--ink); }
+  .btn svg { width: 20px; height: 20px; flex: none; }
+  .hero .btn { background: var(--hero-gold); border-color: var(--hero-gold); color: #3A0914; }
+  .hero .btn.ghost { background: transparent; color: var(--hero-fg); }
+  @media (hover: hover) and (pointer: fine) {
+    .btn:hover { background: transparent; color: var(--ink); }
+    .btn.ghost:hover { background: var(--ink); color: var(--card); }
+    .hero .btn:hover { background: transparent; color: var(--hero-gold); }
+    .hero .btn.ghost:hover { background: var(--hero-fg); color: var(--hero-bg); border-color: var(--hero-fg); }
+  }
+
+  .countdown-cap { margin: 30px 0 10px; font-size: 13px; letter-spacing: .16em; text-transform: uppercase; color: var(--hero-muted); }
+  .countdown-cap[lang="hi"] { font-family: var(--font-deva); font-size: 15px; }
+  .countdown { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+  .countdown > div { min-width: 76px; padding: 10px 8px 8px; border: 1px solid color-mix(in srgb, var(--hero-gold) 45%, transparent); }
+  .countdown b { display: block; font-family: var(--font-display); font-weight: 400; font-size: 34px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .countdown b:lang(hi) { font-family: var(--font-deva); }
+  .countdown small { display: block; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--hero-muted); }
+  .countdown small[lang="hi"] { font-size: 13px; }
+  .countdown-done { margin-top: 26px; font-family: var(--font-script); font-size: 44px; color: var(--hero-gold); }
+  .countdown-done[lang="hi"] { font-family: var(--font-deva-script); font-size: 36px; }
+
+  /* ---------- Hero entrance (seen once per visit) ----------
+     Lead: the names travel furthest. Support rises a little less each step.
+     Decoration (toran, shloka) only fades. Gaps shrink: 0, 110, 220, 280, 340, 400ms. */
+  .in { animation: rise var(--dur, 600ms) var(--ease-out) var(--d, 0ms) both; }
+  .fade-in { animation: fade var(--dur, 700ms) ease var(--d, 0ms) both; }
+  @keyframes rise { from { opacity: 0; transform: translateY(var(--y, 8px)); } }
+  @keyframes fade { from { opacity: 0; } }
 
   /* ---------- Welcome gate: palace doors that open on tap (or by themselves) ---------- */
   .gate { display: none; }
@@ -178,8 +334,7 @@
   html.gate-hold .hero .fade-in,
   html.gate-hold .hero .seal,
   html.gate-hold .mandala,
-  html.gate-hold .glint { animation-play-state: paused; }
-
+  html.gate-hold .glint::before { animation-play-state: paused; }
   .door {
     position: absolute;
     top: 0;
@@ -218,7 +373,6 @@
   }
   .door.l .knob { right: 16px; }
   .door.r .knob { left: 16px; }
-
   .gate-center {
     position: absolute;
     inset: 0;
@@ -235,20 +389,24 @@
     transition: opacity 220ms var(--ease-out), transform 220ms var(--ease-out);
   }
   .gate-center .seal { width: clamp(150px, 34vw, 190px); margin: 0 0 14px; animation-delay: 0ms; }
-  .gate-names { font-family: var(--font-script); font-size: clamp(40px, 9vw, 58px); line-height: 1.1; text-shadow: 0 2px 12px rgb(0 0 0 / .4); }
-  .gate-date { font-family: var(--font-display); font-size: 15px; letter-spacing: .3em; text-transform: uppercase; color: var(--hero-gold); }
+  .gate-names { font-family: var(--font-script); font-size: clamp(38px, 9vw, 58px); line-height: 1.15; text-shadow: 0 2px 12px rgb(0 0 0 / .4); text-wrap: balance; }
+  .gate-names .hi { font-family: var(--font-deva-script); font-weight: 700; font-size: .66em; }
+  .gate-date { font-family: var(--font-display); font-size: 15px; letter-spacing: .24em; text-transform: uppercase; color: var(--hero-gold); }
   .gate-hint {
     margin-top: 22px;
-    padding: 10px 20px;
+    min-height: 48px;
+    display: grid;
+    place-items: center;
+    padding: 0 22px;
     border: 1px solid color-mix(in srgb, var(--hero-gold) 70%, transparent);
     background: color-mix(in srgb, var(--hero-bg) 80%, transparent);
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 500;
-    letter-spacing: .24em;
+    letter-spacing: .2em;
     text-transform: uppercase;
   }
-  .gate:focus-visible .gate-hint { outline: 2px solid var(--marigold); outline-offset: 3px; }
-
+  .gate-hint .hi { font-size: 16px; }
+  .gate:focus-visible .gate-hint { outline: 2px solid var(--hero-gold); outline-offset: 4px; }
   .gate.opening .gate-center { opacity: 0; transform: scale(1.04); }
   .gate.opening .door.l { transform: rotateY(105deg); }
   .gate.opening .door.r { transform: rotateY(-105deg); }
@@ -259,343 +417,338 @@
   /* Sections drift up as they scroll into view (where the browser supports scroll-driven animation) */
   @supports (animation-timeline: view()) {
     @media (prefers-reduced-motion: no-preference) {
-      .reveal {
-        --y: 28px;
-        animation: rise ease-out both;
-        animation-timeline: view();
-        animation-range: entry 0% entry 55%;
-      }
+      .reveal { --y: 28px; animation: rise ease-out both; animation-timeline: view(); animation-range: entry 0% entry 55%; }
     }
   }
-
-  .names {
-    font-family: var(--font-script);
-    font-weight: 400;
-    font-size: clamp(64px, 14vw, 128px);
-    line-height: 1.05;
-    margin: 18px 0 0;
-    text-shadow: 0 2px 18px rgb(0 0 0 / .25);
-    text-wrap: balance;
-  }
-  .names span { display: inline-block; }
-  .names .weds {
-    display: block;
-    font-family: var(--font-display);
-    font-size: .2em;
-    letter-spacing: .4em;
-    text-transform: uppercase;
-    color: var(--hero-gold);
-    margin-block: 14px 10px;
-    padding-left: .4em;
-  }
-  /* Bilingual text: English and Hindi share one grid cell and swap with a soft blur.
-     --i staggers the swap so the card changes language as one wave, top to bottom. */
-  .bi, .names .bi { display: inline-grid; }
-  .bi > span {
-    grid-area: 1 / 1;
-    justify-self: center;
-    align-self: center;
-    transition:
-      opacity 420ms ease calc(var(--i, 0) * 70ms),
-      filter 420ms ease calc(var(--i, 0) * 70ms),
-      transform 600ms var(--ease-out) calc(var(--i, 0) * 70ms);
-  }
-  .bi > .hi { opacity: 0; filter: blur(6px); transform: translateY(10px); }
-  [data-show="hi"] .bi > .en { opacity: 0; filter: blur(6px); transform: translateY(-10px); }
-  [data-show="hi"] .bi > .hi { opacity: 1; filter: none; transform: none; }
-  .hi { font-family: var(--font-deva); letter-spacing: 0; text-transform: none; }
-  .names .hi { font-family: var(--font-deva-script); font-weight: 700; font-size: .6em; line-height: 1.5; }
-  .names .weds .hi { font-family: var(--font-deva-script); font-size: 1.9em; line-height: 1; }
-  .gate-names .hi { font-family: var(--font-deva-script); font-weight: 700; font-size: .66em; }
-
-  .when {
-    margin: 30px auto 0;
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
-    gap: 18px;
-    max-width: 480px;
-    font-family: var(--font-display);
-    font-size: 19px;
-    letter-spacing: .14em;
-    text-transform: uppercase;
-  }
-  .when .side { border-block: 1px solid color-mix(in srgb, var(--hero-gold) 55%, transparent); padding-block: 8px; }
-  .when .day { display: block; font-size: 62px; line-height: 1; color: var(--hero-gold); letter-spacing: 0; }
-  .when .month { display: block; font-size: 13px; letter-spacing: .3em; }
-  .place { margin: 16px 0 0; color: var(--hero-muted); font-size: 15px; letter-spacing: .08em; }
-
-  .countdown { display: flex; justify-content: center; gap: 10px; margin-top: 30px; flex-wrap: wrap; }
-  .countdown div {
-    min-width: 76px;
-    padding: 10px 8px 8px;
-    border: 1px solid color-mix(in srgb, var(--hero-gold) 45%, transparent);
-  }
-  .countdown b {
-    display: block;
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: 34px;
-    line-height: 1.1;
-    font-variant-numeric: tabular-nums;
-  }
-  .countdown small { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--hero-muted); }
-  .countdown-done { margin-top: 26px; font-family: var(--font-script); font-size: 40px; color: var(--hero-gold); }
-
-  .actions { display: flex; justify-content: center; gap: 12px; margin-top: 30px; flex-wrap: wrap; }
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 46px;
-    padding: 0 24px;
-    font: 500 13px/1 var(--font-body);
-    letter-spacing: .18em;
-    text-transform: uppercase;
-    text-decoration: none;
-    border: 1px solid var(--ink);
-    background: var(--ink);
-    color: var(--card);
-    cursor: pointer;
-    transition: transform 160ms var(--ease-out), background-color 200ms ease, color 200ms ease, border-color 200ms ease;
-  }
-  .btn:active { transform: scale(0.97); }
-  .btn.ghost { background: transparent; color: var(--ink); }
-  .hero .btn { background: var(--hero-gold); border-color: var(--hero-gold); color: #3A0914; }
-  .hero .btn.ghost { background: transparent; color: var(--hero-fg); }
-  @media (hover: hover) and (pointer: fine) {
-    .btn:hover { background: transparent; color: var(--ink); }
-    .btn.ghost:hover { background: var(--ink); color: var(--card); }
-    .hero .btn:hover { background: transparent; color: var(--hero-gold); }
-    .hero .btn.ghost:hover { background: var(--hero-fg); color: var(--hero-bg); border-color: var(--hero-fg); }
-  }
-
-  /* ---------- Hero entrance (seen once per visit) ----------
-     Lead: the names travel furthest. Support rises a little less each step.
-     Decoration (toran, shloka, ornament) only fades. Gaps shrink: 0, 110, 220, 320, 400, 460ms. */
-  .in { animation: rise var(--dur, 600ms) var(--ease-out) var(--d, 0ms) both; }
-  .fade-in { animation: fade var(--dur, 700ms) ease var(--d, 0ms) both; }
-  @keyframes rise { from { opacity: 0; transform: translateY(var(--y, 8px)); } }
-  @keyframes fade { from { opacity: 0; } }
 
   /* ---------- Nav ---------- */
   nav.toc {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 6px 26px;
-    padding-block: 22px;
+    gap: 0 22px;
+    padding-block: 14px;
     font-size: 13px;
-    letter-spacing: .22em;
+    letter-spacing: .2em;
     text-transform: uppercase;
   }
-  nav.toc a { text-decoration: none; color: var(--muted); padding: 4px 0; border-bottom: 1px solid transparent; transition: color 150ms ease, border-color 150ms ease; }
-  @media (hover: hover) and (pointer: fine) {
-    nav.toc a:hover { color: var(--ink); border-color: var(--marigold); }
-  }
+  nav.toc a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: none; color: var(--muted); border-bottom: 1px solid transparent; transition: color 150ms ease, border-color 150ms ease; }
+  nav.toc a[lang="hi"] { font-size: 16px; }
+  @media (hover: hover) and (pointer: fine) { nav.toc a:hover { color: var(--ink); border-color: var(--marigold); } }
 
   /* ---------- Sections ---------- */
-  section.block { padding-block: 56px; border-top: 1px solid var(--line); }
-  .sec-head { text-align: center; margin-bottom: 36px; }
-  .sec-head h2 {
+  section.block { padding-block: 64px 56px; border-top: 1px solid var(--line); }
+  .block > h2 {
     font-family: var(--font-display);
     font-weight: 400;
-    font-size: 40px;
+    font-size: 44px;
     line-height: 1.1;
-    margin: 0;
+    margin: 0 0 32px;
+    text-align: center;
+    text-wrap: balance;
   }
-  .sec-head .deva { display: block; color: var(--gold); font-size: 18px; margin-bottom: 4px; }
+  .block > h2[lang="hi"] { font-family: var(--font-deva); font-size: 38px; line-height: 1.4; }
 
   /* Invitation */
   .invite { max-width: 680px; margin-inline: auto; text-align: center; }
-  .hosts { font-family: var(--font-display); font-size: 26px; line-height: 1.3; margin: 0; text-wrap: balance; }
-  .invite-text { margin: 14px auto 0; max-width: 54ch; color: var(--muted); font-size: 18px; text-wrap: balance; }
-  .couple {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-    align-items: center;
-    gap: 20px;
-    margin-top: 40px;
-  }
-  .person .nm { font-family: var(--font-script); font-size: 58px; line-height: 1.1; }
+  .hosts { font-size: 21px; font-weight: 500; line-height: 1.45; margin: 0; text-wrap: balance; }
+  .invite-text { margin: 12px auto 0; max-width: 54ch; color: var(--muted); font-size: 18px; text-wrap: balance; }
+  .couple { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 20px; margin-top: 40px; }
+  .person .nm { font-family: var(--font-script); font-size: 60px; line-height: 1.15; }
+  .person .nm[lang="hi"] { font-family: var(--font-deva-script); font-weight: 700; font-size: 40px; line-height: 1.5; }
   .person .rel { font-size: 15px; color: var(--muted); margin-top: 4px; text-wrap: balance; }
-  .couple .weds { font-family: var(--font-display); letter-spacing: .3em; text-transform: uppercase; font-size: 14px; color: var(--gold); }
-  .resi { margin-top: 34px; font-size: 14px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+  .couple .weds { font-family: var(--font-display); letter-spacing: .3em; text-transform: uppercase; font-size: 15px; color: var(--gold); }
+  .couple .weds[lang="hi"] { font-family: var(--font-deva-script); font-weight: 700; font-size: 24px; }
+  .resi { margin-top: 34px; font-size: 14px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
 
-  /* Functions */
-  .days { display: grid; gap: 40px; max-width: 860px; margin-inline: auto; }
-  .day-head {
-    display: flex;
-    align-items: baseline;
-    gap: 14px;
-    margin-bottom: 6px;
-    font-size: 13px;
-    letter-spacing: .24em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-  .day-head::after { content: ""; flex: 1; border-top: 1px solid var(--line); transform: translateY(-4px); }
-  .event {
+  /* Functions: one row per day, each in its own colour; the wedding gets the most room */
+  .days { display: grid; max-width: 880px; margin-inline: auto; }
+  .day {
+    --acc: var(--gold);
+    position: relative;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 10px 28px;
-    padding-block: 18px 6px;
+    grid-template-columns: 104px minmax(0, 1fr) auto;
+    gap: 6px 28px;
     align-items: start;
+    padding: 28px 0;
+    border-top: 1px solid var(--line);
+    scroll-margin-top: 72px;
   }
-  .event h3 { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 30px; line-height: 1.15; }
-  .event h3 .deva { font-size: 18px; color: var(--gold); margin-left: 10px; }
+  .day:first-child { border-top: 0; }
+  .day.engage { --acc: var(--acc-engage); }
+  .day.mehendi { --acc: var(--acc-mehendi); }
+  .day.wed {
+    --acc: var(--acc-wed);
+    margin-top: 12px;
+    padding: 36px 28px;
+    border-top: 0;
+    background: color-mix(in srgb, var(--acc-wed) 7%, var(--paper));
+    box-shadow: 0 1px 0 color-mix(in srgb, var(--acc-wed) 25%, transparent), 0 14px 34px -22px color-mix(in srgb, var(--acc-wed) 60%, transparent);
+  }
+  .dcol { display: grid; justify-items: start; line-height: 1.1; }
+  .dcol .dnum { font-family: var(--font-display); font-size: 68px; line-height: .95; color: var(--acc); font-variant-numeric: lining-nums; }
+  .dcol .dnum[lang="hi"] { font-family: var(--font-deva); font-size: 54px; line-height: 1.2; }
+  .dcol .dmon, .dcol .ddow { font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
+  .dcol .dmon[lang="hi"], .dcol .ddow[lang="hi"] { font-size: 15px; }
+  .day h3 { display: flex; align-items: center; gap: 12px; margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 34px; line-height: 1.15; color: var(--acc); }
+  .day h3 [lang="hi"] { font-family: var(--font-deva-script); font-weight: 700; font-size: 30px; line-height: 1.4; }
+  .day.wed h3 { font-size: 44px; }
+  .day.wed h3 [lang="hi"] { font-size: 38px; }
+  .motif { width: 30px; height: 30px; flex: none; color: var(--acc); }
   .timings { display: flex; flex-wrap: wrap; gap: 8px 28px; margin-top: 12px; }
   .timing { display: flex; align-items: baseline; gap: 10px; }
-  .timing b { font-family: var(--font-display); font-weight: 400; font-size: 24px; font-variant-numeric: tabular-nums; }
-  .timing span { font-size: 13px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
-  .venue { margin-top: 14px; padding-left: 14px; border-left: 2px solid var(--marigold); }
+  .timing b { font-family: var(--font-display); font-weight: 400; font-size: 26px; font-variant-numeric: tabular-nums; }
+  .timing b[lang="hi"] { font-family: var(--font-deva); font-size: 22px; }
+  .timing span { font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .timing span[lang="hi"] { font-size: 16px; }
+  .venue { display: flex; gap: 10px; align-items: flex-start; margin-top: 16px; }
+  .venue svg { width: 18px; height: 18px; flex: none; margin-top: 3px; color: var(--acc); }
   .venue strong { display: block; font-weight: 500; font-size: 17px; }
   .venue span { color: var(--muted); font-size: 15px; }
-  .event .links { display: flex; flex-direction: column; gap: 10px; align-items: flex-end; padding-top: 6px; }
+  .past-badge { display: none; margin-top: 12px; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .day.past .past-badge { display: block; }
+  .day.past .cal { display: none; }
+  .day .links { display: flex; flex-direction: column; gap: 10px; align-items: stretch; padding-top: 4px; min-width: 200px; }
   .link-btn {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    min-height: 40px;
+    gap: 10px;
+    min-height: 46px;
     padding: 0 16px;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 500;
-    letter-spacing: .16em;
+    letter-spacing: .12em;
     text-transform: uppercase;
     text-decoration: none;
-    border: 1px solid var(--line);
+    color: var(--ink);
+    border: 1px solid var(--field);
     background: var(--card);
     white-space: nowrap;
+    cursor: pointer;
+    list-style: none;
     transition: transform 160ms var(--ease-out), border-color 150ms ease;
   }
+  .link-btn::-webkit-details-marker { display: none; }
+  .link-btn [lang="hi"], .link-btn[lang="hi"] { font-size: 15px; letter-spacing: 0; }
   .link-btn:active { transform: scale(0.97); }
-  .link-btn svg { width: 15px; height: 15px; flex: none; color: var(--marigold); }
-  @media (hover: hover) and (pointer: fine) { .link-btn:hover { border-color: var(--marigold); } }
-  .event.main h3 { color: var(--ink); }
-  .event.main { position: relative; }
+  .link-btn svg { width: 17px; height: 17px; flex: none; color: var(--acc); }
+  @media (hover: hover) and (pointer: fine) { .link-btn:hover { border-color: var(--acc); } }
+  .cal { position: relative; }
+  .cal > summary { width: 100%; }
+  .cal-menu {
+    position: absolute;
+    z-index: 5;
+    right: 0;
+    top: calc(100% + 6px);
+    min-width: 100%;
+    display: grid;
+    background: var(--card);
+    border: 1px solid var(--field);
+    box-shadow: 0 12px 28px -10px rgb(30 5 12 / .35);
+    transform-origin: top right;
+    transition: opacity 160ms var(--ease-out), transform 160ms var(--ease-out);
+    @starting-style { opacity: 0; transform: scale(0.97); }
+  }
+  .cal-menu a { display: flex; align-items: center; min-height: 46px; padding: 0 16px; text-decoration: none; font-size: 15px; white-space: nowrap; }
+  .cal-menu a + a { border-top: 1px solid var(--line); }
+  @media (hover: hover) and (pointer: fine) { .cal-menu a:hover { background: color-mix(in srgb, var(--acc) 8%, transparent); } }
 
   /* RSVP */
   .rsvp-wrap { max-width: 720px; margin-inline: auto; }
-  .rsvp-contact { text-align: center; margin: -16px 0 28px; }
+  .rsvp-contact { text-align: center; margin: -12px 0 28px; }
   .rsvp-contact .who { font-family: var(--font-display); font-size: 30px; }
+  .rsvp-contact .who[lang="hi"] { font-family: var(--font-deva); font-size: 26px; }
   .rsvp-contact p { margin: 4px 0 0; color: var(--muted); }
-  .rsvp-contact .phone { font-size: 20px; letter-spacing: .06em; color: var(--ink); font-variant-numeric: tabular-nums; user-select: all; }
-  .rsvp-contact .phone a { text-decoration: none; border-bottom: 1px solid var(--marigold); }
+  .rsvp-contact .phone a { display: inline-flex; align-items: center; min-height: 44px; font-size: 20px; letter-spacing: .04em; color: var(--ink); font-variant-numeric: tabular-nums; text-decoration-color: var(--marigold); }
   .rsvp-card { background: var(--card); border: 1px solid var(--line); padding: 32px; }
-  form { display: grid; gap: 22px; }
-  .row { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 22px; }
-  label, legend { display: block; font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; font-weight: 400; }
+  .replied { margin: 0 0 22px; padding: 12px 14px; background: color-mix(in srgb, var(--acc-mehendi) 9%, var(--card)); font-size: 15px; }
+  form { display: grid; gap: 24px; }
+  .field { display: grid; gap: 8px; }
+  label.lbl, legend { display: block; font-size: 15px; font-weight: 500; color: var(--ink); padding: 0; margin: 0 0 8px; }
+  label.lbl[lang="hi"], legend[lang="hi"] { font-size: 17px; }
+  .field > label.lbl { margin: 0; }
   fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
-  input[type="text"], select, textarea {
+  input[type="text"], input[type="number"], textarea {
     width: 100%;
     font: 400 17px/1.4 var(--font-body);
     color: var(--ink);
+    caret-color: var(--marigold);
     background: var(--paper);
-    border: 1px solid var(--line);
+    border: 1px solid var(--field);
     border-radius: 0;
     padding: 12px 14px;
+    min-height: 50px;
   }
+  input[type="number"] { max-width: 160px; }
+  input::placeholder, textarea::placeholder { color: var(--muted); opacity: 1; }
   textarea { min-height: 96px; resize: vertical; }
-  input[type="text"]:focus, select:focus, textarea:focus { outline: none; border-color: var(--marigold); box-shadow: 0 0 0 1px var(--marigold); }
+  input:focus-visible, textarea:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+  [aria-invalid="true"] { border-color: var(--error); }
   .choices { display: flex; flex-wrap: wrap; gap: 10px; }
-  .choice { position: relative; margin: 0; letter-spacing: normal; text-transform: none; color: var(--ink); font-size: 15px; }
+  .choice { position: relative; display: block; margin: 0; color: var(--ink); font-size: 16px; }
   .choice input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
   .choice span {
-    display: inline-block;
-    padding: 10px 16px;
-    border: 1px solid var(--line);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 48px;
+    padding: 0 16px;
+    border: 1px solid var(--field);
     background: var(--paper);
-    transition: transform 160ms var(--ease-out), background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+    transition: transform 160ms var(--ease-out), background-color 150ms ease, border-color 150ms ease;
+  }
+  /* A drawn tick or dot marks the selection, so chips never look like the main button */
+  .choice span::before {
+    content: "";
+    width: 16px;
+    height: 16px;
+    flex: none;
+    border: 1.5px solid var(--field);
+    background: var(--card);
+    transition: background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+  }
+  .choice input[type="radio"] + span::before { border-radius: 50%; }
+  .choice input:checked + span { border-color: var(--ink); background: color-mix(in srgb, var(--marigold) 10%, var(--paper)); }
+  .choice input[type="radio"]:checked + span::before { border-color: var(--ink); box-shadow: inset 0 0 0 4px var(--card); background: var(--ink); }
+  .choice input[type="checkbox"]:checked + span::before {
+    border-color: var(--ink);
+    background: var(--ink) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5l3 3 6-7' fill='none' stroke='white' stroke-width='2'/%3E%3C/svg%3E") center / 12px no-repeat;
   }
   .choice input:active + span { transform: scale(0.97); }
-  .choice input:checked + span { background: var(--ink); color: var(--card); border-color: var(--ink); }
-  .choice input:focus-visible + span { outline: 2px solid var(--marigold); outline-offset: 2px; }
-  .error { color: var(--error); font-size: 14px; margin: 0; transition: opacity 150ms ease; @starting-style { opacity: 0; } }
+  .choice input:focus-visible + span { outline: 2px solid var(--focus); outline-offset: 2px; }
+  .field-error { margin: 2px 0 0; color: var(--error); font-size: 15px; font-weight: 500; }
+  .field-error:empty { display: none; }
+  .yes-group { display: grid; gap: 24px; }
+  .yes-group:not([hidden]) { transition: opacity 260ms var(--ease-out), transform 260ms var(--ease-out); @starting-style { opacity: 0; transform: translateY(6px); } }
 
-  .result {
-    border-top: 1px solid var(--line); margin-top: 28px; padding-top: 24px;
-    transition: opacity 300ms var(--ease-out), transform 300ms var(--ease-out);
-    @starting-style { opacity: 0; transform: translateY(8px); }
-  }
-  .result h3 { font-family: var(--font-script); font-weight: 400; font-size: 44px; margin: 0; color: var(--gold); line-height: 1.1; }
-  .result pre {
+  .preview { border-top: 1px solid var(--line); padding-top: 22px; }
+  .preview-label { font-size: 15px; font-weight: 500; margin-bottom: 8px; }
+  .preview pre {
+    margin: 0;
     white-space: pre-wrap;
     font: 400 15px/1.6 var(--font-body);
     background: var(--paper);
-    border: 1px solid var(--line);
-    padding: 16px;
-    margin: 16px 0;
-    user-select: all;
+    border: 1px dashed var(--field);
+    padding: 14px 16px;
+    min-height: 60px;
   }
-  .result .actions { justify-content: flex-start; margin-top: 0; }
-  .result .note { color: var(--muted); font-size: 14px; margin: 14px 0 0; }
-  #r-copy { transition: transform 160ms var(--ease-out), background-color 200ms ease, color 200ms ease, filter 200ms ease, opacity 200ms ease; }
-  #r-copy.swapping { filter: blur(2px); opacity: .6; }
+  .preview pre.empty { color: var(--muted); }
+  .send { display: grid; gap: 12px; }
+  .btn.wa { width: 100%; min-height: 54px; font-size: 15px; }
+  .alt { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 4px 16px; color: var(--muted); font-size: 15px; }
+  .text-btn {
+    min-height: 44px;
+    padding: 0 6px;
+    border: 0;
+    background: none;
+    color: var(--ink);
+    font: 500 15px/1 var(--font-body);
+    text-decoration: underline;
+    text-decoration-color: var(--marigold);
+    text-underline-offset: 4px;
+    cursor: pointer;
+  }
+  .alt a { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink); text-decoration-color: var(--marigold); }
+  .status-card { text-align: center; padding: 8px 0; }
+  .status-card:not([hidden]) { transition: opacity 300ms var(--ease-out), transform 300ms var(--ease-out); @starting-style { opacity: 0; transform: translateY(8px); } }
+  .status-card h3 { margin: 0; font-family: var(--font-script); font-weight: 400; font-size: 46px; line-height: 1.2; color: var(--gold); }
+  .status-card h3[lang="hi"] { font-family: var(--font-deva-script); font-weight: 700; font-size: 32px; line-height: 1.5; }
+  .status-card p { margin: 8px auto 0; max-width: 46ch; color: var(--muted); }
+  .status-card .row-btns { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 18px; }
+  .status-card .check-q { font-size: 20px; font-weight: 500; color: var(--ink); margin: 0; }
 
   footer { text-align: center; padding-block: 56px 72px; border-top: 1px solid var(--line); }
-  footer .pre { font-size: 13px; letter-spacing: .24em; text-transform: uppercase; color: var(--muted); }
-  footer .sig { font-family: var(--font-script); font-size: 52px; line-height: 1.2; margin-top: 6px; }
-  footer .deva { color: var(--gold); margin-top: 6px; }
+  footer .pre { font-size: 13px; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); }
+  footer .pre[lang="hi"] { font-size: 17px; }
+  footer .sig { font-family: var(--font-script); font-size: 56px; line-height: 1.2; margin-top: 6px; }
+  footer .sig[lang="hi"] { font-family: var(--font-deva-script); font-weight: 700; font-size: 40px; line-height: 1.5; }
 
   @media (max-width: 720px) {
     body { font-size: 16px; }
     .hero::before { inset: 46px 8px 8px; }
     .hero::after { inset: 51px 13px 13px; }
-    .hero-inner { padding: 30px 18px 44px; }
+    .hero-inner { padding: 28px 16px 40px; }
     .shloka { font-size: 15px; }
-    .when { gap: 12px; font-size: 14px; }
-    .when .day { font-size: 52px; }
+    .seal-wrap { width: 132px; margin-top: 20px; }
+    .date .num { font-size: 40px; }
+    .date.wed .num { font-size: 50px; }
+    .date .fn { font-size: 13px; }
+    .actions .btn { flex: 1 1 100%; max-width: 340px; }
     .countdown { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; max-width: 320px; margin-inline: auto; }
-    .countdown div { min-width: 0; padding-inline: 2px; }
+    .countdown > div { min-width: 0; padding-inline: 2px; }
     .countdown b { font-size: 26px; }
-    .countdown small { font-size: 9px; letter-spacing: .14em; }
-    section.block { padding-block: 44px; }
-    .sec-head h2 { font-size: 34px; }
-    .hosts { font-size: 22px; }
-    .invite-text { font-size: 16px; }
-    .couple { grid-template-columns: minmax(0, 1fr); gap: 10px; }
-    .person .nm { font-size: 52px; }
-    .event { grid-template-columns: minmax(0, 1fr); }
-    .event h3 { font-size: 26px; }
-    .event .links { flex-direction: row; align-items: center; flex-wrap: wrap; }
-    .row { grid-template-columns: minmax(0, 1fr); }
-    .rsvp-card { padding: 22px 18px; }
+    .countdown small { font-size: 11px; letter-spacing: .06em; }
+    section.block { padding-block: 52px 44px; }
+    .block > h2 { font-size: 36px; }
+    .block > h2[lang="hi"] { font-size: 32px; }
+    .hosts { font-size: 19px; }
+    .invite-text { font-size: 17px; }
+    .couple { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+    .person .nm { font-size: 54px; }
+    .day { grid-template-columns: 72px minmax(0, 1fr); gap: 6px 16px; padding: 24px 0; }
+    .day.wed { padding: 28px 16px; margin-inline: -8px; }
+    .dcol .dnum { font-size: 52px; }
+    .dcol .dnum[lang="hi"] { font-size: 42px; }
+    .day h3 { font-size: 28px; }
+    .day.wed h3 { font-size: 34px; }
+    .day h3 [lang="hi"] { font-size: 26px; }
+    .day.wed h3 [lang="hi"] { font-size: 30px; }
+    .motif { width: 26px; height: 26px; }
+    .day .links { grid-column: 2; flex-direction: row; flex-wrap: wrap; min-width: 0; margin-top: 8px; }
+    .day .links > * { flex: 1 1 150px; }
+    .cal-menu { left: 0; right: auto; transform-origin: top left; }
+    .rsvp-card { padding: 22px 16px; }
+  }
+  @media (max-width: 360px) {
+    .gate-date { letter-spacing: .14em; font-size: 14px; }
+    nav.toc { gap: 0 16px; letter-spacing: .14em; }
   }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     .in, .fade-in, .seal { animation: fade 250ms ease both; animation-delay: 0ms; }
-    .mandala, .glint { animation: none; }
-    .bi > span, [data-show="hi"] .bi > span { filter: none !important; transform: none !important; transition: opacity 300ms ease; }
+    .mandala { animation: none; }
     .glint { display: none; }
-    .btn:active, .link-btn:active, .choice input:active + span { transform: none; }
-    .result { @starting-style { opacity: 0; transform: none; } }
+    .bi > span { filter: none !important; transform: none !important; transition-property: opacity, visibility !important; }
+    .btn:active, .link-btn:active, .date:active, .choice input:active + span { transform: none; }
+    .status-card:not([hidden]), .yes-group:not([hidden]), .cal-menu { @starting-style { transform: none; } }
   }
 </style>
 
 <script>
-  // Show the welcome doors on a guest's first visit this session, unless they prefer
-  // reduced motion or arrived on a direct link to a section (e.g. #rsvp).
+  // Before anything paints: pick the language (saved choice, else the phone's language)
+  // and decide whether to show the welcome doors.
   (function () {
+    var root = document.documentElement, lang = "en";
+    try { lang = localStorage.getItem("ss-lang") || ""; } catch (e) {}
+    if (lang !== "hi" && lang !== "en") lang = /^hi\b/i.test(navigator.language || "") ? "hi" : "en";
+    root.dataset.lang = lang;
+    root.lang = lang;
     try {
       if (matchMedia("(prefers-reduced-motion: reduce)").matches || location.hash) return;
       try { if (sessionStorage.getItem("ss-gate-opened")) return; } catch (e) {}
-      document.documentElement.classList.add("has-gate", "gate-hold");
+      root.classList.add("has-gate", "gate-hold");
     } catch (e) {}
   })();
 </script>
 
-<div class="gate" id="gate" role="button" tabindex="0" aria-label="Open the invitation">
+<div class="gate" id="gate" role="button" tabindex="0" aria-labelledby="gate-hint">
   <div class="door l"><div class="toran" aria-hidden="true"></div><span class="knob"></span></div>
   <div class="door r"><div class="toran" aria-hidden="true"></div><span class="knob"></span></div>
   <div class="gate-center">
     <img class="seal" src="monogram.jpg" width="520" height="520" alt="">
-    <div class="gate-names in" style="--d:120ms;--y:12px"><span class="bi" style="--i:0"><span class="en">Shivanshi &amp; Shashwat</span><span class="hi" lang="hi" aria-hidden="true">शिवांशी संग शाश्वत</span></span></div>
-    <div class="gate-date in" style="--d:220ms;--y:6px"><span class="bi" style="--i:1"><span class="en">28 · 29 · 30 November 2026</span><span class="hi" lang="hi" aria-hidden="true">२८ · २९ · ३० नवंबर २०२६</span></span></div>
-    <div class="gate-hint fade-in" style="--d:700ms"><span class="bi" style="--i:2"><span class="en">Tap to open</span><span class="hi" lang="hi" aria-hidden="true">खोलने के लिए टैप करें</span></span></div>
+    <div class="gate-names in" style="--d:120ms;--y:12px"><span class="bi" style="--i:0"><span class="en">Shivanshi <span class="amp">&amp;</span> Shashwat</span><span class="hi" lang="hi">शिवांशी संग शाश्वत</span></span></div>
+    <div class="gate-date in" style="--d:220ms;--y:6px"><span class="bi" style="--i:1"><span class="en">28 · 29 · 30 November 2026</span><span class="hi" lang="hi">२८ · २९ · ३० नवंबर २०२६</span></span></div>
+    <div class="gate-hint fade-in" id="gate-hint" style="--d:700ms"><span class="bi" style="--i:2"><span class="en">Open the invitation</span><span class="hi" lang="hi">निमंत्रण खोलें</span></span></div>
   </div>
 </div>
 
-<div class="wrap">
+<div class="wrap" id="page">
+  <div class="topbar">
+    <div class="lang-switch" role="group" aria-label="Language / भाषा">
+      <button type="button" data-set="en" lang="en" aria-pressed="true">English</button>
+      <button type="button" data-set="hi" lang="hi" aria-pressed="false">हिंदी</button>
+    </div>
+  </div>
   <header class="hero" id="top">
     <div class="toran fade-in" aria-hidden="true"></div>
     <div class="hero-inner">
@@ -607,178 +760,228 @@
         <span class="glint" aria-hidden="true"></span>
       </div>
 
-
-      <h1 class="names" aria-label="Shivanshi weds Shashwat">
-        <span class="in" style="--y:16px;--dur:800ms"><span class="bi" style="--i:0"><span class="en">Shivanshi</span><span class="hi" lang="hi" aria-hidden="true">शिवांशी</span></span></span>
-        <span class="weds fade-in" style="--d:60ms"><span class="bi" style="--i:1"><span class="en">weds</span><span class="hi" lang="hi" aria-hidden="true">संग</span></span></span>
-        <span class="in" style="--y:16px;--dur:800ms;--d:110ms"><span class="bi" style="--i:2"><span class="en">Shashwat</span><span class="hi" lang="hi" aria-hidden="true">शाश्वत</span></span></span>
+      <h1 class="names" id="names" tabindex="-1">
+        <span class="in" style="--y:16px;--dur:800ms"><span class="bi" style="--i:0"><span class="en">Shivanshi</span><span class="hi" lang="hi">शिवांशी</span></span></span>
+        <span class="weds fade-in" style="--d:60ms"><span class="bi" style="--i:1"><span class="en">weds</span><span class="hi" lang="hi">संग</span></span></span>
+        <span class="in" style="--y:16px;--dur:800ms;--d:110ms"><span class="bi" style="--i:2"><span class="en">Shashwat</span><span class="hi" lang="hi">शाश्वत</span></span></span>
       </h1>
 
-      <div class="when in" style="--d:220ms;--y:6px" aria-label="Monday, 30 November 2026">
-        <div class="side"><span class="bi" style="--i:3"><span class="en">Monday</span><span class="hi" lang="hi" aria-hidden="true">सोमवार</span></span></div>
-        <div><span class="day"><span class="bi" style="--i:3"><span class="en">30</span><span class="hi" lang="hi" aria-hidden="true">३०</span></span></span><span class="month"><span class="bi" style="--i:4"><span class="en">November</span><span class="hi" lang="hi" aria-hidden="true">नवंबर</span></span></span></div>
-        <div class="side"><span class="bi" style="--i:3"><span class="en">2026</span><span class="hi" lang="hi" aria-hidden="true">२०२६</span></span></div>
-      </div>
-      <p class="place in" style="--d:220ms;--y:6px"><span class="bi" style="--i:5"><span class="en">Meerut, Uttar Pradesh</span><span class="hi" lang="hi" aria-hidden="true">मेरठ, उत्तर प्रदेश</span></span></p>
+      <nav class="dates in" style="--d:220ms;--y:6px" aria-label="The three functions">
+        <a class="date" href="#day-28">
+          <span class="dow" data-hi="शनिवार">Sat</span>
+          <span class="num" data-hi="२८">28</span>
+          <span class="fn" data-hi="सगाई">Engagement</span>
+        </a>
+        <a class="date" href="#day-29">
+          <span class="dow" data-hi="रविवार">Sun</span>
+          <span class="num" data-hi="२९">29</span>
+          <span class="fn" data-hi="मेहंदी व संगीत">Mehendi <span class="amp">&amp;</span> Sangeet</span>
+        </a>
+        <a class="date wed" href="#day-30">
+          <span class="dow" data-hi="सोमवार">Mon</span>
+          <span class="num" data-hi="३०">30</span>
+          <span class="fn" data-hi="शुभ विवाह">Wedding</span>
+        </a>
+      </nav>
+      <p class="month-line in" style="--d:280ms;--y:4px" data-hi="नवंबर २०२६">November 2026</p>
+      <p class="place in" style="--d:280ms;--y:4px" data-hi="मेरठ, उत्तर प्रदेश">Meerut, Uttar Pradesh</p>
 
-      <div class="countdown in" style="--d:320ms;--y:4px" id="countdown" aria-label="Time until the wedding">
-        <div><b id="cd-d">--</b><small><span class="bi" style="--i:6"><span class="en">Days</span><span class="hi" lang="hi" aria-hidden="true">दिन</span></span></small></div>
-        <div><b id="cd-h">--</b><small><span class="bi" style="--i:6"><span class="en">Hours</span><span class="hi" lang="hi" aria-hidden="true">घंटे</span></span></small></div>
-        <div><b id="cd-m">--</b><small><span class="bi" style="--i:6"><span class="en">Minutes</span><span class="hi" lang="hi" aria-hidden="true">मिनट</span></span></small></div>
-        <div><b id="cd-s">--</b><small><span class="bi" style="--i:6"><span class="en">Seconds</span><span class="hi" lang="hi" aria-hidden="true">सेकंड</span></span></small></div>
+      <div class="actions in" style="--d:340ms;--y:4px">
+        <a class="btn" href="#rsvp" data-hi="उत्तर दें">R.S.V.P.</a>
+        <a class="btn ghost" href="#functions" data-hi="स्थान व समय">Venues &amp; timings</a>
       </div>
-      <p class="countdown-done" id="countdown-done" hidden>Shubh Vivah</p>
 
-      <div class="actions in" style="--d:400ms;--y:4px">
-        <a class="btn" href="#rsvp">R.S.V.P.</a>
-        <a class="btn ghost" href="#functions">See the functions</a>
+      <div class="in" style="--d:400ms;--y:4px">
+        <p class="countdown-cap" id="cd-cap" data-hi="विवाह में शेष">Until the wedding</p>
+        <div class="countdown" id="countdown" role="timer" aria-labelledby="cd-cap">
+          <div><b id="cd-d">--</b><small data-hi="दिन">Days</small></div>
+          <div><b id="cd-h">--</b><small data-hi="घंटे">Hours</small></div>
+          <div><b id="cd-m">--</b><small data-hi="मिनट">Minutes</small></div>
+          <div><b id="cd-s">--</b><small data-hi="सेकंड">Seconds</small></div>
+        </div>
+        <p class="countdown-done" id="countdown-done" data-hi="शुभ विवाह" hidden>Shubh Vivah</p>
       </div>
     </div>
   </header>
 
   <nav class="toc" aria-label="Sections">
-    <a href="#invitation">Invitation</a>
-    <a href="#functions">Functions</a>
-    <a href="#rsvp">R.S.V.P.</a>
+    <a href="#invitation" data-hi="निमंत्रण">Invitation</a>
+    <a href="#functions" data-hi="कार्यक्रम">Functions</a>
+    <a href="#rsvp" data-hi="उत्तर दें">R.S.V.P.</a>
   </nav>
 
-  <section class="block" id="invitation">
-    <div class="sec-head reveal"><span class="deva" lang="hi">निमंत्रण</span><h2>Invitation</h2></div>
-    <div class="invite reveal">
-      <p class="hosts">Mrs. Kusum Lata Tyagi &amp; Lt. Mr. Mahendra Singh Tyagi</p>
-      <p class="invite-text">feel immense pleasure in requesting your presence and blessings on the auspicious occasion of the marriage ceremony of their beloved granddaughter</p>
+  <main>
+    <section class="block" id="invitation">
+      <h2 class="reveal" data-hi="निमंत्रण">Invitation</h2>
+      <div class="invite reveal">
+        <p class="hosts" data-hi="श्रीमती कुसुम लता त्यागी एवं स्व. श्री महेंद्र सिंह त्यागी">Mrs. Kusum Lata Tyagi &amp; Lt. Mr. Mahendra Singh Tyagi</p>
+        <p class="invite-text" data-hi="अपनी प्रिय पौत्री के शुभ विवाह के मंगल अवसर पर आपकी गरिमामयी उपस्थिति एवं आशीर्वाद हेतु सादर आमंत्रित करते हैं">feel immense pleasure in requesting your presence and blessings on the auspicious occasion of the marriage ceremony of their beloved granddaughter</p>
 
-      <div class="couple">
-        <div class="person">
-          <div class="nm">Shivanshi</div>
-          <div class="rel">D/o Mrs. Sarita Tyagi &amp; Mr. Sudhir Tyagi</div>
+        <div class="couple">
+          <div class="person">
+            <div class="nm" data-hi="शिवांशी">Shivanshi</div>
+            <div class="rel" data-hi="सुपुत्री श्रीमती सरिता त्यागी एवं श्री सुधीर त्यागी">D/o Mrs. Sarita Tyagi &amp; Mr. Sudhir Tyagi</div>
+          </div>
+          <div class="weds" data-hi="संग">weds</div>
+          <div class="person">
+            <div class="nm" data-hi="शाश्वत">Shashwat</div>
+            <div class="rel" data-hi="सुपुत्र श्रीमती आभा त्यागी एवं श्री भूपेंद्र त्यागी">S/o Mrs. Abha Tyagi &amp; Mr. Bhupendra Tyagi</div>
+          </div>
         </div>
-        <div class="weds">weds</div>
-        <div class="person">
-          <div class="nm">Shashwat</div>
-          <div class="rel">S/o Mrs. Abha Tyagi &amp; Mr. Bhupendra Tyagi</div>
-        </div>
+        <div class="resi" data-hi="निवास: मेरठ (उ.प्र.)">Resi.: Meerut (U.P.)</div>
       </div>
-      <div class="resi">Resi.: Meerut (U.P.)</div>
-    </div>
-  </section>
+    </section>
 
-  <section class="block" id="functions">
-    <div class="sec-head reveal"><span class="deva" lang="hi">कार्यक्रम</span><h2>Functions</h2></div>
-    <div class="days">
-      <div class="reveal">
-        <div class="day-head">Saturday · 28 November 2026</div>
-        <article class="event" data-start="20261128T190000" data-end="20261128T230000"
-          data-title="Engagement · Shivanshi &amp; Shashwat"
+    <section class="block" id="functions">
+      <h2 class="reveal" data-hi="कार्यक्रम">Functions</h2>
+      <div class="days">
+        <article class="day engage reveal" id="day-28"
+          data-start="20261128T190000" data-end="2026-11-28T23:00:00+05:30" data-end-ics="20261128T230000"
+          data-title="Engagement · Shivanshi & Shashwat"
           data-place="The Bhutani Heritage, NH-58, Kanker Khera, Meerut, Uttar Pradesh">
+          <div class="dcol"><span class="dnum" data-hi="२८">28</span><span class="dmon" data-hi="नवंबर">Nov</span><span class="ddow" data-hi="शनिवार">Saturday</span></div>
           <div>
-            <h3>Engagement <span class="deva" lang="hi">सगाई</span></h3>
-            <div class="timings"><div class="timing"><b>7:00 PM</b><span>Onwards</span></div></div>
-            <div class="venue"><strong>The Bhutani Heritage</strong><span>NH-58, Kanker Khera, Meerut</span></div>
+            <h3><svg class="motif" viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="19" r="7.5"/><circle cx="20" cy="19" r="7.5"/><path d="M20 5.5l2.5 2.5-2.5 2.5-2.5-2.5z"/></svg><span data-hi="सगाई">Engagement</span></h3>
+            <div class="timings"><div class="timing"><b data-hi="सायं ७:००">7:00 PM</b><span data-hi="बजे से">Onwards</span></div></div>
+            <div class="venue"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"/></svg><div><strong>The Bhutani Heritage</strong><span data-hi="एनएच-58, कंकरखेड़ा, मेरठ">NH-58, Kanker Khera, Meerut</span></div></div>
+            <div class="past-badge" data-hi="सम्पन्न">Celebrated</div>
           </div>
           <div class="links"></div>
         </article>
-      </div>
 
-      <div class="reveal">
-        <div class="day-head">Sunday · 29 November 2026</div>
-        <article class="event" data-start="20261129T170000" data-end="20261129T230000"
-          data-title="Mehendi &amp; Sangeet · Shivanshi &amp; Shashwat"
+        <article class="day mehendi reveal" id="day-29"
+          data-start="20261129T170000" data-end="2026-11-29T23:00:00+05:30" data-end-ics="20261129T230000"
+          data-title="Mehendi & Sangeet · Shivanshi & Shashwat"
           data-place="Novah, Modipuram, Meerut, Uttar Pradesh">
+          <div class="dcol"><span class="dnum" data-hi="२९">29</span><span class="dmon" data-hi="नवंबर">Nov</span><span class="ddow" data-hi="रविवार">Sunday</span></div>
           <div>
-            <h3>Mehendi &amp; Sangeet <span class="deva" lang="hi">मेहंदी व संगीत</span></h3>
-            <div class="timings"><div class="timing"><b>5:00 PM</b><span>Onwards</span></div></div>
-            <div class="venue"><strong>Novah</strong><span>Modipuram, Meerut</span></div>
+            <h3><svg class="motif" viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 29c-5.8 0-9.5-3.9-9.5-8.6 0-6 5.3-8 8-11.3 1.6-2 1.8-4 1-5.6 4.8 1.8 9.5 7.4 9.5 13.9 0 6.8-3.5 11.6-9 11.6z"/><path d="M16 24c-2.6 0-4-1.7-4-3.7 0-2.6 2.6-4 4-5.8"/><circle cx="16.5" cy="20" r="1.2" fill="currentColor"/></svg><span data-hi="मेहंदी व संगीत">Mehendi <span class="amp">&amp;</span> Sangeet</span></h3>
+            <div class="timings"><div class="timing"><b data-hi="सायं ५:००">5:00 PM</b><span data-hi="बजे से">Onwards</span></div></div>
+            <div class="venue"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"/></svg><div><strong>Novah</strong><span data-hi="मोदीपुरम, मेरठ">Modipuram, Meerut</span></div></div>
+            <div class="past-badge" data-hi="सम्पन्न">Celebrated</div>
           </div>
           <div class="links"></div>
         </article>
-      </div>
 
-      <div class="reveal">
-        <div class="day-head">Monday · 30 November 2026</div>
-        <article class="event main" data-start="20261130T190000" data-end="20261130T235900"
+        <article class="day wed reveal" id="day-30"
+          data-start="20261130T190000" data-end="2026-11-30T23:59:00+05:30" data-end-ics="20261130T235900"
           data-title="Wedding · Shivanshi weds Shashwat"
           data-place="Grand Rishala, NH-58, Kanker Khera, Meerut, Uttar Pradesh">
+          <div class="dcol"><span class="dnum" data-hi="३०">30</span><span class="dmon" data-hi="नवंबर">Nov</span><span class="ddow" data-hi="सोमवार">Monday</span></div>
           <div>
-            <h3>Wedding <span class="deva" lang="hi">शुभ विवाह</span></h3>
+            <h3><svg class="motif" viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 18.5h24c-1.4 5-6.2 8.5-12 8.5S5.4 23.5 4 18.5z"/><path d="M16 4c2.6 3.2 3.4 5.6 3.4 7.6a3.4 3.4 0 0 1-6.8 0c0-2 .8-4.4 3.4-7.6z"/><path d="M11 30h10"/></svg><span data-hi="शुभ विवाह">Wedding</span></h3>
             <div class="timings">
-              <div class="timing"><b>7:00 PM</b><span>Baraat Swagat</span></div>
-              <div class="timing"><b>8:00 PM</b><span>Dinner</span></div>
+              <div class="timing"><b data-hi="सायं ७:००">7:00 PM</b><span data-hi="बारात स्वागत">Baraat Swagat</span></div>
+              <div class="timing"><b data-hi="रात्रि ८:००">8:00 PM</b><span data-hi="प्रीतिभोज">Dinner</span></div>
             </div>
-            <div class="venue"><strong>Grand Rishala</strong><span>NH-58, Kanker Khera, Meerut</span></div>
+            <div class="venue"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"/></svg><div><strong>Grand Rishala</strong><span data-hi="एनएच-58, कंकरखेड़ा, मेरठ">NH-58, Kanker Khera, Meerut</span></div></div>
+            <div class="past-badge" data-hi="सम्पन्न">Celebrated</div>
           </div>
           <div class="links"></div>
         </article>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="block" id="rsvp">
-    <div class="sec-head reveal"><span class="deva" lang="hi">कृपया उत्तर दें</span><h2>R.S.V.P.</h2></div>
-    <div class="rsvp-wrap reveal">
-      <div class="rsvp-contact">
-        <div class="who">Amit Tyagi</div>
-        <p class="phone"><a href="tel:+919811529201">+91 98115 29201</a></p>
-        <p>Let us know who is coming and to which functions.</p>
-      </div>
-      <div class="rsvp-card">
-        <form id="rsvp-form" novalidate>
-          <div class="row">
-            <div>
-              <label for="r-name">Your name / family</label>
-              <input type="text" id="r-name" name="name" autocomplete="name" placeholder="e.g. Rakesh Sharma &amp; family">
+    <section class="block" id="rsvp">
+      <h2 class="reveal" data-hi="कृपया उत्तर दें">R.S.V.P.</h2>
+      <div class="rsvp-wrap reveal">
+        <div class="rsvp-contact">
+          <div class="who" data-hi="अमित त्यागी">Amit Tyagi</div>
+          <p class="phone"><a href="tel:+919811529201">+91 98115 29201</a></p>
+          <p data-hi="बताएँ कि कौन आ रहा है और किन कार्यक्रमों में।">Let us know who is coming and to which functions.</p>
+        </div>
+
+        <div class="rsvp-card">
+          <p class="replied" id="r-replied" role="status" hidden></p>
+
+          <form id="rsvp-form" novalidate>
+            <div class="field">
+              <label class="lbl" for="r-name" data-hi="आपका नाम या परिवार">Your name or family</label>
+              <input type="text" id="r-name" name="name" autocomplete="name" aria-describedby="e-name"
+                placeholder="e.g. Rakesh Sharma &amp; family" data-hi-ph="जैसे राकेश शर्मा एवं परिवार">
+              <p class="field-error" id="e-name" role="alert"></p>
             </div>
-            <div>
-              <label for="r-count">Number of guests</label>
-              <select id="r-count" name="count">
-                <option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option>
-              </select>
+
+            <fieldset aria-describedby="e-att">
+              <legend data-hi="क्या आप आएँगे?">Will you attend?</legend>
+              <div class="choices">
+                <label class="choice"><input type="radio" name="attending" id="r-yes" value="yes"><span data-hi="हाँ, हम आएँगे">Yes, we will be there</span></label>
+                <label class="choice"><input type="radio" name="attending" id="r-no" value="no"><span data-hi="क्षमा करें, नहीं आ पाएँगे">Sorry, we can't make it</span></label>
+              </div>
+              <p class="field-error" id="e-att" role="alert"></p>
+            </fieldset>
+
+            <div class="yes-group" id="yes-group" hidden>
+              <div class="field">
+                <label class="lbl" for="r-count" data-hi="कुल कितने लोग आएँगे? (आपको मिलाकर)">How many people, including you?</label>
+                <input type="number" id="r-count" name="count" inputmode="numeric" min="1" max="99" aria-describedby="e-count"
+                  placeholder="e.g. 4" data-hi-ph="जैसे ४">
+                <p class="field-error" id="e-count" role="alert"></p>
+              </div>
+              <fieldset aria-describedby="e-ev">
+                <legend data-hi="किन कार्यक्रमों में?">Which functions?</legend>
+                <div class="choices">
+                  <label class="choice"><input type="checkbox" name="events" id="r-ev1" value="engage" checked><span data-hi="सगाई · २८ नवंबर">Engagement · 28 Nov</span></label>
+                  <label class="choice"><input type="checkbox" name="events" id="r-ev2" value="mehendi" checked><span data-hi="मेहंदी व संगीत · २९ नवंबर">Mehendi &amp; Sangeet · 29 Nov</span></label>
+                  <label class="choice"><input type="checkbox" name="events" id="r-ev3" value="wed" checked><span data-hi="शुभ विवाह · ३० नवंबर">Wedding · 30 Nov</span></label>
+                </div>
+                <p class="field-error" id="e-ev" role="alert"></p>
+              </fieldset>
+            </div>
+
+            <div class="field">
+              <label class="lbl" for="r-note" data-hi="वर-वधू के लिए आशीर्वाद (वैकल्पिक)">Blessings for the couple (optional)</label>
+              <textarea id="r-note" name="note"></textarea>
+            </div>
+
+            <div class="preview">
+              <div class="preview-label" id="r-text-label" data-hi="अमित जी को आपका संदेश">Your message to Amit</div>
+              <pre id="r-text" class="empty" aria-labelledby="r-text-label" aria-live="polite"></pre>
+            </div>
+
+            <div class="send">
+              <a class="btn wa" id="r-wa" href="https://wa.me/919811529201" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12a8 8 0 1 1 3.6 6.7L4 20l1.3-3.5A8 8 0 0 1 4 12z"/><path d="M9.5 9.5c.2 2.4 2.6 4.8 5 5l1.2-1.4-1.7-.9-.8.8c-.9-.4-1.6-1.1-2-2l.8-.8-.9-1.7z" fill="currentColor" stroke="none"/></svg>
+                <span data-hi="व्हाट्सऐप पर भेजें">Send on WhatsApp</span>
+              </a>
+              <div class="alt">
+                <button type="button" class="text-btn" id="r-copy" data-hi="संदेश कॉपी करें">Copy message</button>
+                <span><span data-hi="या कॉल करें">or call</span> <a href="tel:+919811529201">+91 98115 29201</a></span>
+              </div>
+            </div>
+          </form>
+
+          <div class="status-card" id="r-check" role="status" hidden>
+            <p class="check-q" data-hi="क्या आपने व्हाट्सऐप में संदेश भेज दिया?">Did you press send in WhatsApp?</p>
+            <p data-hi="उत्तर तभी अमित जी तक पहुँचेगा जब आप व्हाट्सऐप में भेजें दबाएँगे।">Your reply only reaches Amit once you press send there.</p>
+            <div class="row-btns">
+              <button type="button" class="btn" id="r-sent" data-hi="हाँ, भेज दिया">Yes, I sent it</button>
+              <a class="btn ghost" id="r-wa-again" href="https://wa.me/919811529201" target="_blank" rel="noopener" data-hi="व्हाट्सऐप फिर खोलें">Open WhatsApp again</a>
             </div>
           </div>
 
-          <fieldset>
-            <legend>Will you attend?</legend>
-            <div class="choices">
-              <label class="choice"><input type="radio" name="attending" id="r-yes" value="yes"><span>Yes, we will be there</span></label>
-              <label class="choice"><input type="radio" name="attending" id="r-no" value="no"><span>Sorry, we can't make it</span></label>
-            </div>
-          </fieldset>
-
-          <fieldset id="r-events-wrap">
-            <legend>Which functions?</legend>
-            <div class="choices">
-              <label class="choice"><input type="checkbox" name="events" id="r-ev1" value="Engagement (28 Nov)" checked><span>Engagement · 28 Nov</span></label>
-              <label class="choice"><input type="checkbox" name="events" id="r-ev2" value="Mehendi & Sangeet (29 Nov)" checked><span>Mehendi &amp; Sangeet · 29 Nov</span></label>
-              <label class="choice"><input type="checkbox" name="events" id="r-ev3" value="Wedding (30 Nov)" checked><span>Wedding · 30 Nov</span></label>
-            </div>
-          </fieldset>
-
-          <div>
-            <label for="r-note">Blessings for the couple</label>
-            <textarea id="r-note" name="note" placeholder="Optional"></textarea>
+          <div class="status-card" id="r-done" role="status" hidden>
+            <h3 id="r-done-title"></h3>
+            <p id="r-done-text"></p>
+            <div class="row-btns"><button type="button" class="text-btn" id="r-again" data-hi="उत्तर बदलें">Change my reply</button></div>
           </div>
 
-          <p class="error" id="r-error" hidden></p>
-          <div><button class="btn" type="submit">Prepare my reply</button></div>
-        </form>
-
-        <div class="result" id="r-result" hidden>
-          <h3 id="r-thanks">Dhanyavaad</h3>
-          <pre id="r-text"></pre>
-          <div class="actions">
-            <a class="btn" id="r-wa" href="#" target="_blank" rel="noopener">Send on WhatsApp</a>
-            <button class="btn ghost" type="button" id="r-copy">Copy reply</button>
+          <div class="status-card" id="r-closed" hidden>
+            <h3 data-hi="धन्यवाद">Dhanyavaad</h3>
+            <p data-hi="हमारे उत्सव में शामिल होने और आशीर्वाद देने के लिए हृदय से धन्यवाद।">Thank you for celebrating with us and for your blessings.</p>
           </div>
-          <p class="note" id="r-note-send">WhatsApp opens with your reply typed out. Choose Amit Tyagi and press send.</p>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+  </main>
 
   <footer class="reveal">
-    <div class="pre">With best compliments from</div>
-    <div class="sig">Tyagi Family</div>
-    <div class="deva" lang="hi">त्यागी परिवार</div>
+    <div class="pre" data-hi="दर्शनाभिलाषी">With best compliments from</div>
+    <div class="sig" data-hi="त्यागी परिवार">Tyagi Family</div>
+    <div class="lang-switch" role="group" aria-label="Language / भाषा">
+      <button type="button" data-set="en" lang="en" aria-pressed="true">English</button>
+      <button type="button" data-set="hi" lang="hi" aria-pressed="false">हिंदी</button>
+    </div>
   </footer>
 </div>
 
@@ -786,30 +989,96 @@
 (function () {
   // ---- Details you can change ----
   var WEDDING = new Date("2026-11-30T19:00:00+05:30"); // Baraat Swagat, India time
-  var RSVP_WHATSAPP = "919811529201";   // Amit Tyagi's number with country code, digits only. Empty = guest picks the contact.
-  var COUPLE = "Shivanshi & Shashwat";
+  var WEDDING_END = new Date("2026-11-30T23:59:00+05:30");
+  var RSVP_WHATSAPP = "919811529201";                   // Amit Tyagi, with country code, digits only
 
   var root = document.documentElement;
   var reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var lang = root.dataset.lang === "hi" ? "hi" : "en";
+
+  var STR = {
+    en: {
+      calendar: "Add to calendar", google: "Google Calendar", ics: "Apple / Outlook (.ics)", location: "Location",
+      mapsLabel: function (p) { return "Open " + p + " in Google Maps"; },
+      eName: "Please add your name so the family knows who is replying.",
+      eAtt: "Please choose whether you will attend.",
+      eCount: "Please enter how many people are coming, from 1 to 99.",
+      eEv: "Please pick at least one function.",
+      previewEmpty: "Your message will appear here as you fill in the form.",
+      msgTitle: "R.S.V.P. for Shivanshi & Shashwat's wedding",
+      msgName: "Name", msgComing: "Coming", msgYes: function (n) { return "Yes, " + n + (n === "1" ? " person" : " people"); },
+      msgNo: "Sorry, we can't make it", msgFns: "Functions", msgBless: "Blessings",
+      events: { engage: "Engagement (28 Nov)", mehendi: "Mehendi & Sangeet (29 Nov)", wed: "Wedding (30 Nov)" },
+      doneYesT: "Dhanyavaad!", doneYesP: "Amit has your reply. The family looks forward to seeing you.",
+      doneNoT: "Thank you", doneNoP: "Thank you for letting us know. Your blessings mean a lot to the family.",
+      replied: function (n, d) { return "You replied as " + n + " on " + d + ". If anything changes, send a new reply below."; },
+      copied: "Copied", copy: "Copy message", selected: "Selected, press copy"
+    },
+    hi: {
+      calendar: "कैलेंडर में जोड़ें", google: "गूगल कैलेंडर", ics: "ऐप्पल / आउटलुक (.ics)", location: "स्थान देखें",
+      mapsLabel: function (p) { return p + " गूगल मैप्स में खोलें"; },
+      eName: "कृपया अपना नाम लिखें ताकि परिवार को पता चले कि उत्तर किसका है।",
+      eAtt: "कृपया बताएँ कि आप आएँगे या नहीं।",
+      eCount: "कृपया बताएँ कि कितने लोग आ रहे हैं (१ से ९९)।",
+      eEv: "कृपया कम से कम एक कार्यक्रम चुनें।",
+      previewEmpty: "फ़ॉर्म भरते ही आपका संदेश यहाँ दिखेगा।",
+      msgTitle: "शिवांशी एवं शाश्वत के विवाह हेतु उत्तर",
+      msgName: "नाम", msgComing: "आ रहे हैं", msgYes: function (n) { return "हाँ, " + n + " लोग"; },
+      msgNo: "क्षमा करें, नहीं आ पाएँगे", msgFns: "कार्यक्रम", msgBless: "आशीर्वाद",
+      events: { engage: "सगाई (२८ नवंबर)", mehendi: "मेहंदी व संगीत (२९ नवंबर)", wed: "शुभ विवाह (३० नवंबर)" },
+      doneYesT: "धन्यवाद!", doneYesP: "अमित जी को आपका उत्तर मिल गया है। परिवार को आपकी प्रतीक्षा रहेगी।",
+      doneNoT: "धन्यवाद", doneNoP: "बताने के लिए धन्यवाद। आपका आशीर्वाद परिवार के लिए अनमोल है।",
+      replied: function (n, d) { return "आप " + d + " को " + n + " के नाम से उत्तर दे चुके हैं। कुछ बदले तो नीचे नया उत्तर भेजें।"; },
+      copied: "कॉपी हो गया", copy: "संदेश कॉपी करें", selected: "चुना गया, कॉपी दबाएँ"
+    }
+  };
+
+  // ---- Language ----
+  // Elements carry their Hindi in data-hi; their English markup is remembered and restored.
+  var enHTML = new WeakMap();
+  function applyLang(next, animate) {
+    lang = next;
+    root.dataset.lang = lang;
+    root.lang = lang;
+    document.querySelectorAll("[data-hi]").forEach(function (el) {
+      if (!enHTML.has(el)) enHTML.set(el, el.innerHTML);
+      if (lang === "hi") { el.textContent = el.dataset.hi; el.lang = "hi"; }
+      else { el.innerHTML = enHTML.get(el); el.removeAttribute("lang"); }
+      if (animate && !reduceMotion && !el.closest(".hero")) {
+        el.classList.remove("swapped"); void el.offsetWidth; el.classList.add("swapped");
+      }
+    });
+    document.querySelectorAll("[data-hi-ph]").forEach(function (el) {
+      if (!el.dataset.enPh) el.dataset.enPh = el.placeholder;
+      el.placeholder = lang === "hi" ? el.dataset.hiPh : el.dataset.enPh;
+    });
+    document.querySelectorAll(".lang-switch button").forEach(function (b) {
+      b.setAttribute("aria-pressed", String(b.dataset.set === lang));
+    });
+    buildEventLinks();
+    clearErrors();
+    updatePreview();
+    renderReplied();
+    if (doneState) showDone(doneState);
+    root.classList.add("lang-ready");
+  }
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest(".lang-switch button[data-set]");
+    if (!b || b.dataset.set === lang) return;
+    try { localStorage.setItem("ss-lang", b.dataset.set); } catch (x) {}
+    applyLang(b.dataset.set, true);
+  });
 
   // ---- Mandala behind the seal: rings of petals, drawn once ----
   (function drawMandala() {
-    var svg = document.getElementById("mandala");
     var out = "";
-    var rings = [
-      { r: 60, n: 16, rx: 4.5, ry: 9 },
-      { r: 75, n: 24, rx: 3.5, ry: 8 },
-      { r: 90, n: 32, rx: 3, ry: 7 }
-    ];
-    rings.forEach(function (ring) {
+    [{ r: 60, n: 16, rx: 4.5, ry: 9 }, { r: 75, n: 24, rx: 3.5, ry: 8 }, { r: 90, n: 32, rx: 3, ry: 7 }].forEach(function (ring) {
       for (var i = 0; i < ring.n; i++) {
-        out += '<ellipse cx="0" cy="' + -ring.r + '" rx="' + ring.rx + '" ry="' + ring.ry +
-          '" transform="rotate(' + (i * 360 / ring.n).toFixed(2) + ')"/>';
+        out += '<ellipse cx="0" cy="' + -ring.r + '" rx="' + ring.rx + '" ry="' + ring.ry + '" transform="rotate(' + (i * 360 / ring.n).toFixed(2) + ')"/>';
       }
     });
-    out = '<g fill="none" stroke="currentColor" stroke-width=".6">' + out +
+    document.getElementById("mandala").innerHTML = '<g fill="none" stroke="currentColor" stroke-width=".6">' + out +
       '<circle r="52"/><circle r="67" stroke-dasharray="1.5 2.5"/><circle r="83"/><circle r="98" stroke-dasharray="1 3"/></g>';
-    svg.innerHTML = out;
   })();
 
   // ---- Petal shower: marigold and rose petals with a little gold dust ----
@@ -825,27 +1094,18 @@
     var W = innerWidth, H = innerHeight;
     canvas.width = W * dpr; canvas.height = H * dpr;
     ctx.scale(dpr, dpr);
-
     var total = count || Math.max(50, Math.min(120, Math.round(W / 10)));
     var petals = [];
     for (var i = 0; i < total; i++) {
       var dust = Math.random() < 0.18;
       petals.push({
-        x: Math.random() * W,
-        y: -20 - Math.random() * H * 0.35,
-        vy: 110 + Math.random() * 80,
-        vx: (Math.random() - 0.5) * 30,
-        sway: 15 + Math.random() * 30,
-        swaySpeed: 0.8 + Math.random() * 1.4,
-        phase: Math.random() * Math.PI * 2,
-        rot: Math.random() * Math.PI * 2,
-        vr: (Math.random() - 0.5) * 3,
-        flip: Math.random() * Math.PI * 2,
-        vf: 2 + Math.random() * 3,
-        w: dust ? 1.6 : 4 + Math.random() * 4,
-        h: dust ? 1.6 : 7 + Math.random() * 6,
-        color: dust ? "#F3D58A" : COLORS[(Math.random() * COLORS.length) | 0],
-        dust: dust
+        x: Math.random() * W, y: -20 - Math.random() * H * 0.35,
+        vy: 110 + Math.random() * 80, vx: (Math.random() - 0.5) * 30,
+        sway: 15 + Math.random() * 30, swaySpeed: 0.8 + Math.random() * 1.4, phase: Math.random() * Math.PI * 2,
+        rot: Math.random() * Math.PI * 2, vr: (Math.random() - 0.5) * 3,
+        flip: Math.random() * Math.PI * 2, vf: 2 + Math.random() * 3,
+        w: dust ? 1.6 : 4 + Math.random() * 4, h: dust ? 1.6 : 7 + Math.random() * 6,
+        color: dust ? "#F3D58A" : COLORS[(Math.random() * COLORS.length) | 0], dust: dust
       });
     }
     var last = performance.now(), t = 0;
@@ -856,33 +1116,23 @@
       var alive = 0;
       for (var i = 0; i < petals.length; i++) {
         var p = petals[i];
-        p.y += p.vy * dt;
-        p.x += p.vx * dt;
-        p.rot += p.vr * dt;
-        p.flip += p.vf * dt;
+        p.y += p.vy * dt; p.x += p.vx * dt; p.rot += p.vr * dt; p.flip += p.vf * dt;
         if (p.y > H + 30) continue;
         alive++;
-        var x = p.x + Math.sin(t * p.swaySpeed + p.phase) * p.sway;
         ctx.save();
-        ctx.translate(x, p.y);
+        ctx.translate(p.x + Math.sin(t * p.swaySpeed + p.phase) * p.sway, p.y);
         ctx.rotate(p.rot);
         ctx.scale(1, p.dust ? 1 : Math.max(0.15, Math.abs(Math.cos(p.flip))));
         ctx.globalAlpha = p.dust ? 0.5 + 0.5 * Math.abs(Math.sin(p.flip)) : 0.95;
         ctx.fillStyle = p.color;
-        ctx.beginPath();
-        ctx.ellipse(0, 0, p.w, p.h, 0, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.beginPath(); ctx.ellipse(0, 0, p.w, p.h, 0, 0, Math.PI * 2); ctx.fill();
         if (!p.dust) {
-          ctx.globalAlpha = 0.25;
-          ctx.fillStyle = "#fff";
-          ctx.beginPath();
-          ctx.ellipse(-p.w * 0.3, -p.h * 0.2, p.w * 0.35, p.h * 0.55, 0, 0, Math.PI * 2);
-          ctx.fill();
+          ctx.globalAlpha = 0.25; ctx.fillStyle = "#fff";
+          ctx.beginPath(); ctx.ellipse(-p.w * 0.3, -p.h * 0.2, p.w * 0.35, p.h * 0.55, 0, 0, Math.PI * 2); ctx.fill();
         }
         ctx.restore();
       }
-      if (alive) requestAnimationFrame(frame);
-      else canvas.remove();
+      if (alive) requestAnimationFrame(frame); else canvas.remove();
     }
     requestAnimationFrame(frame);
   }
@@ -890,149 +1140,224 @@
   // ---- Welcome gate ----
   // Timeline: seal and names leave (0–220ms) → doors swing open (120–1270ms)
   // → page entrance resumes (380ms) → petals fall (600ms) → gate removed (1350ms).
+  // While the doors are closed the page behind them is inert, so Tab reaches only the doors.
   var gate = document.getElementById("gate");
+  var page = document.getElementById("page");
   var autoOpen;
   function openGate() {
     if (gate.classList.contains("opening")) return;
+    var hadFocus = document.activeElement === gate;
     clearTimeout(autoOpen);
     try { sessionStorage.setItem("ss-gate-opened", "1"); } catch (e) {}
     gate.classList.add("opening");
+    page.inert = false;
     setTimeout(function () { root.classList.remove("gate-hold"); }, 380);
-    setTimeout(cycleHero, 1800);
     setTimeout(function () { showerPetals(); }, 600);
-    setTimeout(function () { root.classList.remove("has-gate"); gate.remove(); }, 1350);
+    setTimeout(function () {
+      root.classList.remove("has-gate");
+      gate.remove();
+      if (hadFocus) document.getElementById("names").focus({ preventScroll: true });
+    }, 1350);
   }
   if (root.classList.contains("has-gate")) {
+    page.inert = true;
     gate.addEventListener("click", openGate);
     gate.addEventListener("keydown", function (e) {
       if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openGate(); }
     });
-    autoOpen = setTimeout(openGate, 3800); // opens on its own if the guest doesn't tap
+    // The doors show the other language once, then open by themselves if the guest doesn't tap.
+    if (!reduceMotion) setTimeout(function () {
+      var gc = document.querySelector(".gate-center");
+      if (gc) gc.dataset.show = lang === "hi" ? "en" : "hi";
+    }, 1800);
+    autoOpen = setTimeout(openGate, 3800);
   } else {
     gate.remove();
-    setTimeout(cycleHero, 1800);
   }
-
-  // ---- English / Hindi swap ----
-  // The doors switch to Hindi once while they wait; the card then alternates every 4s.
-  // Guests who prefer reduced motion stay on English, with no automatic changes.
-  var heroEl = document.querySelector(".hero");
-  var gateCenter = document.querySelector(".gate-center");
-  var langTimer;
-  function cycleHero() {
-    clearInterval(langTimer);
-    if (reduceMotion) return;
-    langTimer = setInterval(function () {
-      if (document.hidden) return;
-      heroEl.dataset.show = heroEl.dataset.show === "hi" ? "en" : "hi";
-    }, 4000);
-  }
-  if (gateCenter && !reduceMotion) setTimeout(function () { gateCenter.dataset.show = "hi"; }, 1800);
 
   // ---- Countdown ----
   var cd = document.getElementById("countdown");
-  var done = document.getElementById("countdown-done");
+  var cdCap = document.getElementById("cd-cap");
+  var cdDone = document.getElementById("countdown-done");
   var els = ["d", "h", "m", "s"].map(function (k) { return document.getElementById("cd-" + k); });
+  var DEV = "०१२३४५६७८९";
+  function num(n) { return lang === "hi" ? String(n).replace(/\d/g, function (d) { return DEV[d]; }) : String(n); }
   function pad(n) { return n < 10 ? "0" + n : "" + n; }
   function tick() {
     var diff = WEDDING - new Date();
-    if (diff <= 0) { cd.hidden = true; done.hidden = false; return; }
+    if (diff <= 0) { cd.hidden = true; cdCap.hidden = true; cdDone.hidden = false; return; }
     var s = Math.floor(diff / 1000);
     var v = [Math.floor(s / 86400), Math.floor(s % 86400 / 3600), Math.floor(s % 3600 / 60), s % 60];
-    els[0].textContent = v[0];
-    for (var i = 1; i < 4; i++) els[i].textContent = pad(v[i]);
+    els[0].textContent = num(v[0]);
+    for (var i = 1; i < 4; i++) els[i].textContent = num(pad(v[i]));
   }
-  tick();
-  setInterval(tick, 1000);
 
   // ---- Map & calendar links ----
   var PIN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"/></svg>';
   var CAL = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 2h2v2h6V2h2v2h3a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3V2Zm12 8H5v9h14v-9Z"/></svg>';
+  var DETAILS = "Shivanshi weds Shashwat. With best compliments from the Tyagi Family.";
+  function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;"); }
   function mapUrl(place) { return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(place); }
-  function calUrl(title, start, end, place) {
-    return "https://calendar.google.com/calendar/render?action=TEMPLATE" +
-      "&text=" + encodeURIComponent(title) +
-      "&dates=" + start + "/" + end +
-      "&ctz=Asia/Kolkata" +
-      "&location=" + encodeURIComponent(place) +
-      "&details=" + encodeURIComponent("Shivanshi weds Shashwat. With best compliments from the Tyagi Family.");
+  function gcalUrl(d) {
+    return "https://calendar.google.com/calendar/render?action=TEMPLATE&text=" + encodeURIComponent(d.title) +
+      "&dates=" + d.start + "/" + d.endIcs + "&ctz=Asia/Kolkata&location=" + encodeURIComponent(d.place) +
+      "&details=" + encodeURIComponent(DETAILS);
   }
-  document.querySelectorAll(".event").forEach(function (ev) {
-    var d = ev.dataset, box = ev.querySelector(".links");
-    var m = document.createElement("a");
-    m.className = "link-btn"; m.href = mapUrl(d.place); m.target = "_blank"; m.rel = "noopener";
-    m.innerHTML = PIN + "<span>Location</span>";
-    m.setAttribute("aria-label", "Open " + d.place.split(",")[0] + " in Google Maps");
-    var c = document.createElement("a");
-    c.className = "link-btn"; c.href = calUrl(d.title, d.start, d.end, d.place); c.target = "_blank"; c.rel = "noopener";
-    c.innerHTML = CAL + "<span>Save the date</span>";
-    c.setAttribute("aria-label", "Add " + d.title + " to Google Calendar");
-    box.append(m, c);
+  function icsUrl(d) {
+    var ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Tyagi Family//Wedding//EN", "BEGIN:VEVENT",
+      "UID:" + d.start + "@shivanshi-weds-shashwat", "DTSTAMP:20261101T000000Z",
+      "DTSTART;TZID=Asia/Kolkata:" + d.start, "DTEND;TZID=Asia/Kolkata:" + d.endIcs,
+      "SUMMARY:" + d.title, "LOCATION:" + d.place.replace(/,/g, "\\,"), "DESCRIPTION:" + DETAILS,
+      "END:VEVENT", "END:VCALENDAR"].join("\r\n");
+    return "data:text/calendar;charset=utf-8," + encodeURIComponent(ics);
+  }
+  function buildEventLinks() {
+    var S = STR[lang];
+    document.querySelectorAll(".day").forEach(function (ev) {
+      var d = ev.dataset, venue = d.place.split(",")[0];
+      ev.querySelector(".links").innerHTML =
+        '<a class="link-btn" href="' + esc(mapUrl(d.place)) + '" target="_blank" rel="noopener" aria-label="' + esc(S.mapsLabel(venue)) + '">' + PIN + '<span' + (lang === "hi" ? ' lang="hi"' : "") + '>' + S.location + '</span></a>' +
+        '<details class="cal"><summary class="link-btn">' + CAL + '<span' + (lang === "hi" ? ' lang="hi"' : "") + '>' + S.calendar + '</span></summary>' +
+        '<div class="cal-menu"><a href="' + esc(gcalUrl(d)) + '" target="_blank" rel="noopener">' + S.google + '</a>' +
+        '<a href="' + esc(icsUrl(d)) + '" download="' + esc(d.title.split(" ·")[0].toLowerCase().replace(/[^a-z]+/g, "-")) + '.ics">' + S.ics + '</a></div></details>';
+    });
+  }
+  // Close an open calendar menu on outside click or Escape
+  document.addEventListener("click", function (e) {
+    document.querySelectorAll("details.cal[open]").forEach(function (det) { if (!det.contains(e.target)) det.open = false; });
   });
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Escape") return;
+    document.querySelectorAll("details.cal[open]").forEach(function (det) { det.open = false; det.querySelector("summary").focus(); });
+  });
+
+  // Mark functions that have already happened
+  var now = new Date();
+  document.querySelectorAll(".day").forEach(function (ev) { if (now > new Date(ev.dataset.end)) ev.classList.add("past"); });
 
   // ---- RSVP ----
   var form = document.getElementById("rsvp-form");
-  var err = document.getElementById("r-error");
-  var result = document.getElementById("r-result");
-  var eventsWrap = document.getElementById("r-events-wrap");
-  var countSel = document.getElementById("r-count");
-  if (RSVP_WHATSAPP) document.getElementById("r-note-send").textContent = "WhatsApp opens a chat with Amit Tyagi with your reply typed out. Press send.";
+  var nameEl = document.getElementById("r-name");
+  var countEl = document.getElementById("r-count");
+  var noteEl = document.getElementById("r-note");
+  var yesGroup = document.getElementById("yes-group");
+  var preview = document.getElementById("r-text");
+  var waBtn = document.getElementById("r-wa");
+  var waAgain = document.getElementById("r-wa-again");
+  var check = document.getElementById("r-check");
+  var done = document.getElementById("r-done");
+  var closed = document.getElementById("r-closed");
+  var repliedEl = document.getElementById("r-replied");
+  var doneState = null;
 
-  form.addEventListener("change", function (e) {
-    if (e.target.name === "attending") eventsWrap.hidden = e.target.value === "no";
-  });
-
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
-    var name = document.getElementById("r-name").value.trim();
-    var att = form.querySelector('input[name="attending"]:checked');
-    var events = Array.prototype.map.call(form.querySelectorAll('input[name="events"]:checked'), function (x) { return x.value; });
-    var note = document.getElementById("r-note").value.trim();
-
-    var problem = !name ? "Please add your name so the family knows who is replying."
-      : !att ? "Please choose whether you will attend."
-      : (att.value === "yes" && !events.length) ? "Please pick at least one function."
-      : "";
-    if (problem) { err.textContent = problem; err.hidden = false; result.hidden = true; return; }
-    err.hidden = true;
-
-    var yes = att.value === "yes";
-    var lines = ["R.S.V.P. — " + COUPLE + " wedding", "", "Name: " + name];
-    if (yes) {
-      lines.push("Attending: Yes, " + countSel.value + (countSel.value === "1" ? " person" : " people"));
-      lines.push("Functions: " + events.join(", "));
-    } else {
-      lines.push("Attending: Sorry, we can't make it");
+  function attending() { var a = form.querySelector('input[name="attending"]:checked'); return a ? a.value : ""; }
+  function chosenEvents() { return Array.prototype.map.call(form.querySelectorAll('input[name="events"]:checked'), function (x) { return x.value; }); }
+  function message() {
+    var S = STR[lang], att = attending(), lines = [S.msgTitle, ""];
+    lines.push(S.msgName + ": " + (nameEl.value.trim() || "…"));
+    if (att === "yes") {
+      lines.push(S.msgComing + ": " + S.msgYes(countEl.value.trim() || "…"));
+      lines.push(S.msgFns + ": " + chosenEvents().map(function (k) { return S.events[k]; }).join(", "));
+    } else if (att === "no") {
+      lines.push(S.msgComing + ": " + S.msgNo);
     }
-    if (note) lines.push("", "Blessings: " + note);
-    var text = lines.join("\n");
+    if (noteEl.value.trim()) lines.push("", S.msgBless + ": " + noteEl.value.trim());
+    return lines.join("\n");
+  }
+  function updatePreview() {
+    var started = nameEl.value.trim() || attending();
+    preview.textContent = started ? message() : STR[lang].previewEmpty;
+    preview.classList.toggle("empty", !started);
+    var href = "https://wa.me/" + RSVP_WHATSAPP + "?text=" + encodeURIComponent(message());
+    waBtn.href = href; waAgain.href = href;
+  }
 
-    document.getElementById("r-thanks").textContent = yes ? "Dhanyavaad! See you there" : "Thank you for letting us know";
-    document.getElementById("r-text").textContent = text;
-    document.getElementById("r-wa").href = "https://wa.me/" + RSVP_WHATSAPP + "?text=" + encodeURIComponent(text);
-    result.hidden = false;
-    if (yes) showerPetals(45);
-    result.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "nearest" });
+  var errs = { name: "e-name", att: "e-att", count: "e-count", ev: "e-ev" };
+  function setError(key, input, text) {
+    document.getElementById(errs[key]).textContent = text || "";
+    if (input) input.setAttribute("aria-invalid", text ? "true" : "false");
+  }
+  function clearErrors() { Object.keys(errs).forEach(function (k) { setError(k, null, ""); }); form.querySelectorAll("[aria-invalid]").forEach(function (el) { el.removeAttribute("aria-invalid"); }); }
+  function validate() {
+    var S = STR[lang], first = null, att = attending(), n = parseInt(countEl.value, 10);
+    clearErrors();
+    if (!nameEl.value.trim()) { setError("name", nameEl, S.eName); first = first || nameEl; }
+    if (!att) { setError("att", null, S.eAtt); first = first || document.getElementById("r-yes"); }
+    if (att === "yes") {
+      if (!(n >= 1 && n <= 99)) { setError("count", countEl, S.eCount); first = first || countEl; }
+      if (!chosenEvents().length) { setError("ev", null, S.eEv); first = first || document.getElementById("r-ev1"); }
+    }
+    if (first) first.focus();
+    return !first;
+  }
+
+  form.addEventListener("input", function (e) {
+    if (e.target === nameEl && nameEl.value.trim()) setError("name", nameEl, "");
+    if (e.target === countEl && countEl.value) setError("count", countEl, "");
+    updatePreview();
   });
+  form.addEventListener("change", function (e) {
+    if (e.target.name === "attending") { yesGroup.hidden = e.target.value !== "yes"; setError("att", null, ""); }
+    if (e.target.name === "events" && chosenEvents().length) setError("ev", null, "");
+    updatePreview();
+  });
+  form.addEventListener("submit", function (e) { e.preventDefault(); waBtn.click(); });
+  waBtn.addEventListener("click", function (e) {
+    if (!validate()) { e.preventDefault(); return; }
+    updatePreview();
+    // WhatsApp opens in a new tab or the app; when the guest comes back, ask whether they pressed send.
+    setTimeout(function () { form.hidden = true; repliedEl.hidden = true; check.hidden = false; check.querySelector("#r-sent").focus({ preventScroll: true }); }, 400);
+  });
+  document.getElementById("r-sent").addEventListener("click", function () {
+    var att = attending();
+    try { localStorage.setItem("ss-rsvp", JSON.stringify({ name: nameEl.value.trim(), att: att, at: Date.now() })); } catch (x) {}
+    showDone(att);
+    if (att === "yes") showerPetals(45);
+  });
+  function showDone(att) {
+    var S = STR[lang];
+    doneState = att;
+    document.getElementById("r-done-title").textContent = att === "yes" ? S.doneYesT : S.doneNoT;
+    document.getElementById("r-done-title").lang = lang;
+    document.getElementById("r-done-text").textContent = att === "yes" ? S.doneYesP : S.doneNoP;
+    check.hidden = true; form.hidden = true; done.hidden = false;
+  }
+  document.getElementById("r-again").addEventListener("click", function () {
+    doneState = null; done.hidden = true; form.hidden = false; renderReplied(); nameEl.focus();
+  });
+
+  function renderReplied() {
+    var saved = null;
+    try { saved = JSON.parse(localStorage.getItem("ss-rsvp") || "null"); } catch (x) {}
+    if (!saved || !saved.name || doneState) { repliedEl.hidden = true; return; }
+    var d = new Date(saved.at).toLocaleDateString(lang === "hi" ? "hi-IN" : "en-IN", { day: "numeric", month: "long" });
+    repliedEl.textContent = STR[lang].replied(saved.name, d);
+    repliedEl.lang = lang;
+    repliedEl.hidden = form.hidden;
+  }
 
   var copyBtn = document.getElementById("r-copy");
-  function swapLabel(t) {
-    copyBtn.classList.add("swapping");
-    setTimeout(function () { copyBtn.textContent = t; copyBtn.classList.remove("swapping"); }, 120);
-  }
+  function swapLabel(t) { copyBtn.textContent = t; copyBtn.lang = lang; }
   copyBtn.addEventListener("click", function () {
-    var pre = document.getElementById("r-text");
+    if (!validate()) return;
     function selectIt() {
-      var r = document.createRange(); r.selectNodeContents(pre);
+      var r = document.createRange(); r.selectNodeContents(preview);
       var s = getSelection(); s.removeAllRanges(); s.addRange(r);
-      swapLabel("Selected, press copy");
+      swapLabel(STR[lang].selected);
     }
     try {
-      navigator.clipboard.writeText(pre.textContent).then(function () {
-        swapLabel("Copied");
-        setTimeout(function () { swapLabel("Copy reply"); }, 2000);
+      navigator.clipboard.writeText(message()).then(function () {
+        swapLabel(STR[lang].copied);
+        setTimeout(function () { swapLabel(STR[lang].copy); }, 2000);
       }, selectIt);
     } catch (x) { selectIt(); }
   });
+
+  // After the wedding, the RSVP closes with a thank-you
+  if (now > WEDDING_END) { form.hidden = true; repliedEl.hidden = true; closed.hidden = false; }
+
+  applyLang(lang, false);
+  tick();
+  setInterval(tick, 1000);
 })();
 </script>
