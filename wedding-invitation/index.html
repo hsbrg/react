@@ -104,7 +104,25 @@
     color: var(--hero-muted);
     text-wrap: balance;
   }
-  .orn { display: block; margin: 22px auto 0; width: 120px; height: 14px; color: var(--hero-gold); }
+  /* The couple's monogram, set as a round seal on the maroon card */
+  .seal {
+    display: block;
+    width: clamp(150px, 26vw, 210px);
+    max-width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    margin: 26px auto 0;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #F3EBDA;
+    box-shadow:
+      0 0 0 1px var(--hero-gold),
+      0 0 0 6px var(--hero-bg),
+      0 0 0 7px color-mix(in srgb, var(--hero-gold) 50%, transparent),
+      0 12px 32px rgb(0 0 0 / .35);
+    animation: seal 700ms var(--ease-out) 40ms both;
+  }
+  @keyframes seal { from { opacity: 0; transform: scale(0.96); } }
 
   .names {
     font-family: var(--font-script);
@@ -380,7 +398,7 @@
   }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
-    .in, .fade-in { animation: fade 250ms ease both; animation-delay: 0ms; }
+    .in, .fade-in, .seal { animation: fade 250ms ease both; animation-delay: 0ms; }
     .btn:active, .link-btn:active, .choice input:active + span { transform: none; }
     .result { @starting-style { opacity: 0; transform: none; } }
   }
@@ -392,11 +410,8 @@
     <div class="hero-inner">
       <div class="ganesh deva fade-in" lang="hi">॥ श्री गणेशाय नमः ॥</div>
       <p class="shloka deva fade-in" style="--d:60ms" lang="sa">वक्रतुण्ड महाकाय सूर्यकोटि समप्रभः।<br>निर्विघ्नं कुरु मे देव सर्वकार्येषु सर्वदा॥</p>
-      <svg class="orn fade-in" style="--d:60ms" viewBox="0 0 120 14" aria-hidden="true">
-        <path d="M0 7 H48 M72 7 H120" stroke="currentColor" stroke-width="1" fill="none"/>
-        <path d="M60 1 L66 7 L60 13 L54 7 Z" fill="currentColor"/>
-        <circle cx="50" cy="7" r="1.6" fill="currentColor"/><circle cx="70" cy="7" r="1.6" fill="currentColor"/>
-      </svg>
+      <img class="seal" src="monogram.jpg" width="520" height="520" alt="Shivanshi and Shashwat monogram: the letters S and S entwined in gold with a lotus and flowering branches">
+
 
       <h1 class="names">
         <span class="in" style="--y:16px;--dur:800ms">Shivanshi</span>

@@ -29,6 +29,7 @@ const head = `<!doctype html>
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 ${base ? `<meta property="og:url" content="${base}/">\n` : ""}<meta name="twitter:card" content="summary_large_image">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="icon" href="data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#5A1123"/><circle cx="32" cy="32" r="14" fill="#E8890C"/><circle cx="32" cy="32" r="6" fill="#F6B23C"/></svg>')}">
 <style>
   :root { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
@@ -43,5 +44,7 @@ ${base ? `<meta property="og:url" content="${base}/">\n` : ""}<meta name="twitte
 rmSync(OUT, { recursive: true, force: true });
 mkdirSync(OUT, { recursive: true });
 writeFileSync(`${OUT}/index.html`, head + body + "\n</body>\n</html>\n");
-copyFileSync(`${SRC}/og.png`, `${OUT}/og.png`);
+for (const f of ["og.png", "monogram.jpg", "apple-touch-icon.png", "logo.jpg"]) {
+  copyFileSync(`${SRC}/${f}`, `${OUT}/${f}`);
+}
 console.log(`Built ${OUT}/index.html${base ? ` for ${base}` : ""}`);
